@@ -17,6 +17,7 @@ test = [
     "pytest-subtests>=0.13.1",
     "pytest>=8.2.2",
     "maturin-import-hook>=0.1.0",
+    "pytest-benchmark>=4.0.0",
 ]
 [tool.maturin]
 features = ["pyo3/extension-module"]

@@ -1,16 +1,28 @@
 use pyo3::prelude::*;
+use pyo3::exceptions::{PyValueError};
+
+use ruff_python_parser::{Parsed, ParseError};
+use ruff_python_ast::{Expr, Mod, ModExpression, ModModule, PySourceType, Suite};
+use ruff_python_parser as parser;
+
+type ParseResult = Parsed<ModModule>;
 
 
 /// A Python module implemented in Rust.
 #[pymodule]
 mod xonsh_rd_parser {
+    use pyo3::types::PyDict;
     use super::*;
 
     #[pyfunction] // This will be part of the module
-    fn triple(x: usize) -> usize {
-        x * 3
-    }
+    fn parse_string<'py>(py: Python<'py>, src: &str) -> PyResult<PyDict> {
+        let parsed = parser::parse_module(src);
+        if let Ok(parsed) = parsed {
 
-    #[pyclass] // This will be part of the module
-    struct Unit;
+            return Ok(parsed );
+        } else {
+            let errors = parsed.unwrap_err();
+            return Err(PyErr::new::<PyValueError, _>(format!("{:?}", errors)));
+        }
+    }
 }

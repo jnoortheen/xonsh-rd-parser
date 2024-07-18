@@ -1,5 +1,6 @@
 import xonsh_rd_parser as parser
 
 
-def test_triple():
-    assert parser.triple(3) == 9
+def test_parser():
+    result =  parser.parse_module("import abc")
+    assert result == b"import abc"

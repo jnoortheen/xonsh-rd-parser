@@ -899,6 +899,9 @@ name = "xonsh-rd-parser"
 version = "0.1.0"
 dependencies = [
  "pyo3",
+ "ruff_python_ast",
+ "ruff_python_parser",
+ "ruff_text_size",
 ]
 
 [[package]]
