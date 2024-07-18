@@ -1,6 +1,6 @@
 # Xonsh Recursive Descent Parser
 
-This is a Rust library that parses Xonsh and provides Python bindings to it.
+A Rust library that parses Xonsh and provides Python bindings to it.
 
 
 # Credits

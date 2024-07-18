@@ -21,7 +21,9 @@ name = "xonsh_rd_parser"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = "0.22.2"
+pyo3 = { version = "0.22.2", features = [
+  "abi3-py310",
+  "experimental-inspect"] }
 
 [workspace.dependencies]
 ruff = { path = "crates/ruff" }
