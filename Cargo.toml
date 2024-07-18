@@ -23,7 +23,8 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = { version = "0.22.2", features = [
   "abi3-py310",
-  "experimental-inspect"] }
+  "experimental-inspect"
+] }
 
 [workspace.dependencies]
 ruff = { path = "crates/ruff" }
