@@ -26,3 +26,22 @@ mod xonsh_rd_parser {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_string() {
+        let src = "
+def foo():
+    return 42
+";
+        // Python::with_gil(|py| {
+            let parsed = xonsh_rd_parser::parse_string(
+                // py,
+                src);
+            assert!(parsed.is_ok());
+        // })
+    }
+}

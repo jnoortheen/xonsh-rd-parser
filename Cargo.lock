@@ -504,6 +504,7 @@ dependencies = [
  "is-macro",
  "itertools",
  "once_cell",
+ "pyo3",
  "ruff_cache",
  "ruff_macros",
  "ruff_python_trivia",
@@ -561,6 +562,7 @@ dependencies = [
 name = "ruff_text_size"
 version = "0.0.0"
 dependencies = [
+ "pyo3",
  "schemars",
  "serde",
  "serde_test",

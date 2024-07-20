@@ -28,6 +28,7 @@ rustc-hash = { workspace = true }
 schemars = { workspace = true, optional = true }
 serde = { workspace = true, optional = true }
 compact_str = { workspace = true }
+pyo3 = { workspace = true }
 
 [features]
 schemars = ["dep:schemars"]
