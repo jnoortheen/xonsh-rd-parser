@@ -9,7 +9,7 @@ use std::sync::OnceLock;
 
 use bitflags::bitflags;
 use itertools::Itertools;
-
+use pyo3::pyclass;
 use ruff_text_size::{Ranged, TextLen, TextRange, TextSize};
 
 use crate::name::Name;
@@ -28,6 +28,7 @@ pub enum Mod {
 }
 
 /// See also [Module](https://docs.python.org/3/library/ast.html#ast.Module)
+#[pyclass]
 #[derive(Clone, Debug, PartialEq)]
 pub struct ModModule {
     pub range: TextRange,

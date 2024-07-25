@@ -526,6 +526,7 @@ dependencies = [
  "compact_str",
  "insta",
  "memchr",
+ "pyo3",
  "ruff_python_ast",
  "ruff_python_trivia",
  "ruff_source_file",
