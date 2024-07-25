@@ -4,32 +4,34 @@ use pyo3::prelude::*;
 use ruff_python_ast::ModModule;
 use ruff_python_parser as parser;
 
+pub fn parse_str(src: &str) -> PyResult<String> {
+    let parsed = parser::parse_module(src);
+    if let Ok(parsed) = parsed {
+        // let ast = parsed.into_syntax();
+        let ast = format!("{:?}", &parsed);
+        return Ok(ast);
+    } else {
+        let errors = parsed.unwrap_err();
+        return Err(PyErr::new::<PyValueError, _>(format!("{:?}", errors)));
+    }
+}
+
+
 /// A Python module implemented in Rust.
 #[pymodule]
 mod xonsh_rd_parser {
+    use ruff_python_ast::AstNode;
     use super::*;
 
     #[pyfunction] // This will be part of the module
-    fn parse_string<'py>(src: &str) -> PyResult<ModModule> {
-        let parsed = parser::parse_module(src);
-        if let Ok(parsed) = parsed {
-            return Ok(parsed.into_syntax());
-        } else {
-            let errors = parsed.unwrap_err();
-            return Err(PyErr::new::<PyValueError, _>(format!("{:?}", errors)));
-        }
+    pub fn parse_string<'py>(src: &str) -> PyResult<String> {
+        return parse_str(src);
     }
 
     #[pyfunction]
-    fn parse_file<'py>(path: &str) -> PyResult<ModModule> {
+    pub fn parse_file<'py>(path: &str) -> PyResult<String> {
         let src = std::fs::read_to_string(path).unwrap();
-        let parsed = parser::parse_module(&src);
-        if let Ok(parsed) = parsed {
-            return Ok(parsed.into_syntax());
-        } else {
-            let errors = parsed.unwrap_err();
-            return Err(PyErr::new::<PyValueError, _>(format!("{:?}", errors)));
-        }
+        return parse_str(&src);
     }
 }
 
