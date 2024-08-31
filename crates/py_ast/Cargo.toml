@@ -1,0 +1,16 @@
+[package]
+name = "py_ast"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+repository.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+pyo3 = { workspace = true }
+
+[lints]
+workspace = true

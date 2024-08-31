@@ -331,6 +331,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "py_ast"
+version = "0.1.0"
+dependencies = [
+ "pyo3",
+]
+
+[[package]]
 name = "pyo3"
 version = "0.22.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -901,8 +908,8 @@ checksum = "589f6da84c646204747d1270a2a5661ea66ed1cced2631d546fdfb155959f9ec"
 name = "xonsh-rd-parser"
 version = "0.1.0"
 dependencies = [
+ "py_ast",
  "pyo3",
- "ruff_python_ast",
  "ruff_python_parser",
  "ruff_text_size",
 ]
