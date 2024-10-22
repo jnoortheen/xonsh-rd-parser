@@ -1,25 +1,7 @@
+mod parser;
+
+use parser::parse_str;
 use pyo3::prelude::*;
-use pyo3::types::IntoPyDict;
-use ruff_python_parser as parser;
-use pyo3::exceptions::PyValueError;
-
-
-fn get_ast<'py>(py: Python<'py>) -> PyResult<Bound<'py, PyModule>> {
-    let module = PyModule::import_bound(py, "ast")?;
-    Ok(module)
-}
-
-pub fn parse_str(py: Python<'_>, src: &str) -> PyResult<PyObject> {
-    let parsed = parser::parse_module(src);
-    if let Ok(parsed) = parsed {
-        let ast = parsed.into_syntax();
-        return Ok("ast".into_py(py));
-    } else {
-        let errors = parsed.unwrap_err();
-        return Err(PyErr::new::<PyValueError, _>(format!("{:?}", errors)));
-    }
-}
-
 
 /// A Python module implemented in Rust.
 #[pymodule]

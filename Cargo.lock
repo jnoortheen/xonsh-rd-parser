@@ -335,6 +335,7 @@ name = "py_ast"
 version = "0.1.0"
 dependencies = [
  "pyo3",
+ "ruff_python_ast",
 ]
 
 [[package]]
@@ -533,6 +534,7 @@ dependencies = [
  "compact_str",
  "insta",
  "memchr",
+ "py_ast",
  "pyo3",
  "ruff_python_ast",
  "ruff_python_trivia",
