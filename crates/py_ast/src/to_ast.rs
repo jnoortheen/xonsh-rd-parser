@@ -30,3 +30,12 @@ impl<T: ToAst> ToAst for Vec<T> {
         Ok(body.into_py(module.py))
     }
 }
+impl<T: ToAst> ToAst for [T] {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        let mut body: Vec<PyObject> = vec![];
+        for stmt in self {
+            body.push(stmt.to_ast(module)?);
+        }
+        Ok(body.into_py(module.py))
+    }
+}
