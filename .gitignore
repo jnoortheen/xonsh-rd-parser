@@ -74,6 +74,7 @@ docs/_build/
 # pdm
 pdm.lock
 .pdm-python
+uv.lock
 
 # pytest-benchmark
 .benchmarks/
