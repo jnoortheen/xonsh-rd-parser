@@ -6,9 +6,9 @@ use pyo3::{Bound, Py, PyAny, PyObject, PyResult, Python, ToPyObject};
 use ruff_text_size::{TextRange};
 
 
-pub(crate) struct AST<'py> {
+pub struct AstModule<'py> {
     module: Py<PyModule>,
-    py: Python<'py>,
+    pub py: Python<'py>,
 }
 
 fn get_location_fields(range: TextRange) -> [(&'static str, u32); 4] {
@@ -55,7 +55,7 @@ impl<'py> Callable<'py> for Bound<'py, PyAny> {
     }
 }
 
-impl<'py> AST<'py> {
+impl<'py> AstModule<'py> {
     pub fn new(py: Python<'py>) -> PyResult<Self> {
         let module = PyModule::import_bound(py, "ast")?.unbind();
         Ok(Self { module, py })
