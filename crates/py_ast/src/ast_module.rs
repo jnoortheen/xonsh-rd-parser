@@ -1,25 +1,57 @@
 /// A wrapper around the Python ast module.
 
 use pyo3::prelude::PyModule;
-use pyo3::{IntoPy, Py, PyObject, PyResult, Python};
-use pyo3::types::IntoPyDict;
+use pyo3::types::{IntoPyDict, PyAnyMethods};
+use pyo3::{Bound, Py, PyAny, PyObject, PyResult, Python, ToPyObject};
+use ruff_text_size::{TextRange};
 
-pub struct AST<'py> {
+
+pub(crate) struct AST<'py> {
     module: Py<PyModule>,
     py: Python<'py>,
 }
 
-// alias for kwargs
-pub type Kwargs<'a> = Vec<(&'a str, PyObject)>;
-
-trait Dispatchable<'py> {
-    fn kwargs(&self, py: Python<'py>, kwargs: Kwargs) -> PyResult<PyObject>;
+fn get_location_fields(range: TextRange) -> [(&'static str, u32); 4] {
+    [
+        ("lineno", range.start().to_u32()),
+        ("col_offset", range.start().to_u32()),
+        ("end_lineno", range.end().to_u32()),
+        ("end_col_offset", range.end().to_u32()),
+    ]
 }
 
-impl<'py> Dispatchable<'py> for PyObject {
-    fn kwargs(&self, py: Python<'py>, kwargs: Kwargs) -> PyResult<PyObject> {
-        let kwargs = kwargs.into_py_dict_bound(py);
-        self.call_bound(py, (), Some(&kwargs))
+
+pub trait Callable<'py> {
+    fn callk<T>(&self, kwargs: T) -> PyResult<PyObject>
+    where
+        T: IntoPyDict;
+    fn call_with_loc<T>(&self, range: TextRange, kwargs: T) -> PyResult<PyObject>
+    where
+        T: IntoPyDict;
+    fn call0_with_loc(&self, range: TextRange) -> PyResult<PyObject>
+    {
+        self.callk(get_location_fields(range))
+    }
+}
+
+
+impl<'py> Callable<'py> for Bound<'py, PyAny> {
+    fn callk<T>(&self, kwargs: T) -> PyResult<PyObject>
+    where
+        T: IntoPyDict,
+    {
+        let kwargs = kwargs.into_py_dict_bound(self.py());
+        Ok(self.call((), Some(&kwargs))?.into())
+    }
+    fn call_with_loc<T>(&self, range: TextRange, kwargs: T) -> PyResult<PyObject>
+    where
+        T: IntoPyDict,
+    {
+        let kwargs = kwargs.into_py_dict_bound(self.py());
+        for (key, value) in get_location_fields(range) {
+            kwargs.set_item(key, value)?;
+        }
+        Ok(self.call((), Some(&kwargs))?.into())
     }
 }
 
@@ -29,24 +61,17 @@ impl<'py> AST<'py> {
         Ok(Self { module, py })
     }
 
-    pub fn attr(&self, name: &str) -> PyResult<PyObject> {
-        self.module.getattr(self.py, name)
+    pub fn attr(&self, name: &str) -> PyResult<Bound<'py, PyAny>> {
+        Ok(self.module.getattr(self.py, name)?.into_bound(self.py))
     }
-    pub fn to_const<T: IntoPy<PyObject>>(&self, value: T) -> PyResult<PyObject> {
-        let constant = self.attr("Constant")?;
-        constant.kwargs(self.py, vec![("value", value.into_py(self.py))])
+    pub fn to_const<T: ToPyObject>(&self, value: T) -> PyResult<PyObject> {
+        self.attr("Constant")?.callk(
+            [("value", value)],
+        )
     }
     pub fn to_module(&self, body: Vec<PyObject>) -> PyResult<PyObject> {
-        let kwargs = [("body", body)].into_py_dict_bound(self.py);
-        let ast = self.attr("Module")?.call_bound(
-            self.py,
-            (),
-            Some(&kwargs),
-        )?;
-        Ok(ast)
-    }
-    
-    pub fn to_pass(&self) -> PyResult<PyObject> {
-        self.attr("Pass")?.call0(self.py)
+        self.attr("Module")?.callk(
+            [("body", body)],
+        )
     }
 }
