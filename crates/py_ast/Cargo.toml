@@ -14,6 +14,7 @@ pyo3 = { workspace = true }
 ruff_python_ast = { workspace = true }
 ruff_text_size = { workspace = true }
 num-complex = { workspace = true }
+bon = { workspace = true }
 
 [lints]
 workspace = true

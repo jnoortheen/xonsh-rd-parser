@@ -28,7 +28,10 @@ def unparse_diff(**trees: ast.AST):
 
 
 def dump_diff(**trees: ast.AST):
-    kwargs = {"include_attributes": True, "indent": "  "}
+    kwargs = {
+        # "include_attributes": True, # todo: uncomment when we fix the coloffset in ruff parser
+        "indent": "  "
+    }
     orig_name, pp_name = trees.keys()
     original, pp_ast = trees.values()
     o = ast.dump(original, **kwargs)

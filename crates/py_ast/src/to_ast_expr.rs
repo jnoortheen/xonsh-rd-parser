@@ -289,8 +289,7 @@ impl ToAst for ExprGenerator {
 }
 impl ToAst for Comprehension {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("comprehension")?.call_with_loc(
-            self.range,
+        module.attr("comprehension")?.callk(
             [
                 ("target", self.target.to_ast(module)?),
                 ("iter", self.iter.to_ast(module)?),

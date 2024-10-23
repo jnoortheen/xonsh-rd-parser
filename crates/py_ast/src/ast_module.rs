@@ -1,10 +1,10 @@
 /// A wrapper around the Python ast module.
 use pyo3::prelude::PyModule;
-use pyo3::types::{IntoPyDict, PyAnyMethods};
+use pyo3::types::{IntoPyDict, PyAnyMethods, PyDict};
 use pyo3::{Bound, IntoPy, Py, PyAny, PyObject, PyResult, Python, ToPyObject};
 use ruff_python_ast::FStringElement;
 use ruff_text_size::TextRange;
-
+use bon::bon;
 use crate::to_ast::ToAst;
 
 pub struct AstModule<'py> {
@@ -53,31 +53,53 @@ impl<'py> Callable<'py> for Bound<'py, PyAny> {
     }
 }
 
+#[bon]
 impl<'py> AstModule<'py> {
     pub fn new(py: Python<'py>) -> PyResult<Self> {
         let module = PyModule::import_bound(py, "ast")?.unbind();
         Ok(Self { module, py })
     }
+    #[builder]
+    pub fn caller<T: IntoPyDict>(&self, attr: &str, range: Option<TextRange>, kwargs: Option<T>) -> PyResult<PyObject>
+    {
+        let func = self.module.getattr(self.py, attr)?.into_bound(self.py);
 
+        if kwargs.is_none() && range.is_none() {
+            return Ok(func.call0()?.into());
+        }
+        let dict = if let Some(kwargs) = kwargs {
+            kwargs.into_py_dict_bound(self.py)
+        } else {
+            PyDict::new_bound(self.py)
+        };
+        if let Some(range) = range {
+            dict.set_item("lineno", range.start().to_u32())?;
+            dict.set_item("col_offset", range.start().to_u32())?;
+            dict.set_item("end_lineno", range.end().to_u32())?;
+            dict.set_item("end_col_offset", range.end().to_u32())?;
+        }
+
+        Ok(func.call((), Some(&dict))?.into())
+    }
     pub fn attr(&self, name: &str) -> PyResult<Bound<'py, PyAny>> {
         Ok(self.module.getattr(self.py, name)?.into_bound(self.py))
     }
     pub fn to_const<T: ToPyObject>(&self, value: T) -> PyResult<PyObject> {
-        self.attr("Constant")?.callk([("value", value)])
+        self.caller().attr("Constant").kwargs([("value", value)]).call()
     }
     pub fn to_module(&self, body: Vec<PyObject>) -> PyResult<PyObject> {
-        self.attr("Module")?.callk([("body", body)])
+        self.caller().attr("Module").kwargs([("body", body)]).call()
     }
     pub fn to_joined_str<'a>(
         &self,
         range: TextRange,
-        elements: impl Iterator<Item = &'a FStringElement>,
+        elements: impl Iterator<Item=&'a FStringElement>,
     ) -> PyResult<PyObject> {
         let mut values = vec![];
         for value in elements {
             values.push(value.to_ast(self)?);
         }
-        self.attr("JoinedStr")?
-            .call_with_loc(range, [("values", values.into_py(self.py))])
+        self.caller().attr("JoinedStr")
+            .range(range).kwargs([("values", values.into_py(self.py))]).call()
     }
 }

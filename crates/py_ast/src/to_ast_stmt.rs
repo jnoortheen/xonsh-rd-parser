@@ -54,8 +54,7 @@ impl ToAst for Parameters {
             }
         }
 
-        module.attr("arguments")?.call_with_loc(
-            self.range,
+        module.attr("arguments")?.callk(
             [
                 ("posonlyargs", posonlyargs.into_py(module.py)),
                 ("args", args.into_py(module.py)),
@@ -105,18 +104,17 @@ impl ToAst for TypeParamTypeVar {
             [
                 ("name", self.name.to_ast(module)?),
                 ("bound", self.bound.to_ast(module)?),
-                ("default", self.default.to_ast(module)?),
+                ("default_value", self.default.to_ast(module)?),
             ],
         )
     }
 }
 impl ToAst for TypeParamParamSpec {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("ParamSpec")?.call_with_loc(
-            self.range,
+        module.attr("ParamSpec")?.callk(
             [
                 ("name", self.name.to_ast(module)?),
-                ("default", self.default.to_ast(module)?),
+                ("default_value", self.default.to_ast(module)?),
             ],
         )
     }
@@ -127,14 +125,14 @@ impl ToAst for TypeParamTypeVarTuple {
             self.range,
             [
                 ("name", self.name.to_ast(module)?),
-                ("default", self.default.to_ast(module)?),
+                ("default_value", self.default.to_ast(module)?),
             ],
         )
     }
 }
 impl ToAst for Identifier {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.to_const(self.as_str().to_string())
+        Ok(self.as_str().to_string().into_py(module.py))
     }
 }
 impl ToAst for StmtFunctionDef {
@@ -142,10 +140,11 @@ impl ToAst for StmtFunctionDef {
         module.attr("FunctionDef")?.call_with_loc(
             self.range,
             [
-                ("name", self.name.to_ast(module)?),
+                ("name", self.name.as_str().to_owned().into_py(module.py)),
                 ("args", self.parameters.to_ast(module)?),
                 ("returns", self.returns.to_ast(module)?),
                 ("body", self.body.to_ast(module)?),
+                ("decorator_list", self.decorator_list.to_ast(module)?),
                 ("type_params", self.type_params.to_ast(module)?),
             ],
         )
@@ -351,7 +350,7 @@ impl ToAst for StmtRaise {
 impl ToAst for ExceptHandler {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         match self {
-            ExceptHandler::ExceptHandler(node) => module.attr("Raise")?.callk([
+            ExceptHandler::ExceptHandler(node) => module.attr("ExceptHandler")?.callk([
                 ("type", node.type_.to_ast(module)?),
                 ("name", node.name.to_ast(module)?),
                 ("body", node.body.to_ast(module)?),
@@ -394,10 +393,7 @@ impl ToAst for StmtClassDef {
 }
 impl ToAst for Decorator {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("decorator")?.call_with_loc(
-            self.range,
-            [("expression", self.expression.to_ast(module)?)],
-        )
+        self.expression.to_ast(module)
     }
 }
 impl ToAst for StmtAssign {
@@ -413,8 +409,7 @@ impl ToAst for StmtAssign {
 }
 impl ToAst for WithItem {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("withitem")?.call_with_loc(
-            self.range,
+        module.attr("withitem")?.callk(
             [
                 ("context_expr", self.context_expr.to_ast(module)?),
                 ("optional_vars", self.optional_vars.to_ast(module)?),
