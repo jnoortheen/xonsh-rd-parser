@@ -59,7 +59,7 @@ def test_pure_python_parsing(filename):
     assert not diff
 
 
-@pytest.mark.parametrize(
+    @pytest.mark.parametrize(
     "inp",
     [
         'r"""some long lines\nmore lines\n"""',

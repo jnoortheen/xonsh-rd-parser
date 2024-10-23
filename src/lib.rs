@@ -30,6 +30,7 @@ mod tests {
 def foo():
     return 42
 ";
+        pyo3::prepare_freethreaded_python();
         Python::with_gil(|py| {
             let parsed = xonsh_rd_parser::parse_string(
                 py,

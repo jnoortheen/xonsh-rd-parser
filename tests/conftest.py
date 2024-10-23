@@ -4,13 +4,10 @@ import maturin_import_hook
 
 maturin_import_hook.install()
 
-
 import ast
-import contextlib
-import io
 import logging
 from unittest.mock import MagicMock
-from xonsh_rd_parser import parse_file, parse_string
+from xonsh_rd_parser import parse_string
 
 import pytest
 
@@ -26,11 +23,11 @@ def nodes_equal(x, y):
     if isinstance(x, ast.Expr | ast.FunctionDef | ast.ClassDef):
         assert x.lineno == y.lineno, f"Ast nodes do not have the same line number : {x.lineno} != {y.lineno}"
         assert (
-            x.col_offset == y.col_offset
+                x.col_offset == y.col_offset
         ), f"Ast nodes do not have the same column offset number : {x.col_offset} != {y.col_offset}"
     for (xname, xval), (yname, yval) in zip(ast.iter_fields(x), ast.iter_fields(y), strict=False):
         assert (
-            xname == yname
+                xname == yname
         ), f"Ast nodes fields differ : {xname} (of type {type(xval)}) != {yname} (of type {type(yval)})"
         assert type(xval) is type(
             yval
@@ -40,65 +37,6 @@ def nodes_equal(x, y):
     return True
 
 
-
-
-
-
-
-# @pytest.fixture(scope="session")
-# def parse_str(get_tokens):
-#     """Parse and print verbose output on failure"""
-#     session = [0]
-#
-#     def factory(text, verbose=False, mode="eval", py_version: tuple | None = None):
-#         try:
-#             return python_parse_str(text, verbose=verbose, mode=mode, py_version=py_version)
-#         except Exception as e:
-#             print("Parsing failed:")
-#             print("Source is:")
-#             print(text)
-#             if (not verbose) and session[0] < 3:
-#                 toks = get_tokens(text)
-#                 log.info("Tokens are: \n %s", "\n".join(map(str, toks)))
-#                 # log verbose output of atleast 3 failures
-#                 log.info("Retrying with verbose=True")
-#                 with (
-#                     contextlib.redirect_stdout(io.StringIO()) as stdout,
-#                     contextlib.suppress(Exception, SyntaxError),
-#                 ):
-#                     python_parse_str(text, verbose=True, mode=mode, py_version=py_version)
-#                 captured = stdout.getvalue()
-#                 log.info(captured)
-#                 log.error("Failed to parse: %s", e, exc_info=True)
-#                 session[0] += 1
-#             pytest.fail(str(e))
-#
-#     return factory
-
-
-# @pytest.fixture
-# def check_ast(parse_str):
-#     def factory(inp: str, mode="eval", verbose=False):
-#         # expect a Python AST
-#         exp = ast.parse(inp, mode=mode)
-#         # observe something from xonsh
-#         obs = parse_str(inp, mode=mode, verbose=verbose)
-#         # Check that they are equal
-#         assert nodes_equal(exp, obs)
-#
-#     return factory
-#
-#
-# @pytest.fixture
-# def eval_code(parse_str):
-#     def factory(text: str, mode="eval", **locs):
-#         obs = parse_str(text, mode=mode)
-#         bytecode = compile(obs, "<test-xonsh-ast>", mode)
-#         return eval(bytecode, locs)
-#
-#     return factory
-#
-#
 @pytest.fixture
 def unparse_diff():
     def factory(text: str, right: str | None = None, mode="eval"):
@@ -175,4 +113,3 @@ def xsh_proc_method(xsh):
 #         return obs
 #
 #     return factory
-

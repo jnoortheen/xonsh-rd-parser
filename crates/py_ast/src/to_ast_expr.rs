@@ -63,12 +63,12 @@ impl ToAst for ExprNumberLiteral {
 }
 impl ToAst for ExprEllipsisLiteral {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.to_const(pyo3::types::PyEllipsis::get_bound(module.py))
+        module.to_const(module.py.Ellipsis())
     }
 }
 impl ToAst for ExprNoneLiteral {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.to_const(pyo3::types::PyNone::get_bound(module.py))
+        module.to_const(module.py.None())
     }
 }
 impl ToAst for ExprBooleanLiteral {
