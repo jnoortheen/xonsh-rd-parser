@@ -285,19 +285,28 @@ impl ToAst for Stmt {
         }
     }
 }
-impl ToAst for ElifElseClause {
+impl ToAst for Vec<ElifElseClause> {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("If")?.call_with_loc(
-            self.range,
-            [
-                ("test", self.test.to_ast(module)?),
-                ("body", self.body.to_ast(module)?),
-                (
-                    "orelse",
-                    pyo3::types::PyList::empty_bound(module.py).into_py(module.py),
-                ),
-            ],
-        )
+        if self.is_empty() {
+            return Ok(module.py.None());
+        }
+
+        // split as first and rest
+        let (first, rest) = self.split_first().unwrap();
+
+        if first.test.is_some() {
+            let obj = module.attr("If")?.call_with_loc(
+                first.range,
+                [
+                    ("test", first.test.to_ast(module)?),
+                    ("body", first.body.to_ast(module)?),
+                    ("orelse", rest.to_vec().to_ast(module)?),
+                ],
+            );
+            Ok(vec![obj?].into_py(module.py))
+        } else {
+            first.body.to_ast(module)
+        }
     }
 }
 impl ToAst for StmtIf {

@@ -376,7 +376,9 @@ impl ToAst for ExprList {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module
             .attr("List")?
-            .call_with_loc(self.range, [("elts", self.elts.to_ast(module)?)])
+            .call_with_loc(self.range, [
+                ("elts", self.elts.to_ast(module)?),
+                ("ctx", self.ctx.to_ast(module)?)])
     }
 }
 impl ToAst for ExprSet {

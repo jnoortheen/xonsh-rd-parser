@@ -21,7 +21,10 @@ def unparse_diff(**trees: ast.AST):
     orig_name, pp_name = trees.keys()
     original, pp_ast = trees.values()
     left = ast.unparse(original)
-    right = ast.unparse(pp_ast)
+    try:
+        right = ast.unparse(pp_ast)
+    except Exception as e:
+        return f"Unparse failed with {e}"
     return "\n".join(
         difflib.unified_diff(left.split("\n"), right.split("\n"), orig_name, pp_name)
     )
