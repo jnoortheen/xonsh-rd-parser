@@ -19,6 +19,8 @@ test = [
     "pytest>=8.2.2",
     "maturin-import-hook>=0.1.0",
     "pytest-benchmark>=4.0.0",
+    "pytest-memray",
+    "psutil",
 ]
 [tool.maturin]
 features = ["pyo3/extension-module"]
@@ -26,3 +28,11 @@ features = ["pyo3/extension-module"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "--benchmark-autosave"
+
+[tool.ruff]
+exclude = ["crates", "tests/data"]
+
+[tool.ruff.lint]
+ignore = [
+    "E402", # top level imports
+]
