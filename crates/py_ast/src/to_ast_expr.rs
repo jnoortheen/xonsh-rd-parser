@@ -2,6 +2,7 @@ use std::vec;
 
 use crate::ast_module::{AstModule, Callable};
 use crate::to_ast::ToAst;
+use num_complex::Complex;
 use pyo3::types::PyAnyMethods;
 use pyo3::{IntoPy, PyObject};
 use ruff_python_ast::*;
@@ -31,20 +32,179 @@ impl ToAst for Expr {
             Expr::Subscript(expr) => expr.to_ast(module),
             Expr::Starred(expr) => expr.to_ast(module),
             Expr::Name(expr) => expr.to_ast(module),
-            Expr::List(expr) => expr.to_ast(module),
-            Expr::Await(expr_await) => expr.to_ast(module),
-            Expr::Yield(expr_yield) => expr.to_ast(module),
-            Expr::YieldFrom(expr_yield_from) => expr.to_ast(module),
-            Expr::Compare(expr_compare) => expr.to_ast(module),
-            Expr::FString(expr_fstring) => expr.to_ast(module),
-            Expr::StringLiteral(expr_string_literal) => expr.to_ast(module),
-            Expr::BytesLiteral(expr_bytes_literal) => expr.to_ast(module),
-            Expr::NumberLiteral(expr_number_literal) => expr.to_ast(module),
-            Expr::BooleanLiteral(expr_boolean_literal) => expr.to_ast(module),
-            Expr::NoneLiteral(expr_none_literal) => expr.to_ast(module),
-            Expr::EllipsisLiteral(expr_ellipsis_literal) => expr.to_ast(module),
-            Expr::IpyEscapeCommand(expr_ipy_escape_command) => unreachable!(),
+            Expr::Await(expr) => expr.to_ast(module),
+            Expr::Yield(expr) => expr.to_ast(module),
+            Expr::YieldFrom(expr) => expr.to_ast(module),
+            Expr::Compare(expr) => expr.to_ast(module),
+            Expr::FString(expr) => expr.to_ast(module),
+            Expr::StringLiteral(expr) => expr.to_ast(module),
+            Expr::BytesLiteral(expr) => expr.to_ast(module),
+            Expr::NumberLiteral(expr) => expr.to_ast(module),
+            Expr::BooleanLiteral(expr) => expr.to_ast(module),
+            Expr::NoneLiteral(expr) => expr.to_ast(module),
+            Expr::EllipsisLiteral(expr) => expr.to_ast(module),
+            Expr::IpyEscapeCommand(_expr) => unreachable!(),
         }
+    }
+}
+impl ToAst for ExprNumberLiteral {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        let value = match &self.value {
+            Number::Int(value) => value.as_u64().into_py(module.py),
+            Number::Float(value) => value.into_py(module.py),
+            Number::Complex { real, imag } => Complex {
+                re: *real,
+                im: *imag,
+            }
+            .into_py(module.py),
+        };
+        module.to_const(value)
+    }
+}
+impl ToAst for ExprEllipsisLiteral {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.to_const(pyo3::types::PyEllipsis::get_bound(module.py))
+    }
+}
+impl ToAst for ExprNoneLiteral {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.to_const(pyo3::types::PyNone::get_bound(module.py))
+    }
+}
+impl ToAst for ExprBooleanLiteral {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.to_const(self.value)
+    }
+}
+impl ToAst for ExprBytesLiteral {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.to_const(self.value.bytes().collect::<Vec<u8>>())
+    }
+}
+impl ToAst for ExprStringLiteral {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.to_const(self.value.to_str().to_string())
+    }
+}
+impl ToAst for ExprFString {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.to_joined_str(self.range, self.value.elements())
+    }
+}
+impl ToAst for ConversionFlag {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        let flag = *self as u8;
+        Ok(flag.into_py(module.py))
+    }
+}
+impl ToAst for FStringFormatSpec {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.to_joined_str(self.range, self.elements.iter())
+    }
+}
+impl ToAst for FStringExpressionElement {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.attr("FormattedValue")?.call_with_loc(
+            self.range,
+            [
+                ("value", self.expression.to_ast(module)?),
+                ("conversion", self.conversion.to_ast(module)?),
+                ("format_spec", self.format_spec.to_ast(module)?),
+            ],
+        )
+    }
+}
+impl ToAst for FStringElement {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        let obj = match self {
+            FStringElement::Literal(literal) => module.to_const(literal.value.to_string())?,
+            FStringElement::Expression(expr) => expr.to_ast(module)?,
+        };
+        Ok(obj)
+    }
+}
+impl ToAst for CmpOp {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        let obj = match self {
+            CmpOp::Eq => module.attr("Eq")?.call0()?.into(),
+            CmpOp::NotEq => module.attr("NotEq")?.call0()?.into(),
+            CmpOp::Lt => module.attr("Lt")?.call0()?.into(),
+            CmpOp::LtE => module.attr("LtE")?.call0()?.into(),
+            CmpOp::Gt => module.attr("Gt")?.call0()?.into(),
+            CmpOp::GtE => module.attr("GtE")?.call0()?.into(),
+            CmpOp::Is => module.attr("Is")?.call0()?.into(),
+            CmpOp::IsNot => module.attr("IsNot")?.call0()?.into(),
+            CmpOp::In => module.attr("In")?.call0()?.into(),
+            CmpOp::NotIn => module.attr("NotIn")?.call0()?.into(),
+        };
+        Ok(obj)
+    }
+}
+impl ToAst for ExprCompare {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.attr("Compare")?.call_with_loc(
+            self.range,
+            [
+                ("left", self.left.to_ast(module)?),
+                ("ops", self.ops.to_ast(module)?),
+                ("comparators", self.comparators.to_ast(module)?),
+            ],
+        )
+    }
+}
+impl ToAst for ExprYieldFrom {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module
+            .attr("YieldFrom")?
+            .call_with_loc(self.range, [("value", self.value.to_ast(module)?)])
+    }
+}
+impl ToAst for ExprYield {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module
+            .attr("Yield")?
+            .call_with_loc(self.range, [("value", self.value.to_ast(module)?)])
+    }
+}
+impl ToAst for ExprAwait {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module
+            .attr("Await")?
+            .call_with_loc(self.range, [("value", self.value.to_ast(module)?)])
+    }
+}
+impl ToAst for ExprName {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.attr("Name")?.call_with_loc(
+            self.range,
+            [
+                ("id", self.id.as_str().to_string().into_py(module.py)),
+                ("ctx", self.ctx.to_ast(module)?),
+            ],
+        )
+    }
+}
+impl ToAst for ExprStarred {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.attr("Starred")?.call_with_loc(
+            self.range,
+            [
+                ("value", self.value.to_ast(module)?),
+                ("ctx", self.ctx.to_ast(module)?),
+            ],
+        )
+    }
+}
+impl ToAst for ExprSubscript {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.attr("Subscript")?.call_with_loc(
+            self.range,
+            [
+                ("ctx", self.ctx.to_ast(module)?),
+                ("value", self.value.to_ast(module)?),
+                ("slice", self.slice.to_ast(module)?),
+            ],
+        )
     }
 }
 impl ToAst for ExprAttribute {
