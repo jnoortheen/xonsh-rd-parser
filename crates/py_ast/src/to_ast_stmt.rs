@@ -13,8 +13,7 @@ impl ToAst for Parameter {
             self.range,
             [
                 ("arg", self.name.to_ast(module)?),
-                // ("annotation", self.annotation.to_ast(module)?),
-                // ("type_comment", defaults.into_py(module.py)),
+                ("annotation", self.annotation.to_ast(module)?),
             ],
         )
     }
@@ -49,9 +48,7 @@ impl ToAst for Parameters {
         let mut kwonlyargs = vec![];
         for arg in self.kwonlyargs.iter() {
             kwonlyargs.push(arg.to_ast(module)?);
-            if let Some(default) = arg.default.as_ref() {
-                kw_defaults.push(default.to_ast(module)?)
-            }
+            kw_defaults.push(arg.default.to_ast(module)?);
         }
 
         module.attr("arguments")?.callk(
@@ -137,7 +134,12 @@ impl ToAst for Identifier {
 }
 impl ToAst for StmtFunctionDef {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("FunctionDef")?.call_with_loc(
+        let obj = if self.is_async {
+            module.attr("AsyncFunctionDef")?
+        } else {
+            module.attr("FunctionDef")?
+        };
+        obj.call_with_loc(
             self.range,
             [
                 ("name", self.name.as_str().to_owned().into_py(module.py)),
@@ -188,6 +190,7 @@ impl ToAst for StmtImportFrom {
         module.attr("ImportFrom")?.callk([
             ("names", self.names.to_ast(module)?),
             ("module", self.module.to_ast(module)?),
+            ("level", self.level.into_py(module.py)),
         ])
     }
 }
@@ -221,13 +224,13 @@ impl ToAst for StmtAugAssign {
 }
 impl ToAst for StmtAnnAssign {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Return")?.call_with_loc(
+        module.attr("AnnAssign")?.call_with_loc(
             self.range,
             [
                 ("value", self.value.to_ast(module)?),
                 ("target", self.target.to_ast(module)?),
                 ("annotation", self.annotation.to_ast(module)?),
-                ("simple", self.simple.into_py(module.py)),
+                ("simple", (self.simple as u8).into_py(module.py)),
             ],
         )
     }

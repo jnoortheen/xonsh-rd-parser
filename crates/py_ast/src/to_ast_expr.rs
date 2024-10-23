@@ -1,11 +1,14 @@
+use std::borrow::Cow;
 use std::vec;
 
 use crate::ast_module::{AstModule, Callable};
 use crate::to_ast::ToAst;
 use num_complex::Complex;
-use pyo3::types::PyAnyMethods;
+use pyo3::types::{PyAnyMethods};
 use pyo3::{IntoPy, PyObject};
 use ruff_python_ast::*;
+use ruff_python_ast::str_prefix::StringLiteralPrefix;
+use ruff_text_size::Ranged;
 
 type PyResult = pyo3::PyResult<PyObject>;
 
@@ -56,7 +59,7 @@ impl ToAst for ExprNumberLiteral {
                 re: *real,
                 im: *imag,
             }
-            .into_py(module.py),
+                .into_py(module.py),
         };
         module.to_const(value)
     }
@@ -78,22 +81,53 @@ impl ToAst for ExprBooleanLiteral {
 }
 impl ToAst for ExprBytesLiteral {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.to_const(self.value.bytes().collect::<Vec<u8>>())
+        let value: Cow<[u8]> = Cow::Owned(self.value.bytes().collect::<Vec<u8>>());
+        module.to_const(value)
     }
 }
 impl ToAst for ExprStringLiteral {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.to_const(self.value.to_str().to_string())
+        let kind = if self.value.is_unicode() {
+            Some("u")
+        } else {
+            None
+        };
+        module.caller().attr("Constant").kwargs([
+            ("value", self.value.to_str().to_string().into_py(module.py)),
+            ("kind", kind.into_py(module.py)),
+        ]).call()
     }
 }
 impl ToAst for ExprFString {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.to_joined_str(self.range, self.value.elements())
+        let mut parts = vec![];
+        for p in self.value.as_slice().iter() {
+            match p {
+                FStringPart::Literal(s) => {
+                    let kind = match s.flags.prefix() {
+                        StringLiteralPrefix::Unicode => { Some("u") }
+                        _ => { None }
+                    };
+                    let obj = module.caller().attr("Constant").range(self.range()).kwargs([
+                        ("value", s.as_str().into_py(module.py)),
+                        ("kind", kind.into_py(module.py))
+                    ]).call()?;
+                    parts.push(obj);
+                }
+                FStringPart::FString(fs) => {
+                    for p in fs.elements.iter() {
+                        parts.push(p.to_ast(module)?);
+                    }
+                }
+            }
+        }
+        module.caller().attr("JoinedStr")
+            .range(self.range).kwargs([("values", parts.into_py(module.py))]).call()
     }
 }
 impl ToAst for ConversionFlag {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        let flag = *self as u8;
+        let flag = *self as i8;
         Ok(flag.into_py(module.py))
     }
 }
@@ -178,10 +212,15 @@ impl ToAst for ExprName {
         module.attr("Name")?.call_with_loc(
             self.range,
             [
-                ("id", self.id.as_str().to_string().into_py(module.py)),
+                ("id", self.id.to_ast(module)?),
                 ("ctx", self.ctx.to_ast(module)?),
             ],
         )
+    }
+}
+impl ToAst for name::Name {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        Ok(self.as_str().to_string().into_py(module.py))
     }
 }
 impl ToAst for ExprStarred {
@@ -294,7 +333,7 @@ impl ToAst for Comprehension {
                 ("target", self.target.to_ast(module)?),
                 ("iter", self.iter.to_ast(module)?),
                 ("ifs", self.ifs.to_ast(module)?),
-                ("is_async", self.is_async.into_py(module.py)),
+                ("is_async", (self.is_async as u8).into_py(module.py)),
             ],
         )
     }
@@ -362,7 +401,7 @@ impl ToAst for ExprDict {
 }
 impl ToAst for ExprIf {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("If")?.call_with_loc(
+        module.attr("IfExp")?.call_with_loc(
             self.range,
             [
                 ("test", self.test.to_ast(module)?),
