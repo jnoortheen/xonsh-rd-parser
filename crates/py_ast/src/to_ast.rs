@@ -1,6 +1,7 @@
 /// Convert Ruff's AST to Python AST.
-use crate::ast_module::AstModule;
-use pyo3::{IntoPy, PyObject};
+use crate::ast_module::{AstModule, Callable};
+use pyo3::{IntoPy, PyObject, Python};
+use ruff_python_ast::Parameters;
 
 type PyResult = pyo3::PyResult<PyObject>;
 
@@ -37,5 +38,32 @@ impl<T: ToAst> ToAst for [T] {
             body.push(stmt.to_ast(module)?);
         }
         Ok(body.into_py(module.py))
+    }
+}
+
+
+pub struct OptionalParameters(pub Option<Box<Parameters>>);
+
+// special case for Parameters
+impl ToAst for OptionalParameters {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        fn empty_list<'py>(py: Python<'py>) -> PyObject {
+            let empty_vec: Vec<i32> = vec![];  // Explicitly specify the type of Vec
+            empty_vec.into_py(py)
+        }
+        match &self.0 {
+            Some(parameters) => parameters.to_ast(module),
+            None => module.attr("arguments")?.callk(
+                [
+                    ("posonlyargs", empty_list(module.py)),
+                    ("args", empty_list(module.py)),
+                    ("defaults", empty_list(module.py)),
+                    ("kwonlyargs", empty_list(module.py)),
+                    ("kw_defaults", empty_list(module.py)),
+                    ("vararg", module.py.None()),
+                    ("kwarg", module.py.None()),
+                ],
+            )
+        }
     }
 }

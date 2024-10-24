@@ -2,7 +2,7 @@ use std::borrow::Cow;
 use std::vec;
 
 use crate::ast_module::{AstModule, Callable};
-use crate::to_ast::ToAst;
+use crate::to_ast::{ToAst, OptionalParameters};
 use num_complex::Complex;
 use pyo3::types::{PyAnyMethods};
 use pyo3::{IntoPy, PyObject};
@@ -415,10 +415,11 @@ impl ToAst for ExprIf {
 }
 impl ToAst for ExprLambda {
     fn to_ast(&self, module: &AstModule) -> PyResult {
+        let params = OptionalParameters(self.parameters.clone());
         module.attr("Lambda")?.call_with_loc(
             self.range,
             [
-                ("args", self.parameters.to_ast(module)?),
+                ("args", params.to_ast(module)?),
                 ("body", self.body.to_ast(module)?),
             ],
         )
