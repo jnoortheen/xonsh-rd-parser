@@ -102,24 +102,24 @@ def xsh_proc_method(xsh):
 
 
 #
-# @pytest.fixture
-# def check_xonsh_ast(parse_str, xsh):
-#     """compatibility fixture"""
-#
-#     def factory(
-#         inp: str,
-#         xenv: dict | None = None,
-#         mode="eval",
-#         verbose=False,
-#         **locs,
-#     ):
-#         obs = parse_str(inp, mode=mode, verbose=verbose)
-#         if obs is None:
-#             return  # comment only
-#         bytecode = compile(obs, "<test-xonsh-ast>", mode)
-#         xsh.env = xenv or {}
-#         locs["__xonsh__"] = xsh
-#         exec(bytecode, {}, locs)
-#         return obs
-#
-#     return factory
+@pytest.fixture
+def check_xonsh_ast(xsh):
+    """compatibility fixture"""
+
+    def factory(
+        inp: str,
+        xenv: dict | None = None,
+        mode="eval",
+        verbose=False,
+        **locs,
+    ):
+        obs = parse_string(inp)
+        if obs is None:
+            return  # comment only
+        bytecode = compile(obs, "<test-xonsh-ast>", mode)
+        xsh.env = xenv or {}
+        locs["__xonsh__"] = xsh
+        exec(bytecode, {}, locs)
+        return obs
+
+    return factory
