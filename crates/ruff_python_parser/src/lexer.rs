@@ -372,7 +372,7 @@ impl<'src> Lexer<'src> {
             }
             '0'..='9' => self.lex_number(c),
             '#' => return self.lex_comment(),
-            '\'' | '"' => self.lex_string(c),
+            '\'' | '"' | '`' => self.lex_string(c),
             '=' => {
                 if self.cursor.eat_char('=') {
                     TokenKind::EqEqual
@@ -625,7 +625,7 @@ impl<'src> Lexer<'src> {
     fn lex_identifier(&mut self, first: char) -> TokenKind {
         // Detect potential string like rb'' b'' f'' u'' r''
         let quote = match (first, self.cursor.first()) {
-            (_, quote @ ('\'' | '"')) => self.try_single_char_prefix(first).then(|| {
+            (_, quote @ ('\'' | '"' | '`')) => self.try_single_char_prefix(first).then(|| {
                 self.cursor.bump();
                 quote
             }),
@@ -898,6 +898,8 @@ impl<'src> Lexer<'src> {
 
         if quote == '"' {
             self.current_flags |= TokenFlags::DOUBLE_QUOTES;
+        } else if quote == '`' {
+            self.current_flags |= TokenFlags::BACKTICK_STRING;
         }
 
         // If the next two characters are also the quote character, then we have a triple-quoted
@@ -1582,7 +1584,7 @@ impl Radix {
 }
 
 const fn is_quote(c: char) -> bool {
-    matches!(c, '\'' | '"')
+    matches!(c, '\'' | '"' | '`')
 }
 
 const fn is_ascii_identifier_start(c: char) -> bool {

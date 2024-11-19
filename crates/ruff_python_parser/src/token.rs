@@ -733,7 +733,7 @@ bitflags! {
         /// string is a path string prefixed with `p` or `P`
         const PATH_STRING = 1 << 7;
         /// has backticks ``
-        const REGEX_QUOTES = 1 << 8;
+        const BACKTICK_STRING = 1 << 8;
         /// has g`` prefix
         const GLOB_STRING = 1 << 9;
 

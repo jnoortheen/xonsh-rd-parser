@@ -1,0 +1,23 @@
+---
+source: crates/ruff_python_parser/src/lexer.rs
+assertion_line: 2486
+expression: "lex_source(r#\"r`.*`\"#)"
+---
+## Tokens
+```
+[
+    (
+        String(
+            ".*",
+        ),
+        0..5,
+        TokenFlags(
+            RAW_STRING_LOWERCASE | BACKTICK_STRING,
+        ),
+    ),
+    (
+        Newline,
+        5..5,
+    ),
+]
+```
