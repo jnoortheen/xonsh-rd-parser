@@ -236,6 +236,19 @@ pub enum TokenKind {
     /// Token kind for ellipsis `...`.
     Ellipsis,
 
+    // == Xonsh Operators ==
+    Dollar,         // "$"
+    DoublePipe,     // "||"
+    DoubleAmp,      // "&&"
+    AtLParen,       // "@("
+    BangLParen,     // "!("
+    BangLSqb,       // "!["
+    DollarLParen,   // "$("
+    DollarLSqb,     // "$["
+    DollarLBrace,   // "${"
+    AtDollarLParen, // "@$("
+    CmdArg,         // command argument inside `$(...)`
+
     // The keywords should be sorted in alphabetical order. If the boundary tokens for the
     // "Keywords" and "Soft keywords" group change, update the related methods on `TokenKind`.
 
@@ -679,6 +692,17 @@ impl fmt::Display for TokenKind {
             TokenKind::Case => "'case'",
             TokenKind::With => "'with'",
             TokenKind::Yield => "'yield'",
+            TokenKind::Dollar => "'$'",
+            TokenKind::DoublePipe => "'||'",
+            TokenKind::DoubleAmp => "'&&'",
+            TokenKind::AtLParen => "'@('",
+            TokenKind::BangLParen => "'!('",
+            TokenKind::BangLSqb => "'!['",
+            TokenKind::DollarLParen => "'$('",
+            TokenKind::DollarLSqb => "'$['",
+            TokenKind::DollarLBrace => "'${'",
+            TokenKind::AtDollarLParen => "'@$('",
+            TokenKind::CmdArg => "'cmdarg'",
         };
         f.write_str(value)
     }

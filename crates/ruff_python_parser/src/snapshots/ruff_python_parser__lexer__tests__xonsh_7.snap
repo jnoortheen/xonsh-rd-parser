@@ -1,0 +1,30 @@
+---
+source: crates/ruff_python_parser/src/lexer.rs
+expression: "lex_source(r#\"err>out\"#)"
+snapshot_kind: text
+---
+## Tokens
+```
+[
+    (
+        Name(
+            Name("err"),
+        ),
+        0..3,
+    ),
+    (
+        Greater,
+        3..4,
+    ),
+    (
+        Name(
+            Name("out"),
+        ),
+        4..7,
+    ),
+    (
+        Newline,
+        7..7,
+    ),
+]
+```

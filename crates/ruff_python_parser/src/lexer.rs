@@ -359,6 +359,17 @@ impl<'src> Lexer<'src> {
     fn consume_ascii_character(&mut self, c: char) -> TokenKind {
         let token = match c {
             c if is_ascii_identifier_start(c) => self.lex_identifier(c),
+            '$' => {
+                if self.cursor.eat_char('[') {
+                    TokenKind::DollarLSqb
+                } else if self.cursor.eat_char('(') {
+                    TokenKind::DollarLParen
+                } else if self.cursor.eat_char('{') {
+                    TokenKind::DollarLBrace
+                } else {
+                    TokenKind::Dollar
+                }
+            }
             '0'..='9' => self.lex_number(c),
             '#' => return self.lex_comment(),
             '\'' | '"' => self.lex_string(c),
@@ -392,27 +403,27 @@ impl<'src> Lexer<'src> {
             }
 
             c @ ('%' | '!')
-                if self.mode == Mode::Ipython
-                    && self.state.is_after_equal()
-                    && self.nesting == 0 =>
-            {
-                // SAFETY: Safe because `c` has been matched against one of the possible escape command token
-                self.lex_ipython_escape_command(IpyEscapeKind::try_from(c).unwrap())
-            }
+            if self.mode == Mode::Ipython
+                && self.state.is_after_equal()
+                && self.nesting == 0 =>
+                {
+                    // SAFETY: Safe because `c` has been matched against one of the possible escape command token
+                    self.lex_ipython_escape_command(IpyEscapeKind::try_from(c).unwrap())
+                }
 
             c @ ('%' | '!' | '?' | '/' | ';' | ',')
-                if self.mode == Mode::Ipython && self.state.is_new_logical_line() =>
-            {
-                let kind = if let Ok(kind) = IpyEscapeKind::try_from([c, self.cursor.first()]) {
-                    self.cursor.bump();
-                    kind
-                } else {
-                    // SAFETY: Safe because `c` has been matched against one of the possible escape command token
-                    IpyEscapeKind::try_from(c).unwrap()
-                };
+            if self.mode == Mode::Ipython && self.state.is_new_logical_line() =>
+                {
+                    let kind = if let Ok(kind) = IpyEscapeKind::try_from([c, self.cursor.first()]) {
+                        self.cursor.bump();
+                        kind
+                    } else {
+                        // SAFETY: Safe because `c` has been matched against one of the possible escape command token
+                        IpyEscapeKind::try_from(c).unwrap()
+                    };
 
-                self.lex_ipython_escape_command(kind)
-            }
+                    self.lex_ipython_escape_command(kind)
+                }
 
             '?' if self.mode == Mode::Ipython => TokenKind::Question,
 
@@ -469,6 +480,8 @@ impl<'src> Lexer<'src> {
             '@' => {
                 if self.cursor.eat_char('=') {
                     TokenKind::AtEqual
+                } else if self.cursor.eat_char('(') {
+                    TokenKind::AtLParen
                 } else {
                     TokenKind::At
                 }
@@ -476,6 +489,10 @@ impl<'src> Lexer<'src> {
             '!' => {
                 if self.cursor.eat_char('=') {
                     TokenKind::NotEqual
+                } else if self.cursor.eat_char('[') {
+                    TokenKind::BangLSqb
+                } else if self.cursor.eat_char('(') {
+                    TokenKind::BangLParen
                 } else {
                     TokenKind::Exclamation
                 }
@@ -1692,6 +1709,7 @@ mod tests {
         }
     }
 
+    #[derive(Debug)]
     struct LexerOutput {
         tokens: Vec<TestToken>,
         errors: Vec<LexicalError>,
@@ -1857,7 +1875,7 @@ mod tests {
 ;foo 1 2
 !ls
 "
-        .trim();
+            .trim();
         assert_snapshot!(lex_jupyter_source(source));
     }
 
@@ -2086,7 +2104,7 @@ if first:
 6,\
 7}]
 "
-        .replace('\n', eol);
+            .replace('\n', eol);
         lex_source(&source)
     }
 
@@ -2385,7 +2403,7 @@ allowed {x}"""} string""#;
 f"{lambda x:{x}}"
 f"{(lambda x:{x})}"
 "#
-        .trim();
+            .trim();
         assert_snapshot!(lex_source(source));
     }
 
@@ -2443,5 +2461,58 @@ f"{(lambda x:{x})}"
             lex_fstring_error(r#"f""""""#),
             UnterminatedTripleQuotedString
         );
+    }
+
+    #[test]
+    fn test_xonsh_1() {
+        assert_snapshot!(lex_source("![foo-and]"));
+    }
+    #[test]
+    fn test_xonsh_2() {
+        assert_snapshot!(lex_source(r#"print(r"/foo")"#));
+    }
+    #[test]
+    fn test_xonsh_3() {
+        assert_snapshot!(lex_source(r#"print(pr"/foo")"#));
+    }
+    #[test]
+    fn test_xonsh_4() {
+        assert_snapshot!(lex_source(r#"print(pr"/foo")"#));
+    }
+    #[test]
+    fn test_xonsh_5() {
+        assert_snapshot!(lex_source(r#"o>1"#));
+    }
+    #[test]
+    fn test_xonsh_6() {
+        assert_snapshot!(lex_source(r#"2>1"#));
+    }
+    #[test]
+    fn test_xonsh_7() {
+        assert_snapshot!(lex_source(r#"err>out"#));
+    }
+    #[test]
+    fn test_xonsh_8() {
+        assert_snapshot!(lex_source(r#"r`.*`"#));
+    }
+    #[test]
+    fn test_xonsh_9() {
+        assert_snapshot!(lex_source(r#"g`.*`"#));
+    }
+    #[test]
+    fn test_xonsh_10() {
+        assert_snapshot!(lex_source(r#"p`.*`"#));
+    }
+    #[test]
+    fn test_xonsh_11() {
+        assert_snapshot!(lex_source(r#"pg`.*`"#));
+    }
+    #[test]
+    fn test_xonsh_12() {
+        assert_snapshot!(lex_source(r#"`\d*`"#));
+    }
+    #[test]
+    fn test_xonsh_13() {
+        assert_snapshot!(lex_source(r#"`.*#{1,2}`"#));
     }
 }

@@ -1,0 +1,43 @@
+---
+source: crates/ruff_python_parser/src/lexer.rs
+expression: "lex_source(r#\"print(pr\"/foo\")\"#)"
+snapshot_kind: text
+---
+## Tokens
+```
+[
+    (
+        Name(
+            Name("print"),
+        ),
+        0..5,
+    ),
+    (
+        Lpar,
+        5..6,
+    ),
+    (
+        Name(
+            Name("pr"),
+        ),
+        6..8,
+    ),
+    (
+        String(
+            "/foo",
+        ),
+        8..14,
+        TokenFlags(
+            DOUBLE_QUOTES,
+        ),
+    ),
+    (
+        Rpar,
+        14..15,
+    ),
+    (
+        Newline,
+        15..15,
+    ),
+]
+```

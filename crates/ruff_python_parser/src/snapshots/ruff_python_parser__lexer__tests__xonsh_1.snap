@@ -1,0 +1,36 @@
+---
+source: crates/ruff_python_parser/src/lexer.rs
+expression: "lex_source(\"![foo-and]\")"
+snapshot_kind: text
+---
+## Tokens
+```
+[
+    (
+        BangLSqb,
+        0..2,
+    ),
+    (
+        Name(
+            Name("foo"),
+        ),
+        2..5,
+    ),
+    (
+        Minus,
+        5..6,
+    ),
+    (
+        And,
+        6..9,
+    ),
+    (
+        Rsqb,
+        9..10,
+    ),
+    (
+        Newline,
+        10..10,
+    ),
+]
+```
