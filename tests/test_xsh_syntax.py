@@ -2,7 +2,7 @@
 
 import sys
 from pathlib import Path
-
+import itertools
 import pytest
 
 
@@ -34,8 +34,11 @@ def glob_data_param(pattern: str):
             yield pytest.param(inp, exp, id=f"{path.name}-{idx}")
 
 
-@pytest.mark.parametrize("inp, exp", glob_data_param("exprs/*.py"))
-def test_exprs(inp, exp, unparse_diff):
+@pytest.mark.parametrize(
+    "inp, exp",
+    itertools.chain(glob_data_param("exprs/*.py"), glob_data_param("stmts/*.py")),
+)
+def test_files(inp, exp, unparse_diff):
     unparse_diff(inp, exp)
 
 
@@ -43,11 +46,6 @@ def test_exprs(inp, exp, unparse_diff):
 @pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python3.12")
 def test_py312_fstring(inp, exp, unparse_diff):
     unparse_diff(inp, exp)
-
-
-@pytest.mark.parametrize("inp, exp", glob_data_param("stmts/*.py"))
-def test_stmts(inp, exp, unparse_diff):
-    unparse_diff(inp, exp, mode="exec")
 
 
 @pytest.mark.parametrize(
