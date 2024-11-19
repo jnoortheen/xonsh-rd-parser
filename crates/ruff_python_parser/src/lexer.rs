@@ -718,6 +718,8 @@ impl<'src> Lexer<'src> {
             'f' | 'F' => self.current_flags |= TokenFlags::F_STRING,
             'u' | 'U' => self.current_flags |= TokenFlags::UNICODE_STRING,
             'b' | 'B' => self.current_flags |= TokenFlags::BYTE_STRING,
+            'p' | 'P' => self.current_flags |= TokenFlags::PATH_STRING,
+            'g' | 'G' => self.current_flags |= TokenFlags::GLOB_STRING,
             'r' => self.current_flags |= TokenFlags::RAW_STRING_LOWERCASE,
             'R' => self.current_flags |= TokenFlags::RAW_STRING_UPPERCASE,
             _ => return false,
@@ -728,22 +730,8 @@ impl<'src> Lexer<'src> {
     /// Try lexing the double character string prefix, updating the token flags accordingly.
     /// Returns `true` if it matches.
     fn try_double_char_prefix(&mut self, value: [char; 2]) -> bool {
-        match value {
-            ['r', 'f' | 'F'] | ['f' | 'F', 'r'] => {
-                self.current_flags |= TokenFlags::F_STRING | TokenFlags::RAW_STRING_LOWERCASE;
-            }
-            ['R', 'f' | 'F'] | ['f' | 'F', 'R'] => {
-                self.current_flags |= TokenFlags::F_STRING | TokenFlags::RAW_STRING_UPPERCASE;
-            }
-            ['r', 'b' | 'B'] | ['b' | 'B', 'r'] => {
-                self.current_flags |= TokenFlags::BYTE_STRING | TokenFlags::RAW_STRING_LOWERCASE;
-            }
-            ['R', 'b' | 'B'] | ['b' | 'B', 'R'] => {
-                self.current_flags |= TokenFlags::BYTE_STRING | TokenFlags::RAW_STRING_UPPERCASE;
-            }
-            _ => return false,
-        }
-        true
+        let result: Vec<bool> = value.iter().map(|c| self.try_single_char_prefix(*c)).collect();
+        result.iter().any(|&t| t)
     }
 
     /// Lex a f-string start token.

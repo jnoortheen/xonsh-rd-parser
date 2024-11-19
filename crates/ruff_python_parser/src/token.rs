@@ -248,6 +248,7 @@ pub enum TokenKind {
     DollarLBrace,   // "${"
     AtDollarLParen, // "@$("
     CmdArg,         // command argument inside `$(...)`
+    BackTick,       // "`"
 
     // The keywords should be sorted in alphabetical order. If the boundary tokens for the
     // "Keywords" and "Soft keywords" group change, update the related methods on `TokenKind`.
@@ -703,6 +704,7 @@ impl fmt::Display for TokenKind {
             TokenKind::DollarLBrace => "'${'",
             TokenKind::AtDollarLParen => "'@$('",
             TokenKind::CmdArg => "'cmdarg'",
+            TokenKind::BackTick => "'`'",
         };
         f.write_str(value)
     }
@@ -710,7 +712,7 @@ impl fmt::Display for TokenKind {
 
 bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-    pub(crate) struct TokenFlags: u8 {
+    pub(crate) struct TokenFlags: u16 {
         /// The token is a string with double quotes (`"`).
         const DOUBLE_QUOTES = 1 << 0;
         /// The token is a triple-quoted string i.e., it starts and ends with three consecutive
@@ -727,6 +729,13 @@ bitflags! {
         const RAW_STRING_LOWERCASE = 1 << 5;
         /// The token is a raw string and the prefix character is in uppercase.
         const RAW_STRING_UPPERCASE = 1 << 6;
+
+        /// string is a path string prefixed with `p` or `P`
+        const PATH_STRING = 1 << 7;
+        /// has backticks ``
+        const REGEX_QUOTES = 1 << 8;
+        /// has g`` prefix
+        const GLOB_STRING = 1 << 9;
 
         /// The token is a raw string i.e., prefixed with `r` or `R`
         const RAW_STRING = Self::RAW_STRING_LOWERCASE.bits() | Self::RAW_STRING_UPPERCASE.bits();
