@@ -78,3 +78,6 @@ uv.lock
 
 # pytest-benchmark
 .benchmarks/
+
+# Zed settings
+.zed/
