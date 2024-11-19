@@ -1,13 +1,14 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/invalid/re_lexing/line_continuation_windows_eol.py
+snapshot_kind: text
 ---
 ## AST
 
 ```
 Module(
     ModModule {
-        range: 0..46,
+        range: 0..43,
         body: [
             Expr(
                 StmtExpr {
@@ -48,16 +49,16 @@ Module(
             ),
             FunctionDef(
                 StmtFunctionDef {
-                    range: 26..46,
+                    range: 24..43,
                     is_async: false,
                     decorator_list: [],
                     name: Identifier {
                         id: Name("bar"),
-                        range: 30..33,
+                        range: 28..31,
                     },
                     type_params: None,
                     parameters: Parameters {
-                        range: 33..35,
+                        range: 31..33,
                         posonlyargs: [],
                         args: [],
                         vararg: None,
@@ -68,7 +69,7 @@ Module(
                     body: [
                         Pass(
                             StmtPass {
-                                range: 42..46,
+                                range: 39..43,
                             },
                         ),
                     ],
@@ -81,10 +82,9 @@ Module(
 ## Errors
 
   |
-1 |   call(a, b, # comment \
-  |  _______________________^
-2 | | 
-  | |_^ Syntax Error: Expected ')', found newline
-3 |   def bar():
-4 |       pass
+1 | call(a, b, # comment \
+  |                       ^ Syntax Error: Expected ')', found newline
+2 |
+3 | def bar():
+4 |     pass
   |

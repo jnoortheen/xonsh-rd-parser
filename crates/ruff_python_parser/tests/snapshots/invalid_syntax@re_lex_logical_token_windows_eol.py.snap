@@ -1,20 +1,21 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/invalid/re_lex_logical_token_windows_eol.py
+snapshot_kind: text
 ---
 ## AST
 
 ```
 Module(
     ModModule {
-        range: 0..50,
+        range: 0..47,
         body: [
             If(
                 StmtIf {
-                    range: 0..48,
+                    range: 0..46,
                     test: Call(
                         ExprCall {
-                            range: 3..20,
+                            range: 3..19,
                             func: Name(
                                 ExprName {
                                     range: 3..7,
@@ -23,7 +24,7 @@ Module(
                                 },
                             ),
                             arguments: Arguments {
-                                range: 7..20,
+                                range: 7..19,
                                 args: [
                                     Name(
                                         ExprName {
@@ -62,16 +63,16 @@ Module(
                     body: [
                         FunctionDef(
                             StmtFunctionDef {
-                                range: 24..48,
+                                range: 23..46,
                                 is_async: false,
                                 decorator_list: [],
                                 name: Identifier {
                                     id: Name("bar"),
-                                    range: 28..31,
+                                    range: 27..30,
                                 },
                                 type_params: None,
                                 parameters: Parameters {
-                                    range: 31..33,
+                                    range: 30..32,
                                     posonlyargs: [],
                                     args: [],
                                     vararg: None,
@@ -82,7 +83,7 @@ Module(
                                 body: [
                                     Pass(
                                         StmtPass {
-                                            range: 44..48,
+                                            range: 42..46,
                                         },
                                     ),
                                 ],
@@ -99,9 +100,8 @@ Module(
 ## Errors
 
   |
-1 |   if call(foo, [a, b
-  |  ___________________^
-2 | |     def bar():
-  | |_^ Syntax Error: Expected ']', found NonLogicalNewline
-3 |           pass
+1 | if call(foo, [a, b
+  |                   ^ Syntax Error: Expected ']', found NonLogicalNewline
+2 |     def bar():
+3 |         pass
   |
