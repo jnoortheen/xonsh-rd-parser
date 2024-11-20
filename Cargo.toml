@@ -202,7 +202,7 @@ rest_pat_in_fully_bound_structs = "warn"
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]
 #opt-level = 1
-opt-level = 0
-strip = "debuginfo"
+#opt-level = 0
+#strip = "debuginfo"
 #codegen-backend = "cranelift"
 #split-debuginfo = "unpacked"
