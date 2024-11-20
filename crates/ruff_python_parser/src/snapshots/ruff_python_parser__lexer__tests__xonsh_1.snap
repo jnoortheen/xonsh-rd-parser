@@ -1,36 +1,64 @@
 ---
 source: crates/ruff_python_parser/src/lexer.rs
-expression: "lex_source(\"![foo-and]\")"
+expression: "lex_source(r#\"\n!(command arg)\n![foo-and]\n\"#)"
 snapshot_kind: text
 ---
 ## Tokens
 ```
 [
     (
+        NonLogicalNewline,
+        0..1,
+    ),
+    (
+        BangLParen,
+        1..3,
+    ),
+    (
+        Name(
+            Name("command"),
+        ),
+        3..10,
+    ),
+    (
+        Name(
+            Name("arg"),
+        ),
+        11..14,
+    ),
+    (
+        Rpar,
+        14..15,
+    ),
+    (
+        Newline,
+        15..16,
+    ),
+    (
         BangLSqb,
-        0..2,
+        16..18,
     ),
     (
         Name(
             Name("foo"),
         ),
-        2..5,
+        18..21,
     ),
     (
         Minus,
-        5..6,
+        21..22,
     ),
     (
         And,
-        6..9,
+        22..25,
     ),
     (
         Rsqb,
-        9..10,
+        25..26,
     ),
     (
         Newline,
-        10..10,
+        26..27,
     ),
 ]
 ```

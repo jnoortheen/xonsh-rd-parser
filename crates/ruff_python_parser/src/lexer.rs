@@ -403,27 +403,27 @@ impl<'src> Lexer<'src> {
             }
 
             c @ ('%' | '!')
-            if self.mode == Mode::Ipython
-                && self.state.is_after_equal()
-                && self.nesting == 0 =>
-                {
-                    // SAFETY: Safe because `c` has been matched against one of the possible escape command token
-                    self.lex_ipython_escape_command(IpyEscapeKind::try_from(c).unwrap())
-                }
+                if self.mode == Mode::Ipython
+                    && self.state.is_after_equal()
+                    && self.nesting == 0 =>
+            {
+                // SAFETY: Safe because `c` has been matched against one of the possible escape command token
+                self.lex_ipython_escape_command(IpyEscapeKind::try_from(c).unwrap())
+            }
 
             c @ ('%' | '!' | '?' | '/' | ';' | ',')
-            if self.mode == Mode::Ipython && self.state.is_new_logical_line() =>
-                {
-                    let kind = if let Ok(kind) = IpyEscapeKind::try_from([c, self.cursor.first()]) {
-                        self.cursor.bump();
-                        kind
-                    } else {
-                        // SAFETY: Safe because `c` has been matched against one of the possible escape command token
-                        IpyEscapeKind::try_from(c).unwrap()
-                    };
+                if self.mode == Mode::Ipython && self.state.is_new_logical_line() =>
+            {
+                let kind = if let Ok(kind) = IpyEscapeKind::try_from([c, self.cursor.first()]) {
+                    self.cursor.bump();
+                    kind
+                } else {
+                    // SAFETY: Safe because `c` has been matched against one of the possible escape command token
+                    IpyEscapeKind::try_from(c).unwrap()
+                };
 
-                    self.lex_ipython_escape_command(kind)
-                }
+                self.lex_ipython_escape_command(kind)
+            }
 
             '?' if self.mode == Mode::Ipython => TokenKind::Question,
 
@@ -730,7 +730,10 @@ impl<'src> Lexer<'src> {
     /// Try lexing the double character string prefix, updating the token flags accordingly.
     /// Returns `true` if it matches.
     fn try_double_char_prefix(&mut self, value: [char; 2]) -> bool {
-        let result: Vec<bool> = value.iter().map(|c| self.try_single_char_prefix(*c)).collect();
+        let result: Vec<bool> = value
+            .iter()
+            .map(|c| self.try_single_char_prefix(*c))
+            .collect();
         result.iter().any(|&t| t)
     }
 
@@ -1865,7 +1868,7 @@ mod tests {
 ;foo 1 2
 !ls
 "
-            .trim();
+        .trim();
         assert_snapshot!(lex_jupyter_source(source));
     }
 
@@ -2094,7 +2097,7 @@ if first:
 6,\
 7}]
 "
-            .replace('\n', eol);
+        .replace('\n', eol);
         lex_source(&source)
     }
 
@@ -2393,7 +2396,7 @@ allowed {x}"""} string""#;
 f"{lambda x:{x}}"
 f"{(lambda x:{x})}"
 "#
-            .trim();
+        .trim();
         assert_snapshot!(lex_source(source));
     }
 
@@ -2455,7 +2458,12 @@ f"{(lambda x:{x})}"
 
     #[test]
     fn test_xonsh_1() {
-        assert_snapshot!(lex_source("![foo-and]"));
+        assert_snapshot!(lex_source(
+            r#"
+!(command arg)
+![foo-and]
+"#
+        ));
     }
     #[test]
     fn test_xonsh_2() {
