@@ -106,7 +106,7 @@ def check_xonsh_ast(xsh):
     def factory(
         inp: str,
         xenv: dict | None = None,
-        mode="eval",
+        mode="exec",
         verbose=False,
         **locs,
     ):

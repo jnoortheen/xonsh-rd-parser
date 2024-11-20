@@ -52,6 +52,16 @@ pub(super) const EXPR_SET: TokenSet = TokenSet::new([
     TokenKind::Yield,
     TokenKind::FStringStart,
     TokenKind::IpyEscapeCommand,
+    // Xonsh tokens
+    TokenKind::Dollar,
+    TokenKind::AtLParen,
+    TokenKind::BangLParen,
+    TokenKind::BangLSqb,
+    TokenKind::DollarLParen,
+    TokenKind::DollarLSqb,
+    TokenKind::DollarLBrace,
+    TokenKind::AtDollarLParen,
+    TokenKind::BackTick,
 ])
 .union(LITERAL_SET);
 
@@ -513,6 +523,34 @@ impl<'src> Parser<'src> {
         }
     }
 
+    fn expr_name(&self, name: impl AsRef<str>) -> Expr {
+        let val = ast::ExprName {
+            range: self.current_token_range(),
+            id: Name::new(name),
+            ctx: ExprContext::Load,
+        };
+        Expr::Name(val)
+    }
+    fn xonsh_attr(&mut self, name: impl AsRef<str>) -> Expr {
+        self.bump_value(self.current_token_kind());
+        let xonsh = self.expr_name("__xonsh__");
+        let name = ast::ExprAttribute {
+            range: self.current_token_range(),
+            attr: ast::Identifier {
+                id: Name::new(name),
+                range: self.current_token_range(),
+            },
+            value: Box::new(xonsh),
+            ctx: ExprContext::Load,
+        };
+
+        Expr::Attribute(name)
+    }
+    fn parse_subprocs(&mut self, func: impl AsRef<str>) -> Expr {
+        let attr = self.xonsh_attr(func);
+        attr
+    }
+
     /// Parses an atom.
     ///
     /// See: <https://docs.python.org/3/reference/expressions.html#atoms>
@@ -575,6 +613,10 @@ impl<'src> Parser<'src> {
                 })
             }
             TokenKind::Name => Expr::Name(self.parse_name()),
+            TokenKind::BangLParen => self.parse_subprocs("subproc_captured_object"),
+            TokenKind::BangLSqb => self.parse_subprocs("subproc_captured_hiddenobject"),
+            TokenKind::DollarLParen => self.parse_subprocs("subproc_captured"),
+            TokenKind::DollarLSqb => self.parse_subprocs("subproc_uncaptured"),
             TokenKind::IpyEscapeCommand => {
                 Expr::IpyEscapeCommand(self.parse_ipython_escape_command_expression())
             }
