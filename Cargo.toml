@@ -28,6 +28,8 @@ pyo3 = { workspace = true }
 ruff_python_parser = { workspace = true }
 py_ast = { workspace = true }
 ruff_text_size = { workspace = true }
+miette = {workspace = true}
+thiserror = {workspace = true}
 
 [workspace.dependencies]
 ruff_cache = { path = "crates/ruff_cache" }
@@ -94,6 +96,7 @@ lsp-types = { git = "https://github.com/astral-sh/lsp-types.git", rev = "3512a9f
 matchit = { version = "0.8.1" }
 memchr = { version = "2.7.1" }
 mimalloc = { version = "0.1.39" }
+miette = {version = "*", features = ["fancy"]}
 natord = { version = "1.0.9" }
 notify = { version = "6.1.1" }
 once_cell = { version = "1.19.0" }
