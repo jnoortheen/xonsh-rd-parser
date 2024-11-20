@@ -247,7 +247,6 @@ pub enum TokenKind {
     DollarLSqb,     // "$["
     DollarLBrace,   // "${"
     AtDollarLParen, // "@$("
-    CmdArg,         // command argument inside `$(...)`
     BackTick,       // "`"
 
     // The keywords should be sorted in alphabetical order. If the boundary tokens for the
@@ -703,7 +702,6 @@ impl fmt::Display for TokenKind {
             TokenKind::DollarLSqb => "'$['",
             TokenKind::DollarLBrace => "'${'",
             TokenKind::AtDollarLParen => "'@$('",
-            TokenKind::CmdArg => "'cmdarg'",
             TokenKind::BackTick => "'`'",
         };
         f.write_str(value)
