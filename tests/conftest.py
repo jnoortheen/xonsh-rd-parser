@@ -48,11 +48,8 @@ def nodes_equal(x, y):
 
 @pytest.fixture
 def unparse_diff():
-    def factory(text: str, right: str | None = None, mode="eval"):
-        left = parse_string(
-            text
-            # , mode=mode
-        )
+    def factory(text: str, right: str | None = None):
+        left = parse_string(text)
         left = ast.unparse(left)
         if right is None:
             right = ast.unparse(ast.parse(text))
