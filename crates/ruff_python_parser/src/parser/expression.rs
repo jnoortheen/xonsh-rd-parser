@@ -579,8 +579,15 @@ impl<'src> Parser<'src> {
 
                 // in case operators we don't need to parse next token as joined string
                 if !kind.is_proc_op() {
+                    let mut nesting = 0 as usize;
                     loop {
-                        if self.current_token_kind().is_proc_op() || (offset != self.node_start()) {
+                        if self.current_token_kind() == TokenKind::Lpar {
+                            nesting += 1;
+                        }
+                        if self.current_token_kind().is_proc_op()
+                            || (offset != self.node_start())
+                            || (self.current_token_kind() == TokenKind::Rpar && nesting == 0)
+                        {
                             break;
                         }
                         self.bump_any();
