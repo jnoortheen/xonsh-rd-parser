@@ -1,0 +1,94 @@
+---
+source: crates/ruff_python_parser/src/parser/tests.rs
+expression: suite
+snapshot_kind: text
+---
+[
+    Expr(
+        StmtExpr {
+            range: 0..19,
+            value: Call(
+                ExprCall {
+                    range: 0..19,
+                    func: Attribute(
+                        ExprAttribute {
+                            range: 1..2,
+                            value: Name(
+                                ExprName {
+                                    range: 1..2,
+                                    id: Name("__xonsh__"),
+                                    ctx: Load,
+                                },
+                            ),
+                            attr: Identifier {
+                                id: Name("subproc_captured"),
+                                range: 1..2,
+                            },
+                            ctx: Load,
+                        },
+                    ),
+                    arguments: Arguments {
+                        range: 0..19,
+                        args: [
+                            StringLiteral(
+                                ExprStringLiteral {
+                                    range: 2..6,
+                                    value: StringLiteralValue {
+                                        inner: Single(
+                                            StringLiteral {
+                                                range: 2..6,
+                                                value: "echo",
+                                                flags: StringLiteralFlags {
+                                                    quote_style: Single,
+                                                    prefix: Empty,
+                                                    triple_quoted: false,
+                                                },
+                                            },
+                                        ),
+                                    },
+                                },
+                            ),
+                            StringLiteral(
+                                ExprStringLiteral {
+                                    range: 7..10,
+                                    value: StringLiteralValue {
+                                        inner: Single(
+                                            StringLiteral {
+                                                range: 7..10,
+                                                value: "123",
+                                                flags: StringLiteralFlags {
+                                                    quote_style: Single,
+                                                    prefix: Empty,
+                                                    triple_quoted: false,
+                                                },
+                                            },
+                                        ),
+                                    },
+                                },
+                            ),
+                            StringLiteral(
+                                ExprStringLiteral {
+                                    range: 11..18,
+                                    value: StringLiteralValue {
+                                        inner: Single(
+                                            StringLiteral {
+                                                range: 11..18,
+                                                value: "hello",
+                                                flags: StringLiteralFlags {
+                                                    quote_style: Single,
+                                                    prefix: Empty,
+                                                    triple_quoted: false,
+                                                },
+                                            },
+                                        ),
+                                    },
+                                },
+                            ),
+                        ],
+                        keywords: [],
+                    },
+                },
+            ),
+        },
+    ),
+]

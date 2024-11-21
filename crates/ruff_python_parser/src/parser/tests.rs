@@ -60,6 +60,14 @@ fn test_unicode_aliases() {
 }
 
 #[test]
+fn test_xonsh_procs() {
+    let source = r#"$(echo 123 'hello')"#;
+    let suite = parse_module(source).unwrap().into_suite();
+
+    insta::assert_debug_snapshot!(suite);
+}
+
+#[test]
 fn test_ipython_escape_commands() {
     let parsed = parse(
         r"

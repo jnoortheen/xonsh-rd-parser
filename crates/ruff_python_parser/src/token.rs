@@ -402,6 +402,24 @@ impl TokenKind {
         )
     }
 
+    pub fn is_proc_op(&self) -> bool {
+        matches!(self, |TokenKind::DoublePipe| TokenKind::DoubleAmp
+            | TokenKind::Semi
+            | TokenKind::Less
+            | TokenKind::Greater
+            | TokenKind::Amper
+            | TokenKind::RightShift)
+    }
+
+    pub fn is_proc_atom(&self) -> bool {
+        matches!(self, |TokenKind::Lpar| TokenKind::Dollar
+            | TokenKind::DollarLParen
+            | TokenKind::DollarLSqb
+            | TokenKind::AtDollarLParen
+            | TokenKind::BangLParen
+            | TokenKind::BangLSqb)
+    }
+
     /// Returns `true` if this is a singleton token i.e., `True`, `False`, or `None`.
     #[inline]
     pub const fn is_singleton(self) -> bool {

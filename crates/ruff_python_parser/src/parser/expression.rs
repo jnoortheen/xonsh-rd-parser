@@ -546,9 +546,69 @@ impl<'src> Parser<'src> {
 
         Expr::Attribute(name)
     }
+
+    fn parse_proc_args(&mut self) -> Option<Expr> {
+        match self.current_token_kind() {
+            TokenKind::Rpar => {
+                self.bump_any();
+                None
+            }
+            kind => {
+                if kind.is_proc_op()
+                    || kind.is_proc_atom()
+                    || matches!(kind, TokenKind::String | TokenKind::FStringStart)
+                {
+                    return Some(self.parse_atom().expr);
+                }
+                let mut value = self.source[self.current_token_range()].to_string();
+                let start = self.node_start();
+                let mut offset = self.node_end();
+                self.bump_any();
+                loop {
+                    if self.current_token_kind().is_proc_op() || (offset != self.node_start()) {
+                        break;
+                    }
+                    value.push_str(&self.source[self.current_token_range()]);
+                    self.bump_any();
+                    offset = self.node_end();
+                }
+                let range = TextRange::new(start, offset);
+
+                let literal = ast::StringLiteral {
+                    value: value.into_boxed_str(),
+                    range,
+                    flags: ast::StringLiteralFlags::default(),
+                };
+
+                let expr = Expr::from(ast::ExprStringLiteral {
+                    value: ast::StringLiteralValue::single(literal),
+                    range,
+                });
+                Some(expr)
+            }
+        }
+    }
     fn parse_subprocs(&mut self, func: impl AsRef<str>) -> Expr {
+        let start = self.node_start();
         let attr = self.xonsh_attr(func);
-        attr
+
+        if self.current_token_kind() == TokenKind::Lpar {
+            self.bump_any();
+        } else {
+            return attr;
+        }
+
+        let args = std::iter::from_fn(|| self.parse_proc_args()).collect::<Vec<_>>();
+        let arguments = ast::Arguments {
+            range: self.node_range(start),
+            args: args.into_boxed_slice(),
+            keywords: vec![].into_boxed_slice(),
+        };
+        Expr::Call(ast::ExprCall {
+            func: Box::new(attr),
+            arguments,
+            range: self.node_range(start),
+        })
     }
 
     /// Parses an atom.
@@ -617,6 +677,8 @@ impl<'src> Parser<'src> {
             TokenKind::BangLSqb => self.parse_subprocs("subproc_captured_hiddenobject"),
             TokenKind::DollarLParen => self.parse_subprocs("subproc_captured"),
             TokenKind::DollarLSqb => self.parse_subprocs("subproc_uncaptured"),
+            TokenKind::DoublePipe => self.expr_name("or"),
+            TokenKind::DoubleAmp => self.expr_name("and"),
             TokenKind::IpyEscapeCommand => {
                 Expr::IpyEscapeCommand(self.parse_ipython_escape_command_expression())
             }

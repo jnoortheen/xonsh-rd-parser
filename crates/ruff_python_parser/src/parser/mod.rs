@@ -196,6 +196,10 @@ impl<'src> Parser<'src> {
         self.current_token_range().start()
     }
 
+    fn node_end(&self) -> TextSize {
+        self.current_token_range().end()
+    }
+
     fn node_range(&self, start: TextSize) -> TextRange {
         // It's possible during error recovery that the parsing didn't consume any tokens. In that
         // case, `last_token_end` still points to the end of the previous token but `start` is the
