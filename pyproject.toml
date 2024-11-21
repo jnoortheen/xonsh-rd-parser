@@ -12,8 +12,8 @@ classifiers = [
 ]
 dynamic = ["version"]
 
-[project.optional-dependencies]
-test = [
+[dependency-groups]
+dev = [
     "pip",
     "pytest-subtests>=0.13.1",
     "pytest>=8.2.2",
