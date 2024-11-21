@@ -16,7 +16,7 @@ use crate::parser::{helpers, FunctionKind, Parser};
 use crate::string::{parse_fstring_literal_element, parse_string_literal, StringType};
 use crate::token::{TokenKind, TokenValue};
 use crate::token_set::TokenSet;
-use crate::{FStringErrorType, Mode, ParseErrorType};
+use crate::{FStringErrorType, Mode, ParseErrorType, Token};
 
 use super::{FStringElementsKind, Parenthesized, RecoveryContextKind};
 
@@ -622,6 +622,62 @@ impl<'src> Parser<'src> {
             range: self.node_range(start),
         })
     }
+    fn parse_env_name(&mut self) -> Expr {
+        let attr = self.xonsh_attr("env");
+        let start = self.node_start();
+        let slice = if self.at(TokenKind::Name) {
+            let range = self.current_token_range();
+            self.bump_any();
+            self.to_string_literal(range)
+        } else {
+            self.add_error(
+                ParseErrorType::OtherError(format!(
+                    "Expected an Environment variable name, got {}",
+                    self.current_token_kind()
+                )),
+                self.current_token_range(),
+            );
+            self.expr_name("Invalid")
+        };
+        let ast = ast::ExprSubscript {
+            value: Box::new(attr),
+            slice: Box::new(slice),
+            ctx: ExprContext::Load,
+            range: self.node_range(start),
+        };
+        Expr::Subscript(ast)
+    }
+    fn parse_env_expr(&mut self) -> Expr {
+        let attr = self.xonsh_attr("env");
+
+        // Slice range doesn't include the `[` token.
+        let slice_start = self.node_start();
+
+        let slice = if self.eat(TokenKind::Rbrace) {
+            // Create an error when receiving an empty slice to parse, e.g. `x[]`
+            let slice_range = self.node_range(slice_start);
+            self.add_error(
+                ParseErrorType::OtherError(format!(
+                    "Expected an Environment variable name or expression, got {}",
+                    self.current_token_kind()
+                )),
+                slice_range,
+            );
+            self.expr_name("Invalid")
+        } else {
+            self.parse_slice(TokenKind::Rbrace)
+        };
+
+        self.bump(TokenKind::Rbrace);
+
+        let ast = ast::ExprSubscript {
+            value: Box::new(attr),
+            slice: Box::new(slice),
+            ctx: ExprContext::Load,
+            range: self.node_range(slice_start),
+        };
+        Expr::Subscript(ast)
+    }
 
     /// Parses an atom.
     ///
@@ -689,6 +745,8 @@ impl<'src> Parser<'src> {
             TokenKind::BangLSqb => self.parse_subprocs("subproc_captured_hiddenobject"),
             TokenKind::DollarLParen => self.parse_subprocs("subproc_captured"),
             TokenKind::DollarLSqb => self.parse_subprocs("subproc_uncaptured"),
+            TokenKind::Dollar => self.parse_env_name(),
+            TokenKind::DollarLBrace => self.parse_env_expr(),
             TokenKind::IpyEscapeCommand => {
                 Expr::IpyEscapeCommand(self.parse_ipython_escape_command_expression())
             }
@@ -913,7 +971,7 @@ impl<'src> Parser<'src> {
             };
         }
 
-        let mut slice = self.parse_slice();
+        let mut slice = self.parse_slice(TokenKind::Rsqb);
 
         // If there are more than one element in the slice, we need to create a tuple
         // expression to represent it.
@@ -921,7 +979,7 @@ impl<'src> Parser<'src> {
             let mut slices = vec![slice];
 
             self.parse_comma_separated_list(RecoveryContextKind::Slices, |parser| {
-                slices.push(parser.parse_slice());
+                slices.push(parser.parse_slice(TokenKind::Rsqb));
             });
 
             slice = Expr::Tuple(ast::ExprTuple {
@@ -955,19 +1013,18 @@ impl<'src> Parser<'src> {
     /// Parses a slice expression.
     ///
     /// See: <https://docs.python.org/3/reference/expressions.html#slicings>
-    fn parse_slice(&mut self) -> Expr {
-        const UPPER_END_SET: TokenSet =
-            TokenSet::new([TokenKind::Comma, TokenKind::Colon, TokenKind::Rsqb])
-                .union(NEWLINE_EOF_SET);
-        const STEP_END_SET: TokenSet =
-            TokenSet::new([TokenKind::Comma, TokenKind::Rsqb]).union(NEWLINE_EOF_SET);
+    fn parse_slice(&mut self, close_kind: TokenKind) -> Expr {
+        let upper_end_set: TokenSet =
+            TokenSet::new([TokenKind::Comma, TokenKind::Colon, close_kind]).union(NEWLINE_EOF_SET);
+        let step_end_set: TokenSet =
+            TokenSet::new([TokenKind::Comma, close_kind]).union(NEWLINE_EOF_SET);
 
         let start = self.node_start();
 
         let lower = if self.at_expr() {
             let lower =
                 self.parse_named_expression_or_higher(ExpressionContext::starred_conditional());
-            if self.at_ts(NEWLINE_EOF_SET.union([TokenKind::Rsqb, TokenKind::Comma].into())) {
+            if self.at_ts(NEWLINE_EOF_SET.union([close_kind, TokenKind::Comma].into())) {
                 return lower.expr;
             }
 
@@ -991,14 +1048,14 @@ impl<'src> Parser<'src> {
         self.expect(TokenKind::Colon);
 
         let lower = lower.map(Box::new);
-        let upper = if self.at_ts(UPPER_END_SET) {
+        let upper = if self.at_ts(upper_end_set) {
             None
         } else {
             Some(Box::new(self.parse_conditional_expression_or_higher().expr))
         };
 
         let step = if self.eat(TokenKind::Colon) {
-            if self.at_ts(STEP_END_SET) {
+            if self.at_ts(step_end_set) {
                 None
             } else {
                 Some(Box::new(self.parse_conditional_expression_or_higher().expr))
