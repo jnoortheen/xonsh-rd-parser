@@ -476,6 +476,8 @@ impl<'src> Lexer<'src> {
             '|' => {
                 if self.cursor.eat_char('=') {
                     TokenKind::VbarEqual
+                } else if self.cursor.eat_char('|') {
+                    TokenKind::DoublePipe
                 } else {
                     TokenKind::Vbar
                 }
@@ -490,6 +492,8 @@ impl<'src> Lexer<'src> {
             '&' => {
                 if self.cursor.eat_char('=') {
                     TokenKind::AmperEqual
+                } else if self.cursor.eat_char('&') {
+                    TokenKind::DoubleAmp
                 } else {
                     TokenKind::Amper
                 }
@@ -2507,7 +2511,7 @@ f"{(lambda x:{x})}"
 !(command arg)
 $(command arg)
 ![foo-and second]
-$[foo-and second]
+$[foo-and second] && $[foo-and three]
 "#
         ));
     }
