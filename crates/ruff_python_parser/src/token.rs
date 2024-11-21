@@ -509,6 +509,8 @@ impl TokenKind {
         Some(match self {
             TokenKind::And => BoolOp::And,
             TokenKind::Or => BoolOp::Or,
+            TokenKind::DoublePipe => BoolOp::Or2,
+            TokenKind::DoubleAmp => BoolOp::And2,
             _ => return None,
         })
     }
@@ -567,6 +569,8 @@ impl From<BoolOp> for TokenKind {
         match op {
             BoolOp::And => TokenKind::And,
             BoolOp::Or => TokenKind::Or,
+            BoolOp::And2 => TokenKind::DoubleAmp,
+            BoolOp::Or2 => TokenKind::DoublePipe,
         }
     }
 }

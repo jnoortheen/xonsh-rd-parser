@@ -16,6 +16,7 @@
 //! have the same shape in that they evaluate to the same value.
 
 use crate as ast;
+use crate::BoolOp;
 
 #[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
 pub enum ComparableBoolOp {
@@ -28,6 +29,8 @@ impl From<ast::BoolOp> for ComparableBoolOp {
         match op {
             ast::BoolOp::And => Self::And,
             ast::BoolOp::Or => Self::Or,
+            BoolOp::And2 => Self::And,
+            BoolOp::Or2 => Self::Or,
         }
     }
 }

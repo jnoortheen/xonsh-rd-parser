@@ -2812,13 +2812,17 @@ pub enum ExprContext {
 pub enum BoolOp {
     And,
     Or,
+    And2,
+    Or2,
 }
 
 impl BoolOp {
     pub const fn as_str(&self) -> &'static str {
         match self {
             BoolOp::And => "and",
+            BoolOp::And2 => "&&",
             BoolOp::Or => "or",
+            BoolOp::Or2 => "||",
         }
     }
 }

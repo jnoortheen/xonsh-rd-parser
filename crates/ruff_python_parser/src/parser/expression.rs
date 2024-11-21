@@ -689,8 +689,6 @@ impl<'src> Parser<'src> {
             TokenKind::BangLSqb => self.parse_subprocs("subproc_captured_hiddenobject"),
             TokenKind::DollarLParen => self.parse_subprocs("subproc_captured"),
             TokenKind::DollarLSqb => self.parse_subprocs("subproc_uncaptured"),
-            TokenKind::DoublePipe => self.expr_name("or"),
-            TokenKind::DoubleAmp => self.expr_name("and"),
             TokenKind::IpyEscapeCommand => {
                 Expr::IpyEscapeCommand(self.parse_ipython_escape_command_expression())
             }
@@ -2535,8 +2533,8 @@ impl From<BoolOp> for OperatorPrecedence {
     #[inline]
     fn from(op: BoolOp) -> Self {
         match op {
-            BoolOp::And => OperatorPrecedence::And,
-            BoolOp::Or => OperatorPrecedence::Or,
+            BoolOp::And | BoolOp::And2 => OperatorPrecedence::And,
+            BoolOp::Or | BoolOp::Or2 => OperatorPrecedence::Or,
         }
     }
 }

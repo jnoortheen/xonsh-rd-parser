@@ -2,12 +2,12 @@ use std::borrow::Cow;
 use std::vec;
 
 use crate::ast_module::{AstModule, Callable};
-use crate::to_ast::{ToAst, OptionalParameters};
+use crate::to_ast::{OptionalParameters, ToAst};
 use num_complex::Complex;
-use pyo3::types::{PyAnyMethods};
+use pyo3::types::PyAnyMethods;
 use pyo3::{IntoPy, PyObject};
-use ruff_python_ast::*;
 use ruff_python_ast::str_prefix::StringLiteralPrefix;
+use ruff_python_ast::*;
 use ruff_text_size::Ranged;
 
 type PyResult = pyo3::PyResult<PyObject>;
@@ -59,7 +59,7 @@ impl ToAst for ExprNumberLiteral {
                 re: *real,
                 im: *imag,
             }
-                .into_py(module.py),
+            .into_py(module.py),
         };
         module.to_const(value)
     }
@@ -92,10 +92,14 @@ impl ToAst for ExprStringLiteral {
         } else {
             None
         };
-        module.caller().attr("Constant").kwargs([
-            ("value", self.value.to_str().to_string().into_py(module.py)),
-            ("kind", kind.into_py(module.py)),
-        ]).call()
+        module
+            .caller()
+            .attr("Constant")
+            .kwargs([
+                ("value", self.value.to_str().to_string().into_py(module.py)),
+                ("kind", kind.into_py(module.py)),
+            ])
+            .call()
     }
 }
 impl ToAst for ExprFString {
@@ -105,13 +109,18 @@ impl ToAst for ExprFString {
             match p {
                 FStringPart::Literal(s) => {
                     let kind = match s.flags.prefix() {
-                        StringLiteralPrefix::Unicode => { Some("u") }
-                        _ => { None }
+                        StringLiteralPrefix::Unicode => Some("u"),
+                        _ => None,
                     };
-                    let obj = module.caller().attr("Constant").range(self.range()).kwargs([
-                        ("value", s.as_str().into_py(module.py)),
-                        ("kind", kind.into_py(module.py))
-                    ]).call()?;
+                    let obj = module
+                        .caller()
+                        .attr("Constant")
+                        .range(self.range())
+                        .kwargs([
+                            ("value", s.as_str().into_py(module.py)),
+                            ("kind", kind.into_py(module.py)),
+                        ])
+                        .call()?;
                     parts.push(obj);
                 }
                 FStringPart::FString(fs) => {
@@ -121,8 +130,12 @@ impl ToAst for ExprFString {
                 }
             }
         }
-        module.caller().attr("JoinedStr")
-            .range(self.range).kwargs([("values", parts.into_py(module.py))]).call()
+        module
+            .caller()
+            .attr("JoinedStr")
+            .range(self.range)
+            .kwargs([("values", parts.into_py(module.py))])
+            .call()
     }
 }
 impl ToAst for ConversionFlag {
@@ -328,14 +341,12 @@ impl ToAst for ExprGenerator {
 }
 impl ToAst for Comprehension {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("comprehension")?.callk(
-            [
-                ("target", self.target.to_ast(module)?),
-                ("iter", self.iter.to_ast(module)?),
-                ("ifs", self.ifs.to_ast(module)?),
-                ("is_async", (self.is_async as u8).into_py(module.py)),
-            ],
-        )
+        module.attr("comprehension")?.callk([
+            ("target", self.target.to_ast(module)?),
+            ("iter", self.iter.to_ast(module)?),
+            ("ifs", self.ifs.to_ast(module)?),
+            ("is_async", (self.is_async as u8).into_py(module.py)),
+        ])
     }
 }
 impl ToAst for ExprDictComp {
@@ -374,11 +385,13 @@ impl ToAst for ExprListComp {
 }
 impl ToAst for ExprList {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module
-            .attr("List")?
-            .call_with_loc(self.range, [
+        module.attr("List")?.call_with_loc(
+            self.range,
+            [
                 ("elts", self.elts.to_ast(module)?),
-                ("ctx", self.ctx.to_ast(module)?)])
+                ("ctx", self.ctx.to_ast(module)?),
+            ],
+        )
     }
 }
 impl ToAst for ExprSet {
@@ -482,8 +495,8 @@ impl ToAst for Operator {
 impl ToAst for BoolOp {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let obj = match self {
-            BoolOp::And => module.attr("And")?.call0()?.into(),
-            BoolOp::Or => module.attr("Or")?.call0()?.into(),
+            BoolOp::And | BoolOp::And2 => module.attr("And")?.call0()?.into(),
+            BoolOp::Or | BoolOp::Or2 => module.attr("Or")?.call0()?.into(),
         };
         Ok(obj)
     }
