@@ -3,7 +3,7 @@ use py_ast::ast_module::AstModule;
 use py_ast::to_ast::ToAst;
 use pyo3::exceptions::PySyntaxError;
 use pyo3::{PyObject, PyResult, Python};
-use ruff_text_size::{TextRange, TextSize};
+use ruff_text_size::TextRange;
 use thiserror::Error;
 
 #[derive(Debug, Error, Diagnostic)]
@@ -33,6 +33,8 @@ fn annotate_err(msg: String, location: TextRange, src: &str, filename: &str) -> 
 
 #[test]
 fn test_annotation() {
+    use ruff_text_size::TextSize;
+
     let text = r#"
 def foo(a: int b: str) -> int:
     return a + b
