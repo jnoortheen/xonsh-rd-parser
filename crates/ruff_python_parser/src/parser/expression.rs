@@ -547,50 +547,55 @@ impl<'src> Parser<'src> {
         Expr::Attribute(name)
     }
 
-    fn parse_proc_args(&mut self) -> Option<Expr> {
+    fn to_string_literal(&self, range: TextRange) -> Expr {
+        let value = self.source[range].to_string();
+        let literal = ast::StringLiteral {
+            value: value.into_boxed_str(),
+            range,
+            flags: ast::StringLiteralFlags::default(),
+        };
+
+        Expr::from(ast::ExprStringLiteral {
+            value: ast::StringLiteralValue::single(literal),
+            range,
+        })
+    }
+    fn parse_proc_args(&mut self, parser_progress: &mut ParserProgress) -> Option<Expr> {
+        parser_progress.assert_progressing(self);
         match self.current_token_kind() {
             TokenKind::Rpar => {
                 self.bump_any();
                 None
             }
             kind => {
-                if kind.is_proc_op()
-                    || kind.is_proc_atom()
+                if kind.is_proc_atom()
                     || matches!(kind, TokenKind::String | TokenKind::FStringStart)
                 {
                     return Some(self.parse_atom().expr);
                 }
-                let mut value = self.source[self.current_token_range()].to_string();
                 let start = self.node_start();
                 let mut offset = self.node_end();
                 self.bump_any();
-                loop {
-                    if self.current_token_kind().is_proc_op() || (offset != self.node_start()) {
-                        break;
+
+                // in case operators we don't need to parse next token as joined string
+                if !kind.is_proc_op() {
+                    loop {
+                        if self.current_token_kind().is_proc_op() || (offset != self.node_start()) {
+                            break;
+                        }
+                        self.bump_any();
+                        offset = self.node_end();
                     }
-                    value.push_str(&self.source[self.current_token_range()]);
-                    self.bump_any();
-                    offset = self.node_end();
                 }
                 let range = TextRange::new(start, offset);
-
-                let literal = ast::StringLiteral {
-                    value: value.into_boxed_str(),
-                    range,
-                    flags: ast::StringLiteralFlags::default(),
-                };
-
-                let expr = Expr::from(ast::ExprStringLiteral {
-                    value: ast::StringLiteralValue::single(literal),
-                    range,
-                });
-                Some(expr)
+                Some(self.to_string_literal(range))
             }
         }
     }
     fn parse_subprocs(&mut self, func: impl AsRef<str>) -> Expr {
         let start = self.node_start();
         let attr = self.xonsh_attr(func);
+        let mut progress = ParserProgress::default();
 
         if self.current_token_kind() == TokenKind::Lpar {
             self.bump_any();
@@ -598,7 +603,7 @@ impl<'src> Parser<'src> {
             return attr;
         }
 
-        let args = std::iter::from_fn(|| self.parse_proc_args()).collect::<Vec<_>>();
+        let args = std::iter::from_fn(|| self.parse_proc_args(&mut progress)).collect::<Vec<_>>();
         let arguments = ast::Arguments {
             range: self.node_range(start),
             args: args.into_boxed_slice(),
