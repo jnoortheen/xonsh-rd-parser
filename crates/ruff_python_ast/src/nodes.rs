@@ -1682,6 +1682,23 @@ impl StringLiteralValue {
             .map_or(false, |part| part.flags.prefix().is_unicode())
     }
 
+    /// Returns `true` if the string literal is a path string.
+    pub fn is_path(&self) -> bool {
+        self.iter()
+            .next()
+            .map_or(false, |part| part.flags.prefix().is_path())
+    }
+    pub fn is_glob(&self) -> bool {
+        self.iter()
+            .next()
+            .map_or(false, |part| part.flags.prefix().is_glob())
+    }
+    pub fn is_regex(&self) -> bool {
+        self.iter()
+            .next()
+            .map_or(false, |part| part.flags.prefix().is_regex())
+    }
+
     /// Returns a slice of all the [`StringLiteral`] parts contained in this value.
     pub fn as_slice(&self) -> &[StringLiteral] {
         match &self.inner {
@@ -1788,7 +1805,7 @@ impl Default for StringLiteralValueInner {
 
 bitflags! {
     #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, Hash)]
-    struct StringLiteralFlagsInner: u8 {
+    struct StringLiteralFlagsInner: u16 {
         /// The string uses double quotes (e.g. `"foo"`).
         /// If this flag is not set, the string uses single quotes (`'foo'`).
         const DOUBLE = 1 << 0;
@@ -1818,6 +1835,10 @@ bitflags! {
 
         /// The string was deemed invalid by the parser.
         const INVALID = 1 << 5;
+
+        const REGEX = 1 << 6;
+        const GLOB = 1 << 7;
+        const PATH = 1 << 8;
     }
 }
 
@@ -1848,6 +1869,9 @@ impl StringLiteralFlags {
                 flags
                     - StringLiteralFlagsInner::R_PREFIX_LOWER
                     - StringLiteralFlagsInner::R_PREFIX_UPPER
+                    - StringLiteralFlagsInner::REGEX
+                    - StringLiteralFlagsInner::GLOB
+                    - StringLiteralFlagsInner::PATH
                     - StringLiteralFlagsInner::U_PREFIX,
             ),
             StringLiteralPrefix::Raw { uppercase: false } => Self(
@@ -1865,6 +1889,9 @@ impl StringLiteralFlags {
                     - StringLiteralFlagsInner::R_PREFIX_LOWER
                     - StringLiteralFlagsInner::R_PREFIX_UPPER,
             ),
+            StringLiteralPrefix::Regex => Self(flags | StringLiteralFlagsInner::REGEX),
+            StringLiteralPrefix::Glob => Self(flags | StringLiteralFlagsInner::GLOB),
+            StringLiteralPrefix::Path => Self(flags | StringLiteralFlagsInner::PATH),
         }
     }
 
@@ -1881,6 +1908,12 @@ impl StringLiteralFlags {
                     .union(StringLiteralFlagsInner::R_PREFIX_UPPER)
             ));
             StringLiteralPrefix::Unicode
+        } else if self.0.contains(StringLiteralFlagsInner::PATH) {
+            StringLiteralPrefix::Path
+        } else if self.0.contains(StringLiteralFlagsInner::GLOB) {
+            StringLiteralPrefix::Glob
+        } else if self.0.contains(StringLiteralFlagsInner::REGEX) {
+            StringLiteralPrefix::Regex
         } else if self.0.contains(StringLiteralFlagsInner::R_PREFIX_LOWER) {
             debug_assert!(!self.0.contains(StringLiteralFlagsInner::R_PREFIX_UPPER));
             StringLiteralPrefix::Raw { uppercase: false }
@@ -2333,7 +2366,7 @@ bitflags! {
     /// prefix flags is by calling the `as_flags()` method on the
     /// `StringPrefix` enum.
     #[derive(Default, Debug, Copy, Clone, PartialEq, Eq, Hash)]
-    struct AnyStringFlagsInner: u8 {
+    struct AnyStringFlagsInner: u16 {
         /// The string uses double quotes (`"`).
         /// If this flag is not set, the string uses single quotes (`'`).
         const DOUBLE = 1 << 0;
@@ -2371,6 +2404,13 @@ bitflags! {
         /// for why we track the casing of the `r` prefix,
         /// but not for any other prefix
         const R_PREFIX_UPPER = 1 << 6;
+
+        /// path strings
+        const PATH_PREFIX = 1 << 7;
+        /// glob strings
+        const GLOB_PREFIX = 1 << 8;
+        /// backticks
+        const RE_PREFIX = 1 << 9;
     }
 }
 
@@ -2390,6 +2430,9 @@ impl AnyStringFlags {
             AnyStringPrefix::Regular(StringLiteralPrefix::Raw { uppercase: true }) => {
                 AnyStringFlagsInner::R_PREFIX_UPPER
             }
+            AnyStringPrefix::Regular(StringLiteralPrefix::Regex) => AnyStringFlagsInner::RE_PREFIX,
+            AnyStringPrefix::Regular(StringLiteralPrefix::Glob) => AnyStringFlagsInner::GLOB_PREFIX,
+            AnyStringPrefix::Regular(StringLiteralPrefix::Path) => AnyStringFlagsInner::PATH_PREFIX,
 
             // bytestrings
             AnyStringPrefix::Bytes(ByteStringPrefix::Regular) => AnyStringFlagsInner::B_PREFIX,
@@ -2510,6 +2553,16 @@ impl StringFlags for AnyStringFlags {
         if flags.contains(AnyStringFlagsInner::U_PREFIX) {
             return AnyStringPrefix::Regular(StringLiteralPrefix::Unicode);
         }
+        if flags.contains(AnyStringFlagsInner::RE_PREFIX) {
+            return AnyStringPrefix::Regular(StringLiteralPrefix::Regex);
+        }
+        if flags.contains(AnyStringFlagsInner::PATH_PREFIX) {
+            return AnyStringPrefix::Regular(StringLiteralPrefix::Path);
+        }
+        if flags.contains(AnyStringFlagsInner::GLOB_PREFIX) {
+            return AnyStringPrefix::Regular(StringLiteralPrefix::Glob);
+        }
+
         AnyStringPrefix::Regular(StringLiteralPrefix::Empty)
     }
 }

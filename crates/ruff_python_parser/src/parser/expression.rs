@@ -16,7 +16,7 @@ use crate::parser::{helpers, FunctionKind, Parser};
 use crate::string::{parse_fstring_literal_element, parse_string_literal, StringType};
 use crate::token::{TokenKind, TokenValue};
 use crate::token_set::TokenSet;
-use crate::{FStringErrorType, Mode, ParseErrorType, Token};
+use crate::{FStringErrorType, Mode, ParseErrorType};
 
 use super::{FStringElementsKind, Parenthesized, RecoveryContextKind};
 
@@ -678,7 +678,36 @@ impl<'src> Parser<'src> {
         };
         Expr::Subscript(ast)
     }
+    fn wrap_string(&mut self, attr: &str, string: Expr, start: TextSize) -> Expr {
+        let func = self.xonsh_attr(attr);
 
+        let args = vec![string];
+        let arguments = ast::Arguments {
+            range: self.node_range(start),
+            args: args.into_boxed_slice(),
+            keywords: vec![].into_boxed_slice(),
+        };
+        Expr::Call(ast::ExprCall {
+            func: Box::new(func),
+            arguments,
+            range: self.node_range(start),
+        })
+    }
+    fn parse_special_strings(&mut self, expr: Expr, start: TextSize) -> Expr {
+        match &expr {
+            Expr::StringLiteral(s) => {
+                if s.value.is_path() {
+                    return self.wrap_string("path_literal", expr, start);
+                } else if s.value.is_regex() {
+                    return self.wrap_string("regex_literal", expr, start);
+                } else if s.value.is_glob() {
+                    return self.wrap_string("glob_literal", expr, start);
+                }
+            }
+            _ => (),
+        }
+        expr
+    }
     /// Parses an atom.
     ///
     /// See: <https://docs.python.org/3/reference/expressions.html#atoms>
@@ -750,7 +779,10 @@ impl<'src> Parser<'src> {
             TokenKind::IpyEscapeCommand => {
                 Expr::IpyEscapeCommand(self.parse_ipython_escape_command_expression())
             }
-            TokenKind::String | TokenKind::FStringStart => self.parse_strings(),
+            TokenKind::String | TokenKind::FStringStart => {
+                let expr = self.parse_strings();
+                self.parse_special_strings(expr, start)
+            }
             TokenKind::Lpar => {
                 return self.parse_parenthesized_expression();
             }

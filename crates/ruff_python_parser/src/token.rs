@@ -798,6 +798,12 @@ impl StringFlags for TokenFlags {
             AnyStringPrefix::Regular(StringLiteralPrefix::Raw { uppercase: true })
         } else if self.intersects(TokenFlags::UNICODE_STRING) {
             AnyStringPrefix::Regular(StringLiteralPrefix::Unicode)
+        } else if self.intersects(TokenFlags::PATH_STRING) {
+            AnyStringPrefix::Regular(StringLiteralPrefix::Path)
+        } else if self.intersects(TokenFlags::GLOB_STRING) {
+            AnyStringPrefix::Regular(StringLiteralPrefix::Glob)
+        } else if self.intersects(TokenFlags::BACKTICK_STRING) {
+            AnyStringPrefix::Regular(StringLiteralPrefix::Regex)
         } else {
             AnyStringPrefix::Regular(StringLiteralPrefix::Empty)
         }
