@@ -5,6 +5,7 @@ use bitflags::bitflags;
 use rustc_hash::{FxBuildHasher, FxHashSet};
 
 use ruff_python_ast::name::Name;
+use ruff_python_ast::NodeKind::ExprList;
 use ruff_python_ast::{
     self as ast, BoolOp, CmpOp, ConversionFlag, Expr, ExprContext, FStringElement, FStringElements,
     IpyEscapeKind, Number, Operator, UnaryOp,
@@ -573,27 +574,35 @@ impl<'src> Parser<'src> {
                 {
                     return Some(self.parse_atom().expr);
                 }
+
+                // no need to check next tokens
+                if kind.is_proc_op() {
+                    let range = self.current_token_range();
+                    self.bump_any();
+                    return Some(self.to_string_literal(range));
+                }
+
+                // current range
                 let start = self.node_start();
                 let mut offset = self.node_end();
-                self.bump_any();
+                let mut nesting = 0 as usize;
+                self.bump_any(); // move cursor to next token
 
-                // in case operators we don't need to parse next token as joined string
-                if !kind.is_proc_op() {
-                    let mut nesting = 0 as usize;
-                    loop {
-                        if self.current_token_kind() == TokenKind::Lpar {
-                            nesting += 1;
-                        }
-                        if self.current_token_kind().is_proc_op()
-                            || (offset != self.node_start())
-                            || (self.current_token_kind() == TokenKind::Rpar && nesting == 0)
-                        {
-                            break;
-                        }
-                        self.bump_any();
-                        offset = self.node_end();
+                // check to see if we need concat next tokens
+                loop {
+                    if self.current_token_kind().is_proc_op()
+                        || (offset != self.node_start())
+                        || (self.current_token_kind() == TokenKind::Rpar && nesting == 0)
+                    {
+                        break;
                     }
+                    if self.current_token_kind() == TokenKind::Lpar {
+                        nesting += 1;
+                    }
+                    offset = self.node_end();
+                    self.bump_any();
                 }
+
                 let range = TextRange::new(start, offset);
                 Some(self.to_string_literal(range))
             }
@@ -610,7 +619,12 @@ impl<'src> Parser<'src> {
             return attr;
         }
 
-        let args = std::iter::from_fn(|| self.parse_proc_args(&mut progress)).collect::<Vec<_>>();
+        let group = std::iter::from_fn(|| self.parse_proc_args(&mut progress)).collect::<Vec<_>>();
+        let args = vec![Expr::List(ast::ExprList {
+            elts: group,
+            ctx: ExprContext::Load,
+            range: self.node_range(start),
+        })];
         let arguments = ast::Arguments {
             range: self.node_range(start),
             args: args.into_boxed_slice(),
@@ -772,7 +786,7 @@ impl<'src> Parser<'src> {
             TokenKind::Name => Expr::Name(self.parse_name()),
             TokenKind::BangLParen => self.parse_subprocs("subproc_captured_object"),
             TokenKind::BangLSqb => self.parse_subprocs("subproc_captured_hiddenobject"),
-            TokenKind::DollarLParen => self.parse_subprocs("subproc_captured"),
+            TokenKind::DollarLParen => self.parse_subprocs("subproc_captured_stdout"),
             TokenKind::DollarLSqb => self.parse_subprocs("subproc_uncaptured"),
             TokenKind::Dollar => self.parse_env_name(),
             TokenKind::DollarLBrace => self.parse_env_expr(),
