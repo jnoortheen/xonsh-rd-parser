@@ -1,0 +1,84 @@
+bg:
+  - "$(emacs ugggh &)"
+  - "$(emacs ugggh&)"
+  - $(emacs ugggh &)
+  - $(emacs ugggh&)
+
+combinators:
+  - "$(ls | grep wakka)"
+  - "$(ls | grep wakka | grep jawaka)"
+  - "![ls me] and ![grep wakka]"
+  - "![ls] and ![grep wakka] and ![grep jawaka]"
+  - "![ls] && ![grep wakka]"
+  - "![ls] && ![grep wakka] && ![grep jawaka]"
+  - "![ls] or ![grep wakka]"
+  - "![ls] or ![grep wakka] or ![grep jawaka]"
+  - "![ls] || ![grep wakka]"
+  - "![ls] || ![grep wakka] || ![grep jawaka]"
+
+env:
+  - "$WAKKA"
+  - ${None or $JAWAKA}
+
+globs:
+  - "`hello`"
+  - "$(ls `#[Ff]+i*LE` -l)"
+  - "$(ls r`[Ff]+i*LE` -l)"
+  - "$(ls r`#[Ff]+i*LE` -l)"
+  - "$(ls g`[Ff]+i*LE` -l)"
+  - "$(ls g`#[Ff]+i*LE` -l)"
+  - "$(ls @foo`[Ff]+i*LE` -l)"
+  - "print(@foo`.*`)"
+  - "$(ls @foo`#[Ff]+i*LE` -l)"
+  - "print(`#.*`)"
+  - "$(ls `[Ff]+i*LE` -l)"
+
+help:
+  - "range?"
+  - "range?.index?"
+  - "range??"
+
+path-literals:
+  - p"/foo"
+  - pr"/foo"
+  - rp"/foo"
+  - pR"/foo"
+  - Rp"/foo"
+  - pf"/foo"
+  - fp"/foo"
+  - pF"/foo"
+  - Fp"/foo"
+  - pf"/foo{1+1}"
+  - fp"/foo{1+1}"
+  - pF"/foo{1+1}"
+  - Fp"/foo{1+1}"
+
+proc-injection:
+  - "$[@$(which python)]"
+  - "$[ls @$(dirname @$(which python))]"
+  - "![a@$(echo 1 2)b]"
+
+redirects:
+  - "!(ls >> x.py)"
+  - "!(ls | grep wakka > x.py)"
+  - "!(ls | grep wakka >> x.py)"
+  - "$(ls > x.py)"
+  - "$(ls >> x.py)"
+  - "$(ls | grep wakka > x.py)"
+  - "$(ls | grep wakka >> x.py)"
+
+subproc:
+  - "$(cmd sub-cmd --opt)"
+  - "$[cmd sub-cmd --opt]"
+  - "![cmd sub-cmd --opt]"
+  - "!(cmd sub-cmd --opt)"
+  - '![git commit -am "wakka"]'
+  - '![git commit -am "wakka jawaka"]'
+  - '![ls "wakka jawaka baraka"]'
+  - '$[git commit -am "wakka"]'
+  - '$[git commit -am "wakka jawaka"]'
+  - '$[ls "wakka jawaka baraka"]'
+  - "![echo ,]"
+  - "![echo 1,2]"
+  - "!(echo '$foo')"
+  - "!(echo r'$foo')"

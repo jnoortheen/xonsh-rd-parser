@@ -1,0 +1,12 @@
+assignments:
+  - "$WAKKA"
+  - "$y = 'one'"
+  - "$WAKKA = 42"
+  - "y = $x"
+  - "y = ${x}"
+  - "y = ${'x' + 'y'}"
+  - '${None or "WAKKA"}'
+  - "${$JAWAKA}"
+  - "$WAKKA = 42"
+  - '${$"JAWA" + $JAWAKA[-2:]}'
+  - "${x} = 65"

@@ -21,13 +21,15 @@ dev = [
     "pytest-benchmark>=4.0.0",
     "pytest-memray",
     "psutil",
+    "syrupy",
+    "pyyaml>=6.0.2",
 ]
 [tool.maturin]
 features = ["pyo3/extension-module"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--benchmark-autosave"
+addopts = "--benchmark-autosave --snapshot-patch-pycharm-diff"
 
 [tool.ruff]
 exclude = ["crates", "tests/data"]
@@ -36,3 +38,6 @@ exclude = ["crates", "tests/data"]
 ignore = [
     "E402", # top level imports
 ]
+
+[tool.poe.tasks]
+print-enum-size = "env RUSTFLAGS=-Zprint-type-sizes cargo +nightly build -p ruff_python_parser --release"

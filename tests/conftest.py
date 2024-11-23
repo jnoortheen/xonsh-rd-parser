@@ -47,13 +47,26 @@ def nodes_equal(x, y):
 
 
 @pytest.fixture
+def unparse(unparse_diff):
+    def factory(text: str):
+        left_tree = parse_string(text)
+        return ast.unparse(left_tree)
+        # from test_py_syntax import dump_diff
+        # assert not dump_diff(parsed=left_tree, expected=right_tree), f"Generated AST didn't match. Source: {text}"
+
+    return factory
+
+
+@pytest.fixture
 def unparse_diff():
     def factory(text: str, right: str | None = None):
-        left = parse_string(text)
-        left = ast.unparse(left)
-        if right is None:
-            right = ast.unparse(ast.parse(text))
-        assert left == right
+        left_tree = parse_string(text)
+        left = ast.unparse(left_tree)
+        right = right or left
+        right_tree = ast.parse(right)
+        assert left == ast.unparse(right_tree), f"unparse didn't match. Source: {text}"
+        # from test_py_syntax import dump_diff
+        # assert not dump_diff(parsed=left_tree, expected=right_tree), f"Generated AST didn't match. Source: {text}"
 
     return factory
 
