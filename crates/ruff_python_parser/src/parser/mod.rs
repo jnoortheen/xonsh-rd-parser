@@ -19,6 +19,8 @@ mod pattern;
 mod progress;
 mod recovery;
 mod statement;
+mod subproc;
+
 #[cfg(test)]
 mod tests;
 
