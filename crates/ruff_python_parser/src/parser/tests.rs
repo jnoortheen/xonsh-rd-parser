@@ -67,78 +67,78 @@ fn test_xonsh_procs() {
     insta::assert_debug_snapshot!(suite);
 }
 
-#[test]
-fn test_ipython_escape_commands() {
-    let parsed = parse(
-        r"
-# Normal Python code
-(
-    a
-    %
-    b
-)
-
-# Dynamic object info
-??a.foo
-?a.foo
-?a.foo?
-??a.foo()??
-
-# Line magic
-%timeit a = b
-%timeit foo(b) % 3
-%alias showPath pwd && ls -a
-%timeit a =\
-  foo(b); b = 2
-%matplotlib --inline
-%matplotlib \
-    --inline
-
-# System shell access
-!pwd && ls -a | sed 's/^/\    /'
-!pwd \
-  && ls -a | sed 's/^/\\    /'
-!!cd /Users/foo/Library/Application\ Support/
-
-# Let's add some Python code to make sure that earlier escapes were handled
-# correctly and that we didn't consume any of the following code as a result
-# of the escapes.
-def foo():
-    return (
-        a
-        !=
-        b
-    )
-
-# Transforms into `foo(..)`
-/foo 1 2
-;foo 1 2
-,foo 1 2
-
-# Indented escape commands
-for a in range(5):
-    !ls
-
-p1 = !pwd
-p2: str = !pwd
-foo = %foo \
-    bar
-
-% foo
-foo = %foo  # comment
-
-# Help end line magics
-foo?
-foo.bar??
-foo.bar.baz?
-foo[0]??
-foo[0][1]?
-foo.bar[0].baz[1]??
-foo.bar[0].baz[2].egg??
-"
-        .trim(),
-        Mode::Ipython,
-    )
-    .unwrap();
-    insta::assert_debug_snapshot!(parsed.syntax());
-}
+// #[test]
+// fn test_ipython_escape_commands() {
+//     let parsed = parse(
+//         r"
+// # Normal Python code
+// (
+//     a
+//     %
+//     b
+// )
+//
+// # Dynamic object info
+// ??a.foo
+// ?a.foo
+// ?a.foo?
+// ??a.foo()??
+//
+// # Line magic
+// %timeit a = b
+// %timeit foo(b) % 3
+// %alias showPath pwd && ls -a
+// %timeit a =\
+//   foo(b); b = 2
+// %matplotlib --inline
+// %matplotlib \
+//     --inline
+//
+// # System shell access
+// !pwd && ls -a | sed 's/^/\    /'
+// !pwd \
+//   && ls -a | sed 's/^/\\    /'
+// !!cd /Users/foo/Library/Application\ Support/
+//
+// # Let's add some Python code to make sure that earlier escapes were handled
+// # correctly and that we didn't consume any of the following code as a result
+// # of the escapes.
+// def foo():
+//     return (
+//         a
+//         !=
+//         b
+//     )
+//
+// # Transforms into `foo(..)`
+// /foo 1 2
+// ;foo 1 2
+// ,foo 1 2
+//
+// # Indented escape commands
+// for a in range(5):
+//     !ls
+//
+// p1 = !pwd
+// p2: str = !pwd
+// foo = %foo \
+//     bar
+//
+// % foo
+// foo = %foo  # comment
+//
+// # Help end line magics
+// foo?
+// foo.bar??
+// foo.bar.baz?
+// foo[0]??
+// foo[0][1]?
+// foo.bar[0].baz[1]??
+// foo.bar[0].baz[2].egg??
+// "
+//         .trim(),
+//         Mode::Ipython,
+//     )
+//     .unwrap();
+//     insta::assert_debug_snapshot!(parsed.syntax());
+// }

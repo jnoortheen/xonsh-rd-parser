@@ -636,6 +636,7 @@ impl<'src> Parser<'src> {
                 TokenKind::Lpar => Expr::Call(self.parse_call_expression(lhs, start)),
                 TokenKind::Lsqb => Expr::Subscript(self.parse_subscript_expression(lhs, start)),
                 TokenKind::Dot => Expr::Attribute(self.parse_attribute_expression(lhs, start)),
+                TokenKind::Question => self.parse_help_expr(lhs, start),
                 _ => break lhs,
             };
         }

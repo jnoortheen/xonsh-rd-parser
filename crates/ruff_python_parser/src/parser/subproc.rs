@@ -256,4 +256,39 @@ impl<'a> Parser<'a> {
             range: self.node_range(self.node_start()),
         })
     }
+
+    pub(super) fn parse_help_expr(&mut self, lhs: Expr, start: TextSize) -> Expr {
+        self.bump_any();
+        // let help_name = ast::ExprName {
+        //     id: "help".to_string(),
+        //     ctx: ast::ExprContext::Load,
+        //     range: TextRange::empty(start),
+        // };
+        // Expr::Call(ast::ExprCall {
+        //     func: Box::new(Expr::Name(help_name)),
+        //     args: vec![lhs],
+        //     keywords: vec![],
+        //     range: TextRange::empty(start),
+        // })
+
+        let range = self.node_range(start);
+        let method = if self.at(TokenKind::Question) {
+            self.bump_any();
+            "superhelp"
+        } else {
+            "help"
+        };
+        let attr = self.xonsh_attr(method, false);
+        let args = vec![lhs];
+        let arguments = ast::Arguments {
+            range: self.node_range(start),
+            args: args.into_boxed_slice(),
+            keywords: vec![].into_boxed_slice(),
+        };
+        Expr::Call(ast::ExprCall {
+            func: Box::new(attr),
+            arguments: arguments,
+            range,
+        })
+    }
 }

@@ -451,7 +451,7 @@ impl<'src> Lexer<'src> {
                 self.lex_ipython_escape_command(kind)
             }
 
-            '?' if self.mode == Mode::Ipython => TokenKind::Question,
+            '?' => TokenKind::Question,
 
             '/' => {
                 if self.cursor.eat_char('=') {

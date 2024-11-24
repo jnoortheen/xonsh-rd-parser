@@ -92,8 +92,11 @@ globs:
   exp: __xonsh__.cmd('ls', __xonsh__.regex_literal('[Ff]+i*LE'), 'l').capture_out()
 help:
 - inp: range?
+  exp: __xonsh__.help(range)
 - inp: range?.index?
+  exp: __xonsh__.help(__xonsh__.help(range).index)
 - inp: range??
+  exp: __xonsh__.superhelp(range)
 
 path-literals:
 - inp: p"/foo"
