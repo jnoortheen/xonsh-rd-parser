@@ -14,13 +14,15 @@ impl<'a> Parser<'a> {
     /// This includes various forms of subprocess capture like `$(...)`, `$[...]`, `!(...)`, and `![...]`.
     pub(super) fn parse_subprocs(&mut self, method: impl AsRef<str>) -> Expr {
         let start = self.node_start();
-        self.bump_any(); // skip the `$(`
+        let closing = TokenKind::Rpar;
+        self.bump_any(); // skip the `$`
+        self.bump(TokenKind::Lpar); // skip the `(`
 
-        if self.current_token_kind() == TokenKind::Lpar {
+        if self.current_token_kind() == closing {
             self.bump_any();
         }
 
-        let group_call = self.parse_cmd_group();
+        let group_call = self.parse_cmd_group(closing);
         let attr = self.to_attr(group_call, method);
         let arguments = ast::Arguments {
             range: self.node_range(start),
@@ -33,38 +35,28 @@ impl<'a> Parser<'a> {
             range: self.node_range(start),
         })
     }
-    // fn get_none_expr(&self) -> Expr {
-    //     let start = self.node_start();
-    //     Expr::NoneLiteral(ast::ExprNoneLiteral {
-    //         range: self.node_range(start),
-    //     })
-    // }
-    fn parse_cmd_group(&mut self) -> Expr {
+    fn parse_cmd_group(&mut self, closing: TokenKind) -> Expr {
         let start = self.node_start();
         let mut progress = ParserProgress::default();
         let mut cmds = Vec::new();
         let mut keywords = Vec::new();
 
         loop {
-            match (self.current_token_kind(), self.peek()) {
-                (TokenKind::Amper, TokenKind::Rpar) => {
-                    keywords.push(ast::Keyword {
-                        arg: Some(self.to_identifier("bg")),
-                        value: self.literal_true(),
-                        range: self.current_token_range(),
-                    });
-                    self.bump_any(); // skip the `&`
-                    self.bump(TokenKind::Rpar); // skip the `)`
-                    break;
-                }
-                (TokenKind::Rpar, _) => {
-                    self.bump_any();
-                    break;
-                }
-                _ => {
-                    cmds.push(self.parse_proc_arg(&mut progress));
-                }
+            if self.at(TokenKind::Rpar) {
+                self.bump_any();
+                break;
             }
+            if self.at(TokenKind::Amper) && self.peek() == closing {
+                keywords.push(ast::Keyword {
+                    arg: Some(self.to_identifier("bg")),
+                    value: self.literal_true(),
+                    range: self.current_token_range(),
+                });
+                self.bump_any(); // skip the `&`
+                self.bump(closing); // skip the `)`
+                break;
+            }
+            cmds.push(self.parse_proc_arg(&mut progress));
         }
         let arguments = ast::Arguments {
             range: self.node_range(start),

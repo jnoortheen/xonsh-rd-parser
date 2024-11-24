@@ -44,11 +44,11 @@ class LineItem:
     idx: int
     write: bool = False
 
-    def __eq__(self, other: str) -> bool:
+    def matches(self, other: str) -> bool:
         if self.write:
             self.write_yaml(other)
-            return False
-        return self.exp == other
+            assert False
+        assert other == self.exp
 
     def __repr__(self):
         return repr(self.exp)
@@ -89,7 +89,7 @@ def yaml_line_items(*names: str):
     "inp, snapped", yaml_line_items("exprs", "stmts"), indirect=["snapped"]
 )
 def test_line_items(inp, unparse, snapped):
-    assert snapped == unparse(inp)
+    snapped.matches(unparse(inp))
 
 
 @pytest.mark.parametrize("inp, exp", glob_data_param("fstring_py312.py"))
