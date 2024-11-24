@@ -1,82 +1,146 @@
 env:
-  - "$WAKKA"
-  - ${None or $JAWAKA}
-captured:
-  - "$(cmd sub-cmd --opt)"
-  - "$[cmd sub-cmd --opt]"
-  - '$[git commit -am "wakka"]'
-  - '$[git commit -am "wakka jawaka"]'
-  - '$[ls "wakka jawaka baraka"]'
-uncaptured:
-  - "![cmd sub-cmd --opt]"
-  - "!(cmd sub-cmd --opt)"
-  - '![git commit -am "wakka"]'
-  - '![git commit -am "wakka jawaka"]'
-  - '![ls "wakka jawaka baraka"]'
-  - "![echo ,]"
-  - "![echo 1,2]"
-  - "!(echo '$foo')"
-  - "!(echo r'$foo')"
-combinators:
-  - "$(ls | grep wakka)"
-  - "$(ls | grep wakka | grep jawaka)"
-  - "![ls me] and ![grep wakka]"
-  - "![ls] and ![grep wakka] and ![grep jawaka]"
-  - "![ls] && ![grep wakka]"
-  - "![ls] && ![grep wakka] && ![grep jawaka]"
-  - "![ls] or ![grep wakka]"
-  - "![ls] or ![grep wakka] or ![grep jawaka]"
-  - "![ls] || ![grep wakka]"
-  - "![ls] || ![grep wakka] || ![grep jawaka]"
-bg:
-  - "$(emacs ugggh &)"
-  - "$(emacs ugggh&)"
-  - $(emacs ugggh &)
-  - $(emacs ugggh&)
-globs:
-  - "`hello`"
-  - "$(ls `#[Ff]+i*LE` -l)"
-  - "$(ls r`[Ff]+i*LE` -l)"
-  - "$(ls r`#[Ff]+i*LE` -l)"
-  - "$(ls g`[Ff]+i*LE` -l)"
-  - "$(ls g`#[Ff]+i*LE` -l)"
-  - "$(ls @foo`[Ff]+i*LE` -l)"
-  - "print(@foo`.*`)"
-  - "$(ls @foo`#[Ff]+i*LE` -l)"
-  - "print(`#.*`)"
-  - "$(ls `[Ff]+i*LE` -l)"
+- inp: $WAKKA
+  exp: __xonsh__.env['WAKKA']
+- inp: ${None or $JAWAKA}
+  exp: __xonsh__.env[None or __xonsh__.env['JAWAKA']]
 
+captured:
+- inp: $(cmd sub-cmd --opt)
+  exp: __xonsh__.cmd('cmd', 'sub-cmd', '--opt').capture_out()
+- inp: $[cmd sub-cmd --opt]
+  exp: __xonsh__.cmd('cmd', 'sub-cmd', '--opt').run()
+- inp: $[git commit -am "wakka"]
+  exp: __xonsh__.cmd('git', 'commit', '-am', 'wakka').run()
+- inp: $[git commit -am "wakka jawaka"]
+  exp: __xonsh__.cmd('git', 'commit', '-am', 'wakka jawaka').run()
+- inp: $[ls "wakka jawaka baraka"]
+  exp: __xonsh__.cmd('ls', 'wakka jawaka baraka').run()
+uncaptured:
+- inp: '![cmd sub-cmd --opt]'
+  exp: __xonsh__.cmd('cmd', 'sub-cmd', '--opt').run_hidden()
+- inp: '!(cmd sub-cmd --opt)'
+  exp: __xonsh__.cmd('cmd', 'sub-cmd', '--opt').capture_object()
+- inp: '![git commit -am "wakka"]'
+  exp: __xonsh__.cmd('git', 'commit', '-am', 'wakka').run_hidden()
+- inp: '![git commit -am "wakka jawaka"]'
+  exp: __xonsh__.cmd('git', 'commit', '-am', 'wakka jawaka').run_hidden()
+- inp: '![ls "wakka jawaka baraka"]'
+  exp: __xonsh__.cmd('ls', 'wakka jawaka baraka').run_hidden()
+- inp: '![echo ,]'
+  exp: __xonsh__.cmd('echo', ',').run_hidden()
+- inp: '![echo 1,2]'
+  exp: __xonsh__.cmd('echo', '1,2').run_hidden()
+- inp: "!(echo '$foo')"
+  exp: __xonsh__.cmd('echo', '$foo').capture_object()
+- inp: "!(echo r'$foo')"
+  exp: __xonsh__.cmd('echo', '$foo').capture_object()
+combinators:
+- inp: $(ls | grep wakka)
+  exp: __xonsh__.cmd('ls', '|', 'grep', 'wakka').capture_out()
+- inp: $(ls | grep wakka | grep jawaka)
+  exp: __xonsh__.cmd('ls', '|', 'grep', 'wakka', '|', 'grep', 'jawaka').capture_out()
+- inp: '![ls me] and ![grep wakka]'
+  exp: __xonsh__.cmd('ls', 'me').run_hidden() and __xonsh__.cmd('grep', 'wakka').run_hidden()
+- inp: '![ls] and ![grep wakka] and ![grep jawaka]'
+  exp: __xonsh__.cmd('ls').run_hidden() and __xonsh__.cmd('grep', 'wakka').run_hidden()
+    and __xonsh__.cmd('grep', 'jawaka').run_hidden()
+- inp: '![ls] && ![grep wakka]'
+  exp: __xonsh__.cmd('ls').run_hidden() and __xonsh__.cmd('grep', 'wakka').run_hidden()
+- inp: '![ls] && ![grep wakka] && ![grep jawaka]'
+  exp: __xonsh__.cmd('ls').run_hidden() and __xonsh__.cmd('grep', 'wakka').run_hidden()
+    and __xonsh__.cmd('grep', 'jawaka').run_hidden()
+- inp: '![ls] or ![grep wakka]'
+  exp: __xonsh__.cmd('ls').run_hidden() or __xonsh__.cmd('grep', 'wakka').run_hidden()
+- inp: '![ls] or ![grep wakka] or ![grep jawaka]'
+  exp: __xonsh__.cmd('ls').run_hidden() or __xonsh__.cmd('grep', 'wakka').run_hidden()
+    or __xonsh__.cmd('grep', 'jawaka').run_hidden()
+- inp: '![ls] || ![grep wakka]'
+  exp: __xonsh__.cmd('ls').run_hidden() or __xonsh__.cmd('grep', 'wakka').run_hidden()
+- inp: '![ls] || ![grep wakka] || ![grep jawaka]'
+  exp: __xonsh__.cmd('ls').run_hidden() or __xonsh__.cmd('grep', 'wakka').run_hidden()
+    or __xonsh__.cmd('grep', 'jawaka').run_hidden()
+bg:
+- inp: $(emacs ugggh &)
+  exp: __xonsh__.cmd('emacs', 'ugggh', bg=True).capture_out()
+- inp: $(emacs ugggh&)
+  exp: __xonsh__.cmd('emacs', 'ugggh', bg=True).capture_out()
+- inp: $(emacs ugggh &)
+  exp: __xonsh__.cmd('emacs', 'ugggh', bg=True).capture_out()
+- inp: $(emacs ugggh&)
+  exp: __xonsh__.cmd('emacs', 'ugggh', bg=True).capture_out()
+globs:
+- inp: '`hello`'
+  exp: __xonsh__.regex_literal('hello')
+- inp: $(ls `#[Ff]+i*LE` -l)
+  exp: __xonsh__.cmd('ls', __xonsh__.regex_literal('#[Ff]+i*LE'), 'l').capture_out()
+- inp: $(ls r`[Ff]+i*LE` -l)
+  exp: __xonsh__.cmd('ls', '[Ff]+i*LE', '-l').capture_out()
+- inp: $(ls r`#[Ff]+i*LE` -l)
+  exp: __xonsh__.cmd('ls', '#[Ff]+i*LE', '-l').capture_out()
+- inp: $(ls g`[Ff]+i*LE` -l)
+  exp: __xonsh__.cmd('ls', __xonsh__.glob_literal('[Ff]+i*LE'), 'l').capture_out()
+- inp: $(ls g`#[Ff]+i*LE` -l)
+  exp: __xonsh__.cmd('ls', __xonsh__.glob_literal('#[Ff]+i*LE'), 'l').capture_out()
+- inp: $(ls @foo`[Ff]+i*LE` -l)
+  exp: __xonsh__.cmd('ls', '@foo`[Ff]+i*LE`', '-l').capture_out()
+- inp: print(@foo`.*`)
+- inp: $(ls @foo`#[Ff]+i*LE` -l)
+  exp: __xonsh__.cmd('ls', '@foo`#[Ff]+i*LE`', '-l').capture_out()
+- inp: print(`#.*`)
+- inp: $(ls `[Ff]+i*LE` -l)
+
+  exp: __xonsh__.cmd('ls', __xonsh__.regex_literal('[Ff]+i*LE'), 'l').capture_out()
 help:
-  - "range?"
-  - "range?.index?"
-  - "range??"
+- inp: range?
+- inp: range?.index?
+- inp: range??
 
 path-literals:
-  - p"/foo"
-  - pr"/foo"
-  - rp"/foo"
-  - pR"/foo"
-  - Rp"/foo"
-  - pf"/foo"
-  - fp"/foo"
-  - pF"/foo"
-  - Fp"/foo"
-  - pf"/foo{1+1}"
-  - fp"/foo{1+1}"
-  - pF"/foo{1+1}"
-  - Fp"/foo{1+1}"
+- inp: p"/foo"
+  exp: __xonsh__.path_literal('/foo')
+- inp: pr"/foo"
+  exp: '"""/foo"""'
+- inp: rp"/foo"
+  exp: '"""/foo"""'
+- inp: pR"/foo"
+  exp: '"""/foo"""'
+- inp: Rp"/foo"
+  exp: '"""/foo"""'
+- inp: pf"/foo"
+  exp: f'/foo'
+- inp: fp"/foo"
+  exp: f'/foo'
+- inp: pF"/foo"
+  exp: f'/foo'
+- inp: Fp"/foo"
+  exp: f'/foo'
+- inp: pf"/foo{1+1}"
+  exp: f'/foo{1 + 1}'
+- inp: fp"/foo{1+1}"
+  exp: f'/foo{1 + 1}'
+- inp: pF"/foo{1+1}"
+  exp: f'/foo{1 + 1}'
+- inp: Fp"/foo{1+1}"
 
+  exp: f'/foo{1 + 1}'
 proc-injection:
-  - "$[@$(which python)]"
-  - "$[ls @$(dirname @$(which python))]"
-  - "![a@$(echo 1 2)b]"
+- inp: $[@$(which python)]
+- inp: $[ls @$(dirname @$(which python))]
+- inp: '![a@$(echo 1 2)b]'
 
 redirects:
-  - "!(ls >> x.py)"
-  - "!(ls | grep wakka > x.py)"
-  - "!(ls | grep wakka >> x.py)"
-  - "$(ls > x.py)"
-  - "$(ls >> x.py)"
-  - "$(ls | grep wakka > x.py)"
-  - "$(ls | grep wakka >> x.py)"
+- inp: '!(ls >> x.py)'
+  exp: __xonsh__.cmd('ls', '>>', 'x.py').capture_object()
+- inp: '!(ls | grep wakka > x.py)'
+  exp: __xonsh__.cmd('ls', '|', 'grep', 'wakka', '>', 'x.py').capture_object()
+- inp: '!(ls | grep wakka >> x.py)'
+  exp: __xonsh__.cmd('ls', '|', 'grep', 'wakka', '>>', 'x.py').capture_object()
+- inp: $(ls > x.py)
+  exp: __xonsh__.cmd('ls', '>', 'x.py').capture_out()
+- inp: $(ls >> x.py)
+  exp: __xonsh__.cmd('ls', '>>', 'x.py').capture_out()
+- inp: $(ls | grep wakka > x.py)
+  exp: __xonsh__.cmd('ls', '|', 'grep', 'wakka', '>', 'x.py').capture_out()
+- inp: $(ls | grep wakka >> x.py)
 
+  exp: __xonsh__.cmd('ls', '|', 'grep', 'wakka', '>>', 'x.py').capture_out()

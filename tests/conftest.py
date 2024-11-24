@@ -133,3 +133,12 @@ def check_xonsh_ast(xsh):
         return obs
 
     return factory
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--update-snaps",
+        action="store_true",
+        default=False,
+        help="update the corresponding yaml snapshots",
+    )

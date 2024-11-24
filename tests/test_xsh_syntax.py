@@ -33,21 +33,63 @@ def glob_data_param(pattern: str):
             yield pytest.param(inp, exp, id=f"{path.name}-{idx}")
 
 
+from dataclasses import dataclass
+
+
+@dataclass
+class LineItem:
+    path: Path
+    exp: str
+    key: str
+    idx: int
+    write: bool = False
+
+    def __eq__(self, other: str) -> bool:
+        if self.write:
+            self.write_yaml(other)
+            return False
+        return self.exp == other
+
+    def __repr__(self):
+        return repr(self.exp)
+
+    def write_yaml(self, exp: str):
+        from ruamel.yaml import YAML
+
+        yaml = YAML()
+
+        with self.path.open("r") as file:
+            data = yaml.load(file)
+        data[self.key][self.idx]["exp"] = exp
+        yaml.dump(data, self.path.open("w"))
+
+
+@pytest.fixture
+def snapped(request):
+    if request.config.getoption("--update-snaps"):
+        request.param.write = True
+    return request.param
+
+
 def yaml_line_items(*names: str):
     for name in names:
         path = Path(__file__).parent.joinpath("data").joinpath(f"{name}.yml")
-        import yaml
+        from ruamel.yaml import YAML
 
+        yaml = YAML()
         with path.open("r") as file:
-            data = yaml.safe_load(file)
+            data = yaml.load(file)
         for case, lines in data.items():
-            for idx, inp in enumerate(lines):
-                yield pytest.param(inp, id=f"{path.stem}-{case}-{idx}")
+            for idx, item in enumerate(lines):
+                exp = LineItem(path, item.get("exp", ""), case, idx)
+                yield pytest.param(item["inp"], exp, id=f"{path.stem}-{case}-{idx}")
 
 
-@pytest.mark.parametrize("inp", yaml_line_items("exprs", "stmts"))
-def test_line_items(inp, unparse, snapshot):
-    assert unparse(inp) == snapshot
+@pytest.mark.parametrize(
+    "inp, snapped", yaml_line_items("exprs", "stmts"), indirect=["snapped"]
+)
+def test_line_items(inp, unparse, snapped):
+    assert snapped == unparse(inp)
 
 
 @pytest.mark.parametrize("inp, exp", glob_data_param("fstring_py312.py"))

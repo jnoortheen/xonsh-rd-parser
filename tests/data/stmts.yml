@@ -1,12 +1,22 @@
 assignments:
-  - "$WAKKA"
-  - "$y = 'one'"
-  - "$WAKKA = 42"
-  - "y = $x"
-  - "y = ${x}"
-  - "y = ${'x' + 'y'}"
-  - '${None or "WAKKA"}'
-  - "${$JAWAKA}"
-  - "$WAKKA = 42"
-  - '${$"JAWA" + $JAWAKA[-2:]}'
-  - "${x} = 65"
+- inp: $WAKKA
+  exp: __xonsh__.env['WAKKA']
+- inp: $y = 'one'
+  exp: __xonsh__.env['y'] = 'one'
+- inp: $WAKKA = 42
+  exp: __xonsh__.env['WAKKA'] = 42
+- inp: y = $x
+  exp: y = __xonsh__.env['x']
+- inp: y = ${x}
+  exp: y = __xonsh__.env[x]
+- inp: y = ${'x' + 'y'}
+  exp: y = __xonsh__.env['x' + 'y']
+- inp: ${None or "WAKKA"}
+  exp: __xonsh__.env[None or 'WAKKA']
+- inp: ${$JAWAKA}
+  exp: __xonsh__.env[__xonsh__.env['JAWAKA']]
+- inp: $WAKKA = 42
+  exp: __xonsh__.env['WAKKA'] = 42
+- inp: ${$"JAWA" + $JAWAKA[-2:]}
+- inp: ${x} = 65
+  exp: __xonsh__.env[x] = 65
