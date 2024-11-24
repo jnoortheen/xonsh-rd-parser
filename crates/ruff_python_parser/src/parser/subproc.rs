@@ -12,26 +12,19 @@ use crate::{
 impl<'a> Parser<'a> {
     /// Parses a subprocess expression.
     /// This includes various forms of subprocess capture like `$(...)`, `$[...]`, `!(...)`, and `![...]`.
-    pub(crate) fn parse_subprocs(&mut self, func: impl AsRef<str>) -> Expr {
+    pub(super) fn parse_subprocs(&mut self, method: impl AsRef<str>) -> Expr {
         let start = self.node_start();
-        let attr = self.xonsh_attr(func);
-        let mut progress = ParserProgress::default();
+        self.bump_any(); // skip the `$(`
 
         if self.current_token_kind() == TokenKind::Lpar {
             self.bump_any();
-        } else {
-            return attr;
         }
 
-        let group = std::iter::from_fn(|| self.parse_proc_args(&mut progress)).collect::<Vec<_>>();
-        let args = vec![Expr::List(ast::ExprList {
-            elts: group,
-            ctx: ExprContext::Load,
-            range: self.node_range(start),
-        })];
+        let group_call = self.parse_cmd_group();
+        let attr = self.to_attr(group_call, method);
         let arguments = ast::Arguments {
             range: self.node_range(start),
-            args: args.into_boxed_slice(),
+            args: vec![].into_boxed_slice(),
             keywords: vec![].into_boxed_slice(),
         };
         Expr::Call(ast::ExprCall {
@@ -40,27 +33,68 @@ impl<'a> Parser<'a> {
             range: self.node_range(start),
         })
     }
+    // fn get_none_expr(&self) -> Expr {
+    //     let start = self.node_start();
+    //     Expr::NoneLiteral(ast::ExprNoneLiteral {
+    //         range: self.node_range(start),
+    //     })
+    // }
+    fn parse_cmd_group(&mut self) -> Expr {
+        let start = self.node_start();
+        let mut progress = ParserProgress::default();
+        let mut cmds = Vec::new();
+        let mut keywords = Vec::new();
+
+        loop {
+            match (self.current_token_kind(), self.peek()) {
+                (TokenKind::Amper, TokenKind::Rpar) => {
+                    keywords.push(ast::Keyword {
+                        arg: Some(self.to_identifier("bg")),
+                        value: self.literal_true(),
+                        range: self.current_token_range(),
+                    });
+                    self.bump_any(); // skip the `&`
+                    self.bump(TokenKind::Rpar); // skip the `)`
+                    break;
+                }
+                (TokenKind::Rpar, _) => {
+                    self.bump_any();
+                    break;
+                }
+                _ => {
+                    cmds.push(self.parse_proc_arg(&mut progress));
+                }
+            }
+        }
+        let arguments = ast::Arguments {
+            range: self.node_range(start),
+            args: cmds.into_boxed_slice(),
+            keywords: keywords.into_boxed_slice(),
+        };
+        let attr = self.xonsh_attr("cmd", false);
+        Expr::Call(ast::ExprCall {
+            func: Box::new(attr),
+            arguments,
+            range: self.node_range(start),
+        })
+    }
 
     /// Parses arguments in a subprocess expression.
-    pub(super) fn parse_proc_args(&mut self, parser_progress: &mut ParserProgress) -> Option<Expr> {
+    fn parse_proc_arg(&mut self, parser_progress: &mut ParserProgress) -> Expr {
         parser_progress.assert_progressing(self);
         match self.current_token_kind() {
-            TokenKind::Rpar => {
-                self.bump_any();
-                None
-            }
             kind => {
                 if kind.is_proc_atom()
                     || matches!(kind, TokenKind::String | TokenKind::FStringStart)
                 {
-                    return Some(self.parse_atom().expr);
+                    return self.parse_atom().expr;
                 }
 
                 // no need to check next tokens
                 if kind.is_proc_op() {
                     let range = self.current_token_range();
                     self.bump_any();
-                    return Some(self.to_string_literal(range));
+                    return self.to_string_literal(range);
                 }
 
                 // current range
@@ -85,22 +119,30 @@ impl<'a> Parser<'a> {
                 }
 
                 let range = TextRange::new(start, offset);
-                Some(self.to_string_literal(range))
+                self.to_string_literal(range)
             }
         }
     }
 
     /// Creates a xonsh attribute expression.
-    pub(crate) fn xonsh_attr(&mut self, name: impl AsRef<str>) -> Expr {
-        self.bump_value(self.current_token_kind());
+    fn xonsh_attr(&mut self, name: impl AsRef<str>, advance: bool) -> Expr {
+        if advance {
+            self.bump_any();
+        }
         let xonsh = self.expr_name("__xonsh__");
+        self.to_attr(xonsh, name)
+    }
+    fn to_identifier(&self, name: impl AsRef<str>) -> ast::Identifier {
+        ast::Identifier {
+            id: Name::new(name),
+            range: self.current_token_range(),
+        }
+    }
+    fn to_attr(&self, object: Expr, attr: impl AsRef<str>) -> Expr {
         let name = ast::ExprAttribute {
             range: self.current_token_range(),
-            attr: ast::Identifier {
-                id: Name::new(name),
-                range: self.current_token_range(),
-            },
-            value: Box::new(xonsh),
+            attr: self.to_identifier(attr),
+            value: Box::new(object),
             ctx: ExprContext::Load,
         };
 
@@ -129,8 +171,8 @@ impl<'a> Parser<'a> {
         })
     }
 
-    pub(crate) fn parse_env_name(&mut self) -> Expr {
-        let attr = self.xonsh_attr("env");
+    pub(super) fn parse_env_name(&mut self) -> Expr {
+        let attr = self.xonsh_attr("env", true);
         let start = self.node_start();
         let slice = if self.at(TokenKind::Name) {
             let range = self.current_token_range();
@@ -154,8 +196,8 @@ impl<'a> Parser<'a> {
         };
         Expr::Subscript(ast)
     }
-    pub(crate) fn parse_env_expr(&mut self) -> Expr {
-        let attr = self.xonsh_attr("env");
+    pub(super) fn parse_env_expr(&mut self) -> Expr {
+        let attr = self.xonsh_attr("env", true);
 
         // Slice range doesn't include the `[` token.
         let slice_start = self.node_start();
@@ -186,7 +228,7 @@ impl<'a> Parser<'a> {
         Expr::Subscript(ast)
     }
     fn wrap_string(&mut self, attr: &str, string: Expr, start: TextSize) -> Expr {
-        let func = self.xonsh_attr(attr);
+        let func = self.xonsh_attr(attr, true);
 
         let args = vec![string];
         let arguments = ast::Arguments {
@@ -200,7 +242,7 @@ impl<'a> Parser<'a> {
             range: self.node_range(start),
         })
     }
-    pub(crate) fn parse_special_strings(&mut self, expr: Expr, start: TextSize) -> Expr {
+    pub(super) fn parse_special_strings(&mut self, expr: Expr, start: TextSize) -> Expr {
         match &expr {
             Expr::StringLiteral(s) => {
                 if s.value.is_path() {
@@ -216,43 +258,10 @@ impl<'a> Parser<'a> {
         expr
     }
 
-    pub(crate) fn dollar_rule_atom(&mut self) -> Expr {
-        let start = self.node_start();
-
-        // Skip the '$' token
-        self.bump_any();
-
-        match self.current_token_kind() {
-            TokenKind::Lpar => {
-                // Handle $(...)
-                self.parse_subprocs("__xonsh_subproc_captured_stdout__")
-            }
-            TokenKind::Lsqb => {
-                // Handle $[...]
-                self.parse_subprocs("__xonsh_subproc_uncaptured__")
-            }
-            TokenKind::Name => {
-                // Handle $NAME environment variable
-                self.parse_env_name()
-            }
-            TokenKind::Lbrace => {
-                // Skip the '{' token
-                self.bump_any();
-                // Handle ${...} environment expression
-                self.parse_env_expr()
-            }
-            _ => {
-                // Error case - unexpected token after $
-                self.add_error(
-                    ParseErrorType::OtherError(format!(
-                        "Expected '(', '[', '{{' or NAME after '$', got {}",
-                        self.current_token_kind()
-                    )),
-                    self.current_token_range(),
-                );
-                // Return a placeholder invalid expression
-                self.expr_name("Invalid")
-            }
-        }
+    fn literal_true(&self) -> Expr {
+        Expr::BooleanLiteral(ast::ExprBooleanLiteral {
+            value: true,
+            range: self.node_range(self.node_start()),
+        })
     }
 }

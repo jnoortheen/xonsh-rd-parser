@@ -1,9 +1,22 @@
-bg:
-  - "$(emacs ugggh &)"
-  - "$(emacs ugggh&)"
-  - $(emacs ugggh &)
-  - $(emacs ugggh&)
-
+env:
+  - "$WAKKA"
+  - ${None or $JAWAKA}
+captured:
+  - "$(cmd sub-cmd --opt)"
+  - "$[cmd sub-cmd --opt]"
+  - '$[git commit -am "wakka"]'
+  - '$[git commit -am "wakka jawaka"]'
+  - '$[ls "wakka jawaka baraka"]'
+uncaptured:
+  - "![cmd sub-cmd --opt]"
+  - "!(cmd sub-cmd --opt)"
+  - '![git commit -am "wakka"]'
+  - '![git commit -am "wakka jawaka"]'
+  - '![ls "wakka jawaka baraka"]'
+  - "![echo ,]"
+  - "![echo 1,2]"
+  - "!(echo '$foo')"
+  - "!(echo r'$foo')"
 combinators:
   - "$(ls | grep wakka)"
   - "$(ls | grep wakka | grep jawaka)"
@@ -15,11 +28,11 @@ combinators:
   - "![ls] or ![grep wakka] or ![grep jawaka]"
   - "![ls] || ![grep wakka]"
   - "![ls] || ![grep wakka] || ![grep jawaka]"
-
-env:
-  - "$WAKKA"
-  - ${None or $JAWAKA}
-
+bg:
+  - "$(emacs ugggh &)"
+  - "$(emacs ugggh&)"
+  - $(emacs ugggh &)
+  - $(emacs ugggh&)
 globs:
   - "`hello`"
   - "$(ls `#[Ff]+i*LE` -l)"
@@ -67,18 +80,3 @@ redirects:
   - "$(ls | grep wakka > x.py)"
   - "$(ls | grep wakka >> x.py)"
 
-subproc:
-  - "$(cmd sub-cmd --opt)"
-  - "$[cmd sub-cmd --opt]"
-  - "![cmd sub-cmd --opt]"
-  - "!(cmd sub-cmd --opt)"
-  - '![git commit -am "wakka"]'
-  - '![git commit -am "wakka jawaka"]'
-  - '![ls "wakka jawaka baraka"]'
-  - '$[git commit -am "wakka"]'
-  - '$[git commit -am "wakka jawaka"]'
-  - '$[ls "wakka jawaka baraka"]'
-  - "![echo ,]"
-  - "![echo 1,2]"
-  - "!(echo '$foo')"
-  - "!(echo r'$foo')"

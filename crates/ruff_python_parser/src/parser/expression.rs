@@ -585,12 +585,12 @@ impl<'src> Parser<'src> {
                 })
             }
             TokenKind::Name => Expr::Name(self.parse_name()),
-            TokenKind::BangLParen => self.parse_subprocs("subproc_captured_object"),
-            TokenKind::BangLSqb => self.parse_subprocs("subproc_captured_hiddenobject"),
-            TokenKind::DollarLParen => self.parse_subprocs("subproc_captured_stdout"),
-            TokenKind::DollarLSqb => self.parse_subprocs("subproc_uncaptured"),
             TokenKind::Dollar => self.parse_env_name(),
             TokenKind::DollarLBrace => self.parse_env_expr(),
+            TokenKind::BangLParen => self.parse_subprocs("capture_object"),
+            TokenKind::BangLSqb => self.parse_subprocs("run_hidden"),
+            TokenKind::DollarLParen => self.parse_subprocs("capture_out"),
+            TokenKind::DollarLSqb => self.parse_subprocs("run"),
             TokenKind::IpyEscapeCommand => {
                 Expr::IpyEscapeCommand(self.parse_ipython_escape_command_expression())
             }

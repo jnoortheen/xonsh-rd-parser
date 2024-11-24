@@ -42,7 +42,7 @@ def yaml_line_items(*names: str):
             data = yaml.safe_load(file)
         for case, lines in data.items():
             for idx, inp in enumerate(lines):
-                yield pytest.param(inp, id=f"{path.name}-{case}-{idx}")
+                yield pytest.param(inp, id=f"{path.stem}-{case}-{idx}")
 
 
 @pytest.mark.parametrize("inp", yaml_line_items("exprs", "stmts"))

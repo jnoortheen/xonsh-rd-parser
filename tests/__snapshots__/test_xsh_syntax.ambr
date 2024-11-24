@@ -1,211 +1,163 @@
 # serializer version: 1
-# name: test_line_items[exprs.yml-bg-0]
-  "__xonsh__.subproc_captured_stdout(['emacs', 'ugggh'], '&')"
+# name: test_line_items[exprs-bg-0]
+  "__xonsh__.cmd('emacs', 'ugggh', bg=True).capture_out()"
 # ---
-# name: test_line_items[exprs.yml-bg-1]
-  "__xonsh__.subproc_captured_stdout(['emacs', 'ugggh'], '&')"
+# name: test_line_items[exprs-bg-1]
+  "__xonsh__.cmd('emacs', 'ugggh', bg=True).capture_out()"
 # ---
-# name: test_line_items[exprs.yml-bg-2]
-  "__xonsh__.subproc_captured_stdout(['emacs', 'ugggh'], '&')"
+# name: test_line_items[exprs-bg-2]
+  "__xonsh__.cmd('emacs', 'ugggh', bg=True).capture_out()"
 # ---
-# name: test_line_items[exprs.yml-bg-3]
-  "__xonsh__.subproc_captured_stdout(['emacs', 'ugggh'], '&')"
+# name: test_line_items[exprs-bg-3]
+  "__xonsh__.cmd('emacs', 'ugggh', bg=True).capture_out()"
 # ---
-# name: test_line_items[exprs.yml-combinators-0]
-  "__xonsh__.subproc_captured_stdout(['ls'], '|', ['grep', 'wakka'])"
+# name: test_line_items[exprs-captured-0]
+  "__xonsh__.cmd('cmd', 'sub-cmd', '--opt').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-combinators-1]
-  "__xonsh__.subproc_captured_stdout(['ls'], '|', ['grep', 'wakka'], '|', ['grep', 'jawaka'])"
+# name: test_line_items[exprs-captured-1]
+  "__xonsh__.cmd('cmd', 'sub-cmd', '--opt').run()"
 # ---
-# name: test_line_items[exprs.yml-combinators-2]
-  "__xonsh__.subproc_captured_hiddenobject(['ls', 'me']) and __xonsh__.subproc_captured_hiddenobject(['grep', 'wakka'])"
+# name: test_line_items[exprs-combinators-0]
+  "__xonsh__.cmd('ls', '|', 'grep', 'wakka').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-combinators-3]
-  "__xonsh__.subproc_captured_hiddenobject(['ls']) and __xonsh__.subproc_captured_hiddenobject(['grep', 'wakka']) and __xonsh__.subproc_captured_hiddenobject(['grep', 'jawaka'])"
+# name: test_line_items[exprs-combinators-1]
+  "__xonsh__.cmd('ls', '|', 'grep', 'wakka', '|', 'grep', 'jawaka').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-combinators-4]
-  "__xonsh__.subproc_captured_hiddenobject(['ls']) and __xonsh__.subproc_captured_hiddenobject(['grep', 'wakka'])"
-# ---
-# name: test_line_items[exprs.yml-combinators-5]
-  "__xonsh__.subproc_captured_hiddenobject(['ls']) and __xonsh__.subproc_captured_hiddenobject(['grep', 'wakka']) and __xonsh__.subproc_captured_hiddenobject(['grep', 'jawaka'])"
-# ---
-# name: test_line_items[exprs.yml-combinators-6]
-  "__xonsh__.subproc_captured_hiddenobject(['ls']) or __xonsh__.subproc_captured_hiddenobject(['grep', 'wakka'])"
-# ---
-# name: test_line_items[exprs.yml-combinators-7]
-  "__xonsh__.subproc_captured_hiddenobject(['ls']) or __xonsh__.subproc_captured_hiddenobject(['grep', 'wakka']) or __xonsh__.subproc_captured_hiddenobject(['grep', 'jawaka'])"
-# ---
-# name: test_line_items[exprs.yml-combinators-8]
-  "__xonsh__.subproc_captured_hiddenobject(['ls']) or __xonsh__.subproc_captured_hiddenobject(['grep', 'wakka'])"
-# ---
-# name: test_line_items[exprs.yml-combinators-9]
-  "__xonsh__.subproc_captured_hiddenobject(['ls']) or __xonsh__.subproc_captured_hiddenobject(['grep', 'wakka']) or __xonsh__.subproc_captured_hiddenobject(['grep', 'jawaka'])"
-# ---
-# name: test_line_items[exprs.yml-env-0]
+# name: test_line_items[exprs-env-0]
   "__xonsh__.env['WAKKA']"
 # ---
-# name: test_line_items[exprs.yml-env-1]
+# name: test_line_items[exprs-env-1]
   "__xonsh__.env[None or __xonsh__.env['JAWAKA']]"
 # ---
-# name: test_line_items[exprs.yml-globs-0]
-  "__xonsh__.pathsearch(__xonsh__.regexsearch, 'hello', True, False)"
+# name: test_line_items[exprs-globs-0]
+  "__xonsh__.regex_literal('hello')"
 # ---
-# name: test_line_items[exprs.yml-globs-10]
-  "__xonsh__.subproc_captured_stdout(['ls'] + __xonsh__.pathsearch(__xonsh__.regexsearch, '[Ff]+i*LE', False, False) + ['-l'])"
+# name: test_line_items[exprs-globs-10]
+  "__xonsh__.cmd('ls', __xonsh__.regex_literal('[Ff]+i*LE'), 'l').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-globs-1]
-  "__xonsh__.subproc_captured_stdout(['ls'] + __xonsh__.pathsearch(__xonsh__.regexsearch, '#[Ff]+i*LE', False, False) + ['-l'])"
+# name: test_line_items[exprs-globs-1]
+  "__xonsh__.cmd('ls', __xonsh__.regex_literal('#[Ff]+i*LE'), 'l').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-globs-2]
-  "__xonsh__.subproc_captured_stdout(['ls'] + __xonsh__.pathsearch(__xonsh__.regexsearch, '[Ff]+i*LE', False, False) + ['-l'])"
+# name: test_line_items[exprs-globs-2]
+  "__xonsh__.cmd('ls', '[Ff]+i*LE', '-l').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-globs-3]
-  "__xonsh__.subproc_captured_stdout(['ls'] + __xonsh__.pathsearch(__xonsh__.regexsearch, '#[Ff]+i*LE', False, False) + ['-l'])"
+# name: test_line_items[exprs-globs-3]
+  "__xonsh__.cmd('ls', '#[Ff]+i*LE', '-l').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-globs-4]
-  "__xonsh__.subproc_captured_stdout(['ls'] + __xonsh__.pathsearch(__xonsh__.globsearch, '[Ff]+i*LE', False, False) + ['-l'])"
+# name: test_line_items[exprs-globs-4]
+  "__xonsh__.cmd('ls', __xonsh__.glob_literal('[Ff]+i*LE'), 'l').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-globs-5]
-  "__xonsh__.subproc_captured_stdout(['ls'] + __xonsh__.pathsearch(__xonsh__.globsearch, '#[Ff]+i*LE', False, False) + ['-l'])"
+# name: test_line_items[exprs-globs-5]
+  "__xonsh__.cmd('ls', __xonsh__.glob_literal('#[Ff]+i*LE'), 'l').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-globs-6]
-  "__xonsh__.subproc_captured_stdout(['ls'] + __xonsh__.pathsearch(foo, '[Ff]+i*LE', False, False) + ['-l'])"
+# name: test_line_items[exprs-globs-6]
+  "__xonsh__.cmd('ls', '@foo`[Ff]+i*LE`', '-l').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-globs-7]
-  "print(__xonsh__.pathsearch(foo, '.*', True, False))"
+# name: test_line_items[exprs-globs-8]
+  "__xonsh__.cmd('ls', '@foo`#[Ff]+i*LE`', '-l').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-globs-8]
-  "__xonsh__.subproc_captured_stdout(['ls'] + __xonsh__.pathsearch(foo, '#[Ff]+i*LE', False, False) + ['-l'])"
-# ---
-# name: test_line_items[exprs.yml-globs-9]
-  "print(__xonsh__.pathsearch(__xonsh__.regexsearch, '#.*', True, False))"
-# ---
-# name: test_line_items[exprs.yml-help-0]
-  '__xonsh__.help(range)'
-# ---
-# name: test_line_items[exprs.yml-help-1]
-  '__xonsh__.help(__xonsh__.help(range).index)'
-# ---
-# name: test_line_items[exprs.yml-help-2]
-  '__xonsh__.superhelp(range)'
-# ---
-# name: test_line_items[exprs.yml-path-literals-0]
+# name: test_line_items[exprs-path-literals-0]
   "__xonsh__.path_literal('/foo')"
 # ---
-# name: test_line_items[exprs.yml-path-literals-10]
-  "__xonsh__.path_literal(f'/foo{1 + 1}')"
+# name: test_line_items[exprs-path-literals-10]
+  "f'/foo{1 + 1}'"
 # ---
-# name: test_line_items[exprs.yml-path-literals-11]
-  "__xonsh__.path_literal(f'/foo{1 + 1}')"
+# name: test_line_items[exprs-path-literals-11]
+  "f'/foo{1 + 1}'"
 # ---
-# name: test_line_items[exprs.yml-path-literals-12]
-  "__xonsh__.path_literal(f'/foo{1 + 1}')"
+# name: test_line_items[exprs-path-literals-12]
+  "f'/foo{1 + 1}'"
 # ---
-# name: test_line_items[exprs.yml-path-literals-1]
-  "__xonsh__.path_literal('/foo')"
+# name: test_line_items[exprs-path-literals-1]
+  '"""/foo"""'
 # ---
-# name: test_line_items[exprs.yml-path-literals-2]
-  "__xonsh__.path_literal('/foo')"
+# name: test_line_items[exprs-path-literals-2]
+  '"""/foo"""'
 # ---
-# name: test_line_items[exprs.yml-path-literals-3]
-  "__xonsh__.path_literal('/foo')"
+# name: test_line_items[exprs-path-literals-3]
+  '"""/foo"""'
 # ---
-# name: test_line_items[exprs.yml-path-literals-4]
-  "__xonsh__.path_literal('/foo')"
+# name: test_line_items[exprs-path-literals-4]
+  '"""/foo"""'
 # ---
-# name: test_line_items[exprs.yml-path-literals-5]
-  "__xonsh__.path_literal(f'/foo')"
+# name: test_line_items[exprs-path-literals-5]
+  "f'/foo'"
 # ---
-# name: test_line_items[exprs.yml-path-literals-6]
-  "__xonsh__.path_literal(f'/foo')"
+# name: test_line_items[exprs-path-literals-6]
+  "f'/foo'"
 # ---
-# name: test_line_items[exprs.yml-path-literals-7]
-  "__xonsh__.path_literal(f'/foo')"
+# name: test_line_items[exprs-path-literals-7]
+  "f'/foo'"
 # ---
-# name: test_line_items[exprs.yml-path-literals-8]
-  "__xonsh__.path_literal(f'/foo')"
+# name: test_line_items[exprs-path-literals-8]
+  "f'/foo'"
 # ---
-# name: test_line_items[exprs.yml-path-literals-9]
-  "__xonsh__.path_literal(f'/foo{1 + 1}')"
+# name: test_line_items[exprs-path-literals-9]
+  "f'/foo{1 + 1}'"
 # ---
-# name: test_line_items[exprs.yml-proc-injection-0]
-  "__xonsh__.subproc_uncaptured([] + __xonsh__.subproc_captured_inject(['which', 'python']))"
+# name: test_line_items[exprs-redirects-0]
+  "__xonsh__.cmd('ls', '>>', 'x.py').capture_object()"
 # ---
-# name: test_line_items[exprs.yml-proc-injection-1]
-  "__xonsh__.subproc_uncaptured(['ls'] + __xonsh__.subproc_captured_inject(['dirname'] + __xonsh__.subproc_captured_inject(['which', 'python'])))"
+# name: test_line_items[exprs-redirects-1]
+  "__xonsh__.cmd('ls', '|', 'grep', 'wakka', '>', 'x.py').capture_object()"
 # ---
-# name: test_line_items[exprs.yml-proc-injection-2]
-  "__xonsh__.subproc_captured_hiddenobject([] + __xonsh__.list_of_list_of_strs_outer_product(('a', __xonsh__.subproc_captured_inject(['echo', '1', '2']), 'b')))"
+# name: test_line_items[exprs-redirects-2]
+  "__xonsh__.cmd('ls', '|', 'grep', 'wakka', '>>', 'x.py').capture_object()"
 # ---
-# name: test_line_items[exprs.yml-redirects-0]
-  "__xonsh__.subproc_captured_object(['ls', ('>>', 'x.py')])"
+# name: test_line_items[exprs-redirects-3]
+  "__xonsh__.cmd('ls', '>', 'x.py').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-redirects-1]
-  "__xonsh__.subproc_captured_object(['ls'], '|', ['grep', 'wakka', ('>', 'x.py')])"
+# name: test_line_items[exprs-redirects-4]
+  "__xonsh__.cmd('ls', '>>', 'x.py').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-redirects-2]
-  "__xonsh__.subproc_captured_object(['ls'], '|', ['grep', 'wakka', ('>>', 'x.py')])"
+# name: test_line_items[exprs-redirects-5]
+  "__xonsh__.cmd('ls', '|', 'grep', 'wakka', '>', 'x.py').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-redirects-3]
-  "__xonsh__.subproc_captured_stdout(['ls', ('>', 'x.py')])"
+# name: test_line_items[exprs-redirects-6]
+  "__xonsh__.cmd('ls', '|', 'grep', 'wakka', '>>', 'x.py').capture_out()"
 # ---
-# name: test_line_items[exprs.yml-redirects-4]
-  "__xonsh__.subproc_captured_stdout(['ls', ('>>', 'x.py')])"
+# name: test_line_items[exprs-uncaptured-0]
+  "__xonsh__.cmd('cmd', 'sub-cmd', '--opt').run_hidden()"
 # ---
-# name: test_line_items[exprs.yml-redirects-5]
-  "__xonsh__.subproc_captured_stdout(['ls'], '|', ['grep', 'wakka', ('>', 'x.py')])"
+# name: test_line_items[exprs-uncaptured-1]
+  "__xonsh__.cmd('cmd', 'sub-cmd', '--opt').capture_object()"
 # ---
-# name: test_line_items[exprs.yml-redirects-6]
-  "__xonsh__.subproc_captured_stdout(['ls'], '|', ['grep', 'wakka', ('>>', 'x.py')])"
+# name: test_line_items[exprs-uncaptured-6]
+  "__xonsh__.cmd('echo', '1,2').run_hidden()"
 # ---
-# name: test_line_items[exprs.yml-subproc-0]
-  "__xonsh__.subproc_captured_stdout(['cmd', 'sub-cmd', '--opt'])"
+# name: test_line_items[exprs-uncaptured-7]
+  "__xonsh__.cmd('echo', '$foo').capture_object()"
 # ---
-# name: test_line_items[exprs.yml-subproc-10]
-  "__xonsh__.subproc_captured_hiddenobject(['echo', ','])"
+# name: test_line_items[exprs-uncaptured-8]
+  "__xonsh__.cmd('echo', '$foo').capture_object()"
 # ---
-# name: test_line_items[exprs.yml-subproc-11]
-  "__xonsh__.subproc_captured_hiddenobject(['echo', '1,2'])"
-# ---
-# name: test_line_items[exprs.yml-subproc-12]
-  "__xonsh__.subproc_captured_object(['echo', '$foo'])"
-# ---
-# name: test_line_items[exprs.yml-subproc-13]
-  "__xonsh__.subproc_captured_object(['echo', '$foo'])"
-# ---
-# name: test_line_items[exprs.yml-subproc-1]
-  "__xonsh__.subproc_uncaptured(['cmd', 'sub-cmd', '--opt'])"
-# ---
-# name: test_line_items[exprs.yml-subproc-2]
-  "__xonsh__.subproc_captured_hiddenobject(['cmd', 'sub-cmd', '--opt'])"
-# ---
-# name: test_line_items[exprs.yml-subproc-3]
-  "__xonsh__.subproc_captured_object(['cmd', 'sub-cmd', '--opt'])"
-# ---
-# name: test_line_items[exprs.yml-subproc-4]
-  "__xonsh__.subproc_captured_hiddenobject(['git', 'commit', '-am', 'wakka'])"
-# ---
-# name: test_line_items[exprs.yml-subproc-5]
-  "__xonsh__.subproc_captured_hiddenobject(['git', 'commit', '-am', 'wakka jawaka'])"
-# ---
-# name: test_line_items[exprs.yml-subproc-6]
-  "__xonsh__.subproc_captured_hiddenobject(['ls', 'wakka jawaka baraka'])"
-# ---
-# name: test_line_items[exprs.yml-subproc-7]
-  "__xonsh__.subproc_uncaptured(['git', 'commit', '-am', 'wakka'])"
-# ---
-# name: test_line_items[exprs.yml-subproc-8]
-  "__xonsh__.subproc_uncaptured(['git', 'commit', '-am', 'wakka jawaka'])"
-# ---
-# name: test_line_items[exprs.yml-subproc-9]
-  "__xonsh__.subproc_uncaptured(['ls', 'wakka jawaka baraka'])"
-# ---
-# name: test_line_items[stmts.yml-assignments-0]
+# name: test_line_items[stmts-assignments-0]
   "__xonsh__.env['WAKKA']"
 # ---
-# name: test_line_items[stmts.yml-assignments-6]
+# name: test_line_items[stmts-assignments-10]
+  '__xonsh__.env[x] = 65'
+# ---
+# name: test_line_items[stmts-assignments-1]
+  "__xonsh__.env['y'] = 'one'"
+# ---
+# name: test_line_items[stmts-assignments-2]
+  "__xonsh__.env['WAKKA'] = 42"
+# ---
+# name: test_line_items[stmts-assignments-3]
+  "y = __xonsh__.env['x']"
+# ---
+# name: test_line_items[stmts-assignments-4]
+  'y = __xonsh__.env[x]'
+# ---
+# name: test_line_items[stmts-assignments-5]
+  "y = __xonsh__.env['x' + 'y']"
+# ---
+# name: test_line_items[stmts-assignments-6]
   "__xonsh__.env[None or 'WAKKA']"
 # ---
-# name: test_line_items[stmts.yml-assignments-7]
+# name: test_line_items[stmts-assignments-7]
   "__xonsh__.env[__xonsh__.env['JAWAKA']]"
+# ---
+# name: test_line_items[stmts-assignments-8]
+  "__xonsh__.env['WAKKA'] = 42"
 # ---
