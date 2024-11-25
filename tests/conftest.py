@@ -135,10 +135,5 @@ def check_xonsh_ast(xsh):
     return factory
 
 
-def pytest_addoption(parser):
-    parser.addoption(
-        "--update-snaps",
-        action="store_true",
-        default=False,
-        help="update the corresponding yaml snapshots",
-    )
+# configure plugins
+pytest_plugins = ["tests.yaml_snaps"]
