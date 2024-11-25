@@ -17,6 +17,7 @@ assignments:
   exp: __xonsh__.env[__xonsh__.env['JAWAKA']]
 - inp: $WAKKA = 42
   exp: __xonsh__.env['WAKKA'] = 42
-- inp: ${$"JAWA" + $JAWAKA[-2:]}
+- inp: ${$JAWA + $JAWAKA[-2:]}
+  exp: __xonsh__.env[__xonsh__.env['JAWA'] + __xonsh__.env['JAWAKA'][-2:]]
 - inp: ${x} = 65
   exp: __xonsh__.env[x] = 65

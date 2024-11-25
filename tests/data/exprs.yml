@@ -43,24 +43,24 @@ ands:
 - inp: '![ls me] and ![grep wakka]'
   exp: __xonsh__.cmd('ls', 'me').hide() and __xonsh__.cmd('grep', 'wakka').hide()
 - inp: '![ls] and ![grep wakka] and ![grep jawaka]'
-  exp: __xonsh__.cmd('ls').hide() and __xonsh__.cmd('grep', 'wakka').hide()
-    and __xonsh__.cmd('grep', 'jawaka').hide()
+  exp: __xonsh__.cmd('ls').hide() and __xonsh__.cmd('grep', 'wakka').hide() and __xonsh__.cmd('grep',
+    'jawaka').hide()
 - inp: '![ls] && ![grep wakka]'
   exp: __xonsh__.cmd('ls').hide() and __xonsh__.cmd('grep', 'wakka').hide()
 - inp: '![ls] && ![grep wakka] && ![grep jawaka]'
-  exp: __xonsh__.cmd('ls').hide() and __xonsh__.cmd('grep', 'wakka').hide()
-    and __xonsh__.cmd('grep', 'jawaka').hide()
+  exp: __xonsh__.cmd('ls').hide() and __xonsh__.cmd('grep', 'wakka').hide() and __xonsh__.cmd('grep',
+    'jawaka').hide()
 ors:
 - inp: '![ls] or ![grep wakka]'
   exp: __xonsh__.cmd('ls').hide() or __xonsh__.cmd('grep', 'wakka').hide()
 - inp: '![ls] or ![grep wakka] or ![grep jawaka]'
-  exp: __xonsh__.cmd('ls').hide() or __xonsh__.cmd('grep', 'wakka').hide()
-    or __xonsh__.cmd('grep', 'jawaka').hide()
+  exp: __xonsh__.cmd('ls').hide() or __xonsh__.cmd('grep', 'wakka').hide() or __xonsh__.cmd('grep',
+    'jawaka').hide()
 - inp: '![ls] || ![grep wakka]'
   exp: __xonsh__.cmd('ls').hide() or __xonsh__.cmd('grep', 'wakka').hide()
 - inp: '![ls] || ![grep wakka] || ![grep jawaka]'
-  exp: __xonsh__.cmd('ls').hide() or __xonsh__.cmd('grep', 'wakka').hide()
-    or __xonsh__.cmd('grep', 'jawaka').hide()
+  exp: __xonsh__.cmd('ls').hide() or __xonsh__.cmd('grep', 'wakka').hide() or __xonsh__.cmd('grep',
+    'jawaka').hide()
 bg:
 - inp: $(emacs ugggh &)
   exp: __xonsh__.cmd('emacs', 'ugggh', bg=True).out()
@@ -89,7 +89,7 @@ globs:
 - inp: $(ls @foo`#[Ff]+i*LE` -l)
   exp: __xonsh__.cmd('ls', '@foo`#[Ff]+i*LE`', '-l').out()
 - inp: print(`#.*`)
-- inp: '$(ls `[Ff]+i*LE` -l)'
+- inp: $(ls `[Ff]+i*LE` -l)
   exp: __xonsh__.cmd('ls', __xonsh__.regex_literal('[Ff]+i*LE'), 'l').out()
 help:
 - inp: range?
@@ -136,14 +136,14 @@ redirects:
 - inp: '!(ls >> x.py)'
   exp: __xonsh__.cmd('ls', '>>', 'x.py').obj()
 - inp: '!(ls | grep wakka > x.py)'
-  exp: __xonsh__.cmd('ls', '|', 'grep', 'wakka', '>', 'x.py').obj()
+  exp: __xonsh__.cmd('ls').pipe('grep', 'wakka', '>', 'x.py').obj()
 - inp: '!(ls | grep wakka >> x.py)'
-  exp: __xonsh__.cmd('ls', '|', 'grep', 'wakka', '>>', 'x.py').obj()
+  exp: __xonsh__.cmd('ls').pipe('grep', 'wakka', '>>', 'x.py').obj()
 - inp: $(ls > x.py)
   exp: __xonsh__.cmd('ls', '>', 'x.py').out()
 - inp: $(ls >> x.py)
   exp: __xonsh__.cmd('ls', '>>', 'x.py').out()
 - inp: $(ls | grep wakka > x.py)
-  exp: __xonsh__.cmd('ls', '|', 'grep', 'wakka', '>', 'x.py').out()
+  exp: __xonsh__.cmd('ls').pipe('grep', 'wakka', '>', 'x.py').out()
 - inp: $(ls | grep wakka >> x.py)
-  exp: __xonsh__.cmd('ls', '|', 'grep', 'wakka', '>>', 'x.py').out()
+  exp: __xonsh__.cmd('ls').pipe('grep', 'wakka', '>>', 'x.py').out()
