@@ -12,7 +12,7 @@ use crate::{
 impl<'a> Parser<'a> {
     /// Parses a subprocess expression.
     /// This includes various forms of subprocess capture like `$(...)`, `$[...]`, `!(...)`, and `![...]`.
-    pub(super) fn parse_subprocs(&mut self, method: impl AsRef<str>) -> Expr {
+    pub(super) fn parse_subprocs(&mut self, method: impl Into<Name>) -> Expr {
         let start = self.node_start();
         let closing = TokenKind::Rpar;
         self.bump_any(); // skip the `$`
@@ -22,20 +22,24 @@ impl<'a> Parser<'a> {
             self.bump_any();
         }
 
-        let group_call = self.parse_cmd_group(closing);
-        let attr = self.to_attr(group_call, method);
-        let arguments = ast::Arguments {
-            range: self.node_range(start),
-            args: vec![].into_boxed_slice(),
-            keywords: vec![].into_boxed_slice(),
-        };
-        Expr::Call(ast::ExprCall {
-            func: Box::new(attr),
-            arguments,
-            range: self.node_range(start),
-        })
+        let mut cmd = self
+            .xonsh_attr("cmd", false)
+            .call(self.parse_cmd_group(closing), self.node_range(start));
+        loop {
+            if self.at(TokenKind::Vbar) {
+                let start = self.node_start();
+                self.bump_any();
+                cmd = cmd
+                    .attr("pipe", self.node_range(start))
+                    .call(self.parse_cmd_group(closing), self.node_range(start));
+            } else {
+                break;
+            }
+        }
+        cmd.attr(method, self.node_range(start))
+            .call_empty(self.node_range(start))
     }
-    fn parse_cmd_group(&mut self, closing: TokenKind) -> Expr {
+    fn parse_cmd_group(&mut self, closing: TokenKind) -> ast::Arguments {
         let start = self.node_start();
         let mut progress = ParserProgress::default();
         let mut cmds = Vec::new();
@@ -44,6 +48,9 @@ impl<'a> Parser<'a> {
         loop {
             if self.at(TokenKind::Rpar) {
                 self.bump_any();
+                break;
+            }
+            if self.at(TokenKind::Vbar) {
                 break;
             }
             if self.at(TokenKind::Amper) && self.peek() == closing {
@@ -58,17 +65,11 @@ impl<'a> Parser<'a> {
             }
             cmds.push(self.parse_proc_arg(&mut progress));
         }
-        let arguments = ast::Arguments {
+        ast::Arguments {
             range: self.node_range(start),
             args: cmds.into_boxed_slice(),
             keywords: keywords.into_boxed_slice(),
-        };
-        let attr = self.xonsh_attr("cmd", false);
-        Expr::Call(ast::ExprCall {
-            func: Box::new(attr),
-            arguments,
-            range: self.node_range(start),
-        })
+        }
     }
 
     /// Parses arguments in a subprocess expression.
@@ -117,28 +118,15 @@ impl<'a> Parser<'a> {
     }
 
     /// Creates a xonsh attribute expression.
-    fn xonsh_attr(&mut self, name: impl AsRef<str>, advance: bool) -> Expr {
+    fn xonsh_attr(&mut self, name: impl Into<Name>, advance: bool) -> Expr {
         if advance {
             self.bump_any();
         }
         let xonsh = self.expr_name("__xonsh__");
-        self.to_attr(xonsh, name)
+        xonsh.attr(name, self.current_token_range())
     }
-    fn to_identifier(&self, name: impl AsRef<str>) -> ast::Identifier {
-        ast::Identifier {
-            id: Name::new(name),
-            range: self.current_token_range(),
-        }
-    }
-    fn to_attr(&self, object: Expr, attr: impl AsRef<str>) -> Expr {
-        let name = ast::ExprAttribute {
-            range: self.current_token_range(),
-            attr: self.to_identifier(attr),
-            value: Box::new(object),
-            ctx: ExprContext::Load,
-        };
-
-        Expr::Attribute(name)
+    fn to_identifier(&self, name: impl Into<Name>) -> ast::Identifier {
+        Expr::identifier(name, self.current_token_range())
     }
     fn expr_name(&self, name: impl AsRef<str>) -> Expr {
         let val = ast::ExprName {
