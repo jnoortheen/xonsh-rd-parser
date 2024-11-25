@@ -136,4 +136,4 @@ def check_xonsh_ast(xsh):
 
 
 # configure plugins
-pytest_plugins = ["tests.yaml_snaps"]
+pytest_plugins = ["yaml_snaps"]
