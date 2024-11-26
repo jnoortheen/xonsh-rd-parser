@@ -15,6 +15,7 @@ ruff_python_ast = { workspace = true }
 ruff_text_size = { workspace = true }
 num-complex = { workspace = true }
 bon = { workspace = true }
+ruff_source_file = { workspace = true }
 
 [lints]
 workspace = true

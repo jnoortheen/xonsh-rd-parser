@@ -1,6 +1,6 @@
 use std::vec;
 
-use crate::ast_module::{AstModule, Callable};
+use crate::ast_module::AstModule;
 use crate::to_ast::ToAst;
 use pyo3::{IntoPy, PyObject};
 use ruff_python_ast::*;
@@ -9,7 +9,7 @@ type PyResult = pyo3::PyResult<PyObject>;
 
 impl ToAst for Parameter {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("arg")?.call_with_loc(
+        module.attr("arg")?.call(
             self.range,
             [
                 ("arg", self.name.to_ast(module)?),
@@ -51,7 +51,8 @@ impl ToAst for Parameters {
             kw_defaults.push(arg.default.to_ast(module)?);
         }
 
-        module.attr("arguments")?.callk(
+        module.attr("arguments")?.call(
+            self.range,
             [
                 ("posonlyargs", posonlyargs.into_py(module.py)),
                 ("args", args.into_py(module.py)),
@@ -69,7 +70,7 @@ impl ToAst for StmtAssert {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         Ok(module
             .attr("Assert")?
-            .call_with_loc(
+            .call(
                 self.range,
                 [
                     ("test", self.test.to_ast(module)?),
@@ -96,7 +97,7 @@ impl ToAst for TypeParam {
 }
 impl ToAst for TypeParamTypeVar {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("TypeVar")?.call_with_loc(
+        module.attr("TypeVar")?.call(
             self.range,
             [
                 ("name", self.name.to_ast(module)?),
@@ -108,7 +109,8 @@ impl ToAst for TypeParamTypeVar {
 }
 impl ToAst for TypeParamParamSpec {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("ParamSpec")?.callk(
+        module.attr("ParamSpec")?.call(
+            self.range,
             [
                 ("name", self.name.to_ast(module)?),
                 ("default_value", self.default.to_ast(module)?),
@@ -118,7 +120,7 @@ impl ToAst for TypeParamParamSpec {
 }
 impl ToAst for TypeParamTypeVarTuple {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("TypeVarTuple")?.call_with_loc(
+        module.attr("TypeVarTuple")?.call(
             self.range,
             [
                 ("name", self.name.to_ast(module)?),
@@ -139,7 +141,7 @@ impl ToAst for StmtFunctionDef {
         } else {
             module.attr("FunctionDef")?
         };
-        obj.call_with_loc(
+        obj.call(
             self.range,
             [
                 ("name", self.name.as_str().to_owned().into_py(module.py)),
@@ -155,50 +157,56 @@ impl ToAst for StmtFunctionDef {
 
 impl ToAst for StmtBreak {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Break")?.call0_with_loc(self.range)
+        module.attr("Break")?.callk(module.location(self.range))
     }
 }
 
 impl ToAst for StmtPass {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Pass")?.call0_with_loc(self.range)
+        module.attr("Pass")?.callk(module.location(self.range))
     }
 }
 
 impl ToAst for StmtContinue {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        Ok(module.attr("Continue")?.call0_with_loc(self.range)?.into())
+        module.attr("Continue")?.callk(module.location(self.range))
     }
 }
 impl ToAst for Alias {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("alias")?.callk([
-            ("name", self.name.to_ast(module)?),
-            ("asname", self.asname.to_ast(module)?),
-        ])
+        module.attr("alias")?.call(
+            self.range,
+            [
+                ("name", self.name.to_ast(module)?),
+                ("asname", self.asname.to_ast(module)?),
+            ],
+        )
     }
 }
 impl ToAst for StmtImport {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module
             .attr("Import")?
-            .callk([("names", self.names.to_ast(module)?)])
+            .call(self.range, [("names", self.names.to_ast(module)?)])
     }
 }
 impl ToAst for StmtImportFrom {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("ImportFrom")?.callk([
-            ("names", self.names.to_ast(module)?),
-            ("module", self.module.to_ast(module)?),
-            ("level", self.level.into_py(module.py)),
-        ])
+        module.attr("ImportFrom")?.call(
+            self.range,
+            [
+                ("names", self.names.to_ast(module)?),
+                ("module", self.module.to_ast(module)?),
+                ("level", self.level.into_py(module.py)),
+            ],
+        )
     }
 }
 impl ToAst for StmtReturn {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module
             .attr("Return")?
-            .call_with_loc(self.range, [("value", self.value.to_ast(module)?)])
+            .call(self.range, [("value", self.value.to_ast(module)?)])
     }
 }
 
@@ -206,13 +214,13 @@ impl ToAst for StmtExpr {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module
             .attr("Expr")?
-            .call_with_loc(self.range, [("value", self.value.to_ast(module)?)])
+            .call(self.range, [("value", self.value.to_ast(module)?)])
     }
 }
 
 impl ToAst for StmtAugAssign {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("AugAssign")?.call_with_loc(
+        module.attr("AugAssign")?.call(
             self.range,
             [
                 ("value", self.value.to_ast(module)?),
@@ -224,7 +232,7 @@ impl ToAst for StmtAugAssign {
 }
 impl ToAst for StmtAnnAssign {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("AnnAssign")?.call_with_loc(
+        module.attr("AnnAssign")?.call(
             self.range,
             [
                 ("value", self.value.to_ast(module)?),
@@ -242,7 +250,7 @@ impl ToAst for StmtFor {
         } else {
             module.attr("For")?
         };
-        cls.call_with_loc(
+        cls.call(
             self.range,
             [
                 ("target", self.target.to_ast(module)?),
@@ -295,7 +303,7 @@ impl ToAst for Vec<ElifElseClause> {
         let (first, rest) = self.split_first().unwrap();
 
         if first.test.is_some() {
-            let obj = module.attr("If")?.call_with_loc(
+            let obj = module.attr("If")?.call(
                 first.range,
                 [
                     ("test", first.test.to_ast(module)?),
@@ -311,7 +319,7 @@ impl ToAst for Vec<ElifElseClause> {
 }
 impl ToAst for StmtIf {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("If")?.call_with_loc(
+        module.attr("If")?.call(
             self.range,
             [
                 ("test", self.test.to_ast(module)?),
@@ -323,7 +331,7 @@ impl ToAst for StmtIf {
 }
 impl ToAst for StmtWhile {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("While")?.call_with_loc(
+        module.attr("While")?.call(
             self.range,
             [
                 ("test", self.test.to_ast(module)?),
@@ -337,7 +345,7 @@ impl ToAst for StmtGlobal {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module
             .attr("Global")?
-            .call_with_loc(self.range, [("names", self.names.to_ast(module)?)])
+            .call(self.range, [("names", self.names.to_ast(module)?)])
     }
 }
 
@@ -345,12 +353,12 @@ impl ToAst for StmtNonlocal {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module
             .attr("Nonlocal")?
-            .call_with_loc(self.range, [("names", self.names.to_ast(module)?)])
+            .call(self.range, [("names", self.names.to_ast(module)?)])
     }
 }
 impl ToAst for StmtRaise {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Raise")?.call_with_loc(
+        module.attr("Raise")?.call(
             self.range,
             [
                 ("exc", self.exc.to_ast(module)?),
@@ -377,7 +385,7 @@ impl ToAst for StmtTry {
         } else {
             module.attr("Try")?
         };
-        cls.call_with_loc(
+        cls.call(
             self.range,
             [
                 ("body", self.body.to_ast(module)?),
@@ -390,7 +398,7 @@ impl ToAst for StmtTry {
 }
 impl ToAst for StmtClassDef {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("ClassDef")?.call_with_loc(
+        module.attr("ClassDef")?.call(
             self.range,
             [
                 ("name", self.name.to_ast(module)?),
@@ -410,7 +418,7 @@ impl ToAst for Decorator {
 }
 impl ToAst for StmtAssign {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Assign")?.call_with_loc(
+        module.attr("Assign")?.call(
             self.range,
             [
                 ("targets", self.targets.to_ast(module)?),
@@ -421,7 +429,8 @@ impl ToAst for StmtAssign {
 }
 impl ToAst for WithItem {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("withitem")?.callk(
+        module.attr("withitem")?.call(
+            self.range,
             [
                 ("context_expr", self.context_expr.to_ast(module)?),
                 ("optional_vars", self.optional_vars.to_ast(module)?),
@@ -436,7 +445,7 @@ impl ToAst for StmtWith {
         } else {
             module.attr("With")?
         };
-        cls.call_with_loc(
+        cls.call(
             self.range,
             [
                 ("items", self.items.to_ast(module)?),
@@ -449,12 +458,12 @@ impl ToAst for StmtDelete {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module
             .attr("Delete")?
-            .call_with_loc(self.range, [("targets", self.targets.to_ast(module)?)])
+            .call(self.range, [("targets", self.targets.to_ast(module)?)])
     }
 }
 impl ToAst for StmtMatch {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Match")?.call_with_loc(
+        module.attr("Match")?.call(
             self.range,
             [
                 ("subject", self.subject.to_ast(module)?),
@@ -465,7 +474,7 @@ impl ToAst for StmtMatch {
 }
 impl ToAst for StmtTypeAlias {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("TypeAlias")?.call_with_loc(
+        module.attr("TypeAlias")?.call(
             self.range,
             [
                 ("name", self.name.to_ast(module)?),
@@ -479,6 +488,6 @@ impl ToAst for ModModule {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module
             .attr("Module")?
-            .callk([("body", self.body.to_ast(module)?)])
+            .call(self.range, [("body", self.body.to_ast(module)?)])
     }
 }

@@ -1,6 +1,6 @@
 use ruff_python_parser::{ParseError, ParseErrorType};
 use ruff_source_file::{LineIndex, OneIndexed, SourceCode};
-use ruff_text_size::{TextRange, TextSize};
+use ruff_text_size::TextRange;
 use std::fmt::Formatter;
 
 use annotate_snippets::display_list::{DisplayList, FormatOptions};
@@ -11,17 +11,6 @@ pub(crate) fn to_exc_msg(src: &str, filename: &str, err: &ParseError) -> String 
     let source_code = SourceCode::new(src, &line_index);
     let code_frame = CodeFrame::new(&source_code, err);
     format!("{err} in {filename}:\n{code_frame}")
-    // let start = code_frame.start();
-    // let end = code_frame.end();
-    // let err = PySyntaxError::new_err((
-    //     msg,
-    //     filename.to_string(),
-    //     start.0,
-    //     start.1,
-    //     src.to_string(),
-    //     end.0,
-    //     end.1,
-    // ));
 }
 pub(crate) struct CodeFrame<'a> {
     range: TextRange,
@@ -36,16 +25,6 @@ impl<'a> CodeFrame<'a> {
             error: &error.error,
             source,
         }
-    }
-    fn location(&self, offset: TextSize) -> (usize, usize) {
-        let location = self.source.source_location(offset);
-        (location.row.get(), location.column.get())
-    }
-    pub(crate) fn start(&self) -> (usize, usize) {
-        self.location(self.range.start())
-    }
-    pub(crate) fn end(&self) -> (usize, usize) {
-        self.location(self.range.end())
     }
 }
 
