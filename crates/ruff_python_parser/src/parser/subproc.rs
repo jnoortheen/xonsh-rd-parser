@@ -127,12 +127,9 @@ impl<'a> Parser<'a> {
         if !self.at(TokenKind::Name) || self.peek() != TokenKind::String {
             unreachable!("Expected to parse a name and a string");
         }
-        println!("1--{:?}", self.current_token_kind());
         let start = self.node_start();
         let name = Expr::from(self.parse_name());
-        println!("2--{:?}", self.current_token_kind());
         let string = self.parse_strings();
-        println!("3--{:?}", self.current_token_kind());
         let range = self.node_range(start);
         pattern
             .call0(vec![string], range)
