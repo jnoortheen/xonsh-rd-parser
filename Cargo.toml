@@ -31,6 +31,9 @@ py_ast = { workspace = true }
 ruff_text_size = { workspace = true }
 annotate-snippets = { workspace = true }
 
+[dev-dependencies]
+insta = { workspace = true }
+
 [workspace.dependencies]
 ruff_cache = { path = "crates/ruff_cache" }
 ruff_macros = { path = "crates/ruff_macros" }

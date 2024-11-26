@@ -1,9 +1,7 @@
-use crate::annotate_src::CodeFrame;
 use py_ast::ast_module::AstModule;
 use py_ast::to_ast::ToAst;
 use pyo3::exceptions::PySyntaxError;
 use pyo3::{PyObject, PyResult, Python};
-use ruff_source_file::{LineIndex, SourceCode};
 
 pub fn parse_str<'py>(
     py: Python<'py>,
@@ -28,40 +26,53 @@ pub fn parse_str<'py>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::annotate_src::CodeFrame;
     use ruff_python_parser::{parse_unchecked, Mode};
     use ruff_source_file::{LineIndex, SourceCode};
     use ruff_text_size::TextLen;
     use std::fmt::Write;
-    fn test_valid_source<'a>(source: &'a str) {
+
+    fn test_valid_source<'a>(source: &'a str) -> String {
         let parsed = parse_unchecked(&source, Mode::Module);
 
         if !parsed.is_valid() {
             let line_index = LineIndex::from_source_text(&source);
             let source_code = SourceCode::new(&source, &line_index);
 
-            let mut message = "Expected no syntax errors for a valid program but the parser generated the following errors:\n".to_string();
+            let mut message = "Expected no syntax errors for a valid \
+            program but the parser generated the following errors:\n"
+                .to_string();
 
             for error in parsed.errors() {
                 let frame = CodeFrame::new(&source_code, error);
                 writeln!(&mut message, "{frame}\n").unwrap();
+                writeln!(
+                    &mut message,
+                    "error at: {:?}:{:?}\n",
+                    frame.start(),
+                    frame.end()
+                )
+                .unwrap();
             }
 
+            println!("Tokens: {:?}", parsed.tokens());
+            println!("length: {:?}", source.text_len());
             panic!("{source:?}: {message}");
         }
-
-        println!("Tokens: {:?}", parsed.tokens());
-        println!("length: {:?}", source.text_len());
 
         let mut output = String::new();
         writeln!(&mut output, "## AST").unwrap();
         writeln!(&mut output, "\n```\n{:#?}\n```", parsed.syntax()).unwrap();
+
+        assert!(parsed.is_valid());
+        output
     }
 
     #[test]
     fn test_tmp() {
         let source = r#"print(@foo`hello`)"#;
         // let source = r#"print('hello')"#;
-        test_valid_source(source)
+        let output = test_valid_source(source);
+        insta::assert_snapshot!(output);
     }
 }

@@ -12,23 +12,23 @@ snapshot_kind: text
                     range: 0..19,
                     func: Attribute(
                         ExprAttribute {
-                            range: 19..19,
+                            range: 0..19,
                             value: Call(
                                 ExprCall {
-                                    range: 2..19,
+                                    range: 0..19,
                                     func: Attribute(
                                         ExprAttribute {
-                                            range: 19..19,
+                                            range: 2..6,
                                             value: Name(
                                                 ExprName {
-                                                    range: 19..19,
+                                                    range: 2..6,
                                                     id: Name("__xonsh__"),
                                                     ctx: Load,
                                                 },
                                             ),
                                             attr: Identifier {
                                                 id: Name("cmd"),
-                                                range: 19..19,
+                                                range: 2..6,
                                             },
                                             ctx: Load,
                                         },
@@ -96,8 +96,8 @@ snapshot_kind: text
                                 },
                             ),
                             attr: Identifier {
-                                id: Name("capture_out"),
-                                range: 19..19,
+                                id: Name("out"),
+                                range: 0..19,
                             },
                             ctx: Load,
                         },

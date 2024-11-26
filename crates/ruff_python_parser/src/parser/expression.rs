@@ -62,6 +62,7 @@ pub(super) const EXPR_SET: TokenSet = TokenSet::new([
     TokenKind::DollarLBrace,
     TokenKind::AtDollarLParen,
     TokenKind::BackTick,
+    TokenKind::At,
 ])
 .union(LITERAL_SET);
 

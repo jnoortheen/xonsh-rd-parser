@@ -1,0 +1,113 @@
+---
+source: src/parser.rs
+expression: output
+snapshot_kind: text
+---
+## AST
+
+```
+Module(
+    ModModule {
+        range: 0..18,
+        body: [
+            Expr(
+                StmtExpr {
+                    range: 0..18,
+                    value: Call(
+                        ExprCall {
+                            range: 0..18,
+                            func: Name(
+                                ExprName {
+                                    range: 0..5,
+                                    id: Name("print"),
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 5..18,
+                                args: [
+                                    Call(
+                                        ExprCall {
+                                            range: 7..17,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    range: 7..17,
+                                                    value: Call(
+                                                        ExprCall {
+                                                            range: 7..17,
+                                                            func: Attribute(
+                                                                ExprAttribute {
+                                                                    range: 7..10,
+                                                                    value: Name(
+                                                                        ExprName {
+                                                                            range: 7..10,
+                                                                            id: Name("__xonsh__"),
+                                                                            ctx: Load,
+                                                                        },
+                                                                    ),
+                                                                    attr: Identifier {
+                                                                        id: Name("Pattern"),
+                                                                        range: 7..10,
+                                                                    },
+                                                                    ctx: Load,
+                                                                },
+                                                            ),
+                                                            arguments: Arguments {
+                                                                range: 7..17,
+                                                                args: [
+                                                                    StringLiteral(
+                                                                        ExprStringLiteral {
+                                                                            range: 10..17,
+                                                                            value: StringLiteralValue {
+                                                                                inner: Single(
+                                                                                    StringLiteral {
+                                                                                        range: 10..17,
+                                                                                        value: "hello",
+                                                                                        flags: StringLiteralFlags {
+                                                                                            quote_style: Single,
+                                                                                            prefix: Regex,
+                                                                                            triple_quoted: false,
+                                                                                        },
+                                                                                    },
+                                                                                ),
+                                                                            },
+                                                                        },
+                                                                    ),
+                                                                ],
+                                                                keywords: [],
+                                                            },
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("invoke"),
+                                                        range: 7..17,
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 7..17,
+                                                args: [
+                                                    Name(
+                                                        ExprName {
+                                                            range: 7..10,
+                                                            id: Name("foo"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                ],
+                                keywords: [],
+                            },
+                        },
+                    ),
+                },
+            ),
+        ],
+    },
+)
+```
