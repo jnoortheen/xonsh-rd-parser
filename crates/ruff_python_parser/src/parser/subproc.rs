@@ -226,19 +226,25 @@ impl<'a> Parser<'a> {
         };
         Expr::Subscript(ast)
     }
-    fn wrap_string(&mut self, attr: &str, string: Expr, start: TextSize) -> Expr {
-        let args = vec![string];
-        self.xonsh_attr(attr).call0(args, self.node_range(start))
-    }
     pub(super) fn parse_special_strings(&mut self, expr: Expr, start: TextSize) -> Expr {
         match &expr {
             Expr::StringLiteral(s) => {
                 if s.value.is_path() {
-                    return self.wrap_string("path_literal", expr, start);
+                    return self
+                        .xonsh_attr("path_literal")
+                        .call0(vec![expr], self.node_range(start));
                 } else if s.value.is_regex() {
-                    return self.wrap_string("regex_literal", expr, start);
+                    return self
+                        .xonsh_attr("Pattern")
+                        .call0(vec![expr], self.node_range(start))
+                        .attr("regex", self.node_range(start))
+                        .call_empty(self.node_range(start));
                 } else if s.value.is_glob() {
-                    return self.wrap_string("glob_literal", expr, start);
+                    return self
+                        .xonsh_attr("Pattern")
+                        .call0(vec![expr], self.node_range(start))
+                        .attr("glob", self.node_range(start))
+                        .call_empty(self.node_range(start));
                 }
             }
             _ => (),
