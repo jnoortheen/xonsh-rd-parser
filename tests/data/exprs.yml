@@ -70,27 +70,31 @@ bg:
   exp: __xonsh__.cmd('emacs', 'ugggh', bg=True).out()
 - inp: $(emacs ugggh&)
   exp: __xonsh__.cmd('emacs', 'ugggh', bg=True).out()
-globs:
+regex:
 - inp: '`hello`'
   exp: __xonsh__.regex_literal('hello')
 - inp: $(ls `#[Ff]+i*LE` -l)
-  exp: __xonsh__.cmd('ls', __xonsh__.regex_literal('#[Ff]+i*LE'), 'l').out()
+  exp: __xonsh__.cmd('ls', __xonsh__.regex_literal('#[Ff]+i*LE'), '-l').out()
 - inp: $(ls r`[Ff]+i*LE` -l)
   exp: __xonsh__.cmd('ls', '[Ff]+i*LE', '-l').out()
 - inp: $(ls r`#[Ff]+i*LE` -l)
   exp: __xonsh__.cmd('ls', '#[Ff]+i*LE', '-l').out()
-- inp: $(ls g`[Ff]+i*LE` -l)
-  exp: __xonsh__.cmd('ls', __xonsh__.glob_literal('[Ff]+i*LE'), 'l').out()
-- inp: $(ls g`#[Ff]+i*LE` -l)
-  exp: __xonsh__.cmd('ls', __xonsh__.glob_literal('#[Ff]+i*LE'), 'l').out()
-- inp: $(ls @foo`[Ff]+i*LE` -l)
-  exp: __xonsh__.cmd('ls', '@foo`[Ff]+i*LE`', '-l').out()
-- inp: print(@foo`.*`)
-- inp: $(ls @foo`#[Ff]+i*LE` -l)
-  exp: __xonsh__.cmd('ls', '@foo`#[Ff]+i*LE`', '-l').out()
 - inp: print(`#.*`)
+  exp: print(__xonsh__.regex_literal('#.*'))
 - inp: $(ls `[Ff]+i*LE` -l)
-  exp: __xonsh__.cmd('ls', __xonsh__.regex_literal('[Ff]+i*LE'), 'l').out()
+  exp: __xonsh__.cmd('ls', __xonsh__.regex_literal('[Ff]+i*LE'), '-l').out()
+glob:
+- inp: $(ls g`[Ff]+i*LE` -l)
+  exp: __xonsh__.cmd('ls', __xonsh__.glob_literal('[Ff]+i*LE'), '-l').out()
+- inp: $(ls g`#[Ff]+i*LE` -l)
+  exp: __xonsh__.cmd('ls', __xonsh__.glob_literal('#[Ff]+i*LE'), '-l').out()
+decorator:
+- inp: $(ls @foo`[Ff]+i*LE` -l)
+  exp: __xonsh__.cmd('ls', *__xonsh__.Pattern('[Ff]+i*LE').invoke(foo), '-l').out()
+- inp: print(@foo`.*`)
+  exp: print(__xonsh__.Pattern(foo, '#[Ff]+i*LE').invoke(foo))
+- inp: $(ls @foo`#[Ff]+i*LE` -l)
+  exp: __xonsh__.cmd('ls', *__xonsh__.Pattern('#[Ff]+i*LE').invoke(foo), '-l').out()
 help:
 - inp: range?
   exp: __xonsh__.help(range)

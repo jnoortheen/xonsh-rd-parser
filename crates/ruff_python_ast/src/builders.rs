@@ -15,15 +15,23 @@ impl Expr {
             range: range,
         })
     }
+    pub fn call0(self, args: Vec<Expr>, range: TextRange) -> Self {
+        let arguments = ast::Arguments {
+            range: range,
+            args: args.into_boxed_slice(),
+            keywords: vec![].into_boxed_slice(),
+        };
+        self.call(arguments, range)
+    }
+    pub fn star(self, range: TextRange) -> Self {
+        Expr::from(ast::ExprStarred {
+            value: Box::new(self),
+            ctx: ExprContext::Load,
+            range: range,
+        })
+    }
     pub fn call_empty(self, range: TextRange) -> Self {
-        self.call(
-            ast::Arguments {
-                range: range,
-                args: vec![].into_boxed_slice(),
-                keywords: vec![].into_boxed_slice(),
-            },
-            range,
-        )
+        self.call0(vec![], range)
     }
     pub fn attr(self, name: impl Into<Name>, range: TextRange) -> Expr {
         let name = ast::ExprAttribute {

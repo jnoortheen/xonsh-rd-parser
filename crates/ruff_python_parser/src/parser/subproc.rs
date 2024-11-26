@@ -23,7 +23,7 @@ impl<'a> Parser<'a> {
         }
 
         let mut cmd = self
-            .xonsh_attr("cmd", false)
+            .xonsh_attr("cmd")
             .call(self.parse_cmd_group(closing), self.node_range(start));
         loop {
             if self.at(TokenKind::Vbar) {
@@ -77,6 +77,11 @@ impl<'a> Parser<'a> {
         parser_progress.assert_progressing(self);
         match self.current_token_kind() {
             kind => {
+                if self.at(TokenKind::At) {
+                    return self
+                        .parse_decorator_or_interpolation()
+                        .star(self.node_range(self.node_start()));
+                }
                 if kind.is_proc_atom()
                     || matches!(kind, TokenKind::String | TokenKind::FStringStart)
                 {
@@ -116,12 +121,27 @@ impl<'a> Parser<'a> {
             }
         }
     }
+    pub(super) fn parse_decorator_or_interpolation(&mut self) -> Expr {
+        self.bump_any(); // skip the `@`
+        let pattern = self.xonsh_attr("Pattern");
+        if !self.at(TokenKind::Name) || self.peek() != TokenKind::String {
+            unreachable!("Expected to parse a name and a string");
+        }
+        println!("1--{:?}", self.current_token_kind());
+        let start = self.node_start();
+        let name = Expr::from(self.parse_name());
+        println!("2--{:?}", self.current_token_kind());
+        let string = self.parse_strings();
+        println!("3--{:?}", self.current_token_kind());
+        let range = self.node_range(start);
+        pattern
+            .call0(vec![string], range)
+            .attr("invoke", range)
+            .call0(vec![name], range)
+    }
 
     /// Creates a xonsh attribute expression.
-    fn xonsh_attr(&mut self, name: impl Into<Name>, advance: bool) -> Expr {
-        if advance {
-            self.bump_any();
-        }
+    fn xonsh_attr(&mut self, name: impl Into<Name>) -> Expr {
         let xonsh = self.expr_name("__xonsh__");
         xonsh.attr(name, self.current_token_range())
     }
@@ -152,7 +172,8 @@ impl<'a> Parser<'a> {
     }
 
     pub(super) fn parse_env_name(&mut self) -> Expr {
-        let attr = self.xonsh_attr("env", true);
+        self.bump_any();
+        let attr = self.xonsh_attr("env");
         let start = self.node_start();
         let slice = if self.at(TokenKind::Name) {
             let range = self.current_token_range();
@@ -177,7 +198,8 @@ impl<'a> Parser<'a> {
         Expr::Subscript(ast)
     }
     pub(super) fn parse_env_expr(&mut self) -> Expr {
-        let attr = self.xonsh_attr("env", true);
+        self.bump_any();
+        let attr = self.xonsh_attr("env");
 
         // Slice range doesn't include the `[` token.
         let slice_start = self.node_start();
@@ -208,19 +230,8 @@ impl<'a> Parser<'a> {
         Expr::Subscript(ast)
     }
     fn wrap_string(&mut self, attr: &str, string: Expr, start: TextSize) -> Expr {
-        let func = self.xonsh_attr(attr, true);
-
         let args = vec![string];
-        let arguments = ast::Arguments {
-            range: self.node_range(start),
-            args: args.into_boxed_slice(),
-            keywords: vec![].into_boxed_slice(),
-        };
-        Expr::Call(ast::ExprCall {
-            func: Box::new(func),
-            arguments,
-            range: self.node_range(start),
-        })
+        self.xonsh_attr(attr).call0(args, self.node_range(start))
     }
     pub(super) fn parse_special_strings(&mut self, expr: Expr, start: TextSize) -> Expr {
         match &expr {
@@ -255,17 +266,7 @@ impl<'a> Parser<'a> {
         } else {
             "help"
         };
-        let attr = self.xonsh_attr(method, false);
         let args = vec![lhs];
-        let arguments = ast::Arguments {
-            range: self.node_range(start),
-            args: args.into_boxed_slice(),
-            keywords: vec![].into_boxed_slice(),
-        };
-        Expr::Call(ast::ExprCall {
-            func: Box::new(attr),
-            arguments: arguments,
-            range,
-        })
+        self.xonsh_attr(method).call0(args, range)
     }
 }
