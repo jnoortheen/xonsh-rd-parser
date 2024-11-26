@@ -9,8 +9,8 @@ use ruff_text_size::Ranged;
 type PyResult = pyo3::PyResult<PyObject>;
 impl ToAst for MatchCase {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("match_case")?.call(
-            self.range(),
+        module.attr("match_case")?.callk(
+            // self.range(),
             [
                 ("pattern", self.pattern.to_ast(module)?),
                 ("guard", self.guard.to_ast(module)?),

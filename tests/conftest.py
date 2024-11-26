@@ -85,30 +85,9 @@ def xsh():
             return [x([])]
         return x
 
-    def subproc_captured(*cmds):
-        return "-".join([str(item) for item in cmds])
-
-    def subproc_captured_inject(*cmds):
-        return cmds
-
+    obj.cmd = MagicMock()
     obj.list_of_strs_or_callables = MagicMock(wraps=list_of_strs_or_callables)
-    obj.subproc_captured = MagicMock(wraps=subproc_captured)
-    obj.subproc_captured_inject = MagicMock(wraps=subproc_captured_inject)
     return obj
-
-
-@pytest.fixture
-def xsh_proc_method(xsh):
-    def factory(start_symbol: str):
-        method_name = {
-            "$[": "subproc_uncaptured",
-            "$(": "subproc_captured",
-            "![": "subproc_captured_hiddenobject",
-            "!(": "subproc_captured_object",
-        }[start_symbol]
-        return getattr(xsh, method_name)
-
-    return factory
 
 
 #

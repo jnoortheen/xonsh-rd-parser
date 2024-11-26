@@ -96,10 +96,9 @@ def test_statements(check_xonsh_ast, inp):
         ("!(ls > x.py)", ["ls", ">", "x.py"]),
     ],
 )
-def test_captured_procs(inp, args, check_xonsh_ast, xsh_proc_method):
+def test_captured_procs(inp, args, check_xonsh_ast, xsh):
     check_xonsh_ast(inp, mode="exec", xenv={"WAKKA": "wak"})
-    method = xsh_proc_method(inp[:2])
-    method.assert_called_with(*args)
+    xsh.cmd.assert_called_with(*args)
 
 
 @pytest.mark.parametrize(

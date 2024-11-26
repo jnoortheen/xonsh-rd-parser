@@ -51,8 +51,8 @@ impl ToAst for Parameters {
             kw_defaults.push(arg.default.to_ast(module)?);
         }
 
-        module.attr("arguments")?.call(
-            self.range,
+        module.attr("arguments")?.callk(
+            // self.range,
             [
                 ("posonlyargs", posonlyargs.into_py(module.py)),
                 ("args", args.into_py(module.py)),
@@ -429,8 +429,8 @@ impl ToAst for StmtAssign {
 }
 impl ToAst for WithItem {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("withitem")?.call(
-            self.range,
+        module.attr("withitem")?.callk(
+            // self.range,
             [
                 ("context_expr", self.context_expr.to_ast(module)?),
                 ("optional_vars", self.optional_vars.to_ast(module)?),
@@ -488,6 +488,6 @@ impl ToAst for ModModule {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module
             .attr("Module")?
-            .call(self.range, [("body", self.body.to_ast(module)?)])
+            .callk([("body", self.body.to_ast(module)?)])
     }
 }
