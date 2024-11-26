@@ -1,0 +1,114 @@
+use ruff_python_parser::{ParseError, ParseErrorType};
+use ruff_source_file::{LineIndex, OneIndexed, SourceCode};
+use ruff_text_size::{TextRange, TextSize};
+use std::fmt::Formatter;
+
+use annotate_snippets::display_list::{DisplayList, FormatOptions};
+use annotate_snippets::snippet::{AnnotationType, Slice, Snippet, SourceAnnotation};
+
+pub(crate) fn to_exc_msg(src: &str, filename: &str, err: &ParseError) -> String {
+    let line_index = LineIndex::from_source_text(src);
+    let source_code = SourceCode::new(src, &line_index);
+    let code_frame = CodeFrame::new(&source_code, err);
+    format!("{err} in {filename}:\n{code_frame}")
+    // let start = code_frame.start();
+    // let end = code_frame.end();
+    // let err = PySyntaxError::new_err((
+    //     msg,
+    //     filename.to_string(),
+    //     start.0,
+    //     start.1,
+    //     src.to_string(),
+    //     end.0,
+    //     end.1,
+    // ));
+}
+pub(crate) struct CodeFrame<'a> {
+    range: TextRange,
+    error: &'a ParseErrorType,
+    source: &'a SourceCode<'a, 'a>,
+}
+
+impl<'a> CodeFrame<'a> {
+    pub(crate) fn new(source: &'a SourceCode<'_, '_>, error: &'a ParseError) -> Self {
+        CodeFrame {
+            range: error.location,
+            error: &error.error,
+            source,
+        }
+    }
+    fn location(&self, offset: TextSize) -> (usize, usize) {
+        let location = self.source.source_location(offset);
+        (location.row.get(), location.column.get())
+    }
+    pub(crate) fn start(&self) -> (usize, usize) {
+        self.location(self.range.start())
+    }
+    pub(crate) fn end(&self) -> (usize, usize) {
+        self.location(self.range.end())
+    }
+}
+
+impl std::fmt::Display for CodeFrame<'_> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        // Copied and modified from ruff_linter/src/message/text.rs
+        let content_start_index = self.source.line_index(self.range.start());
+        let mut start_index = content_start_index.saturating_sub(2);
+
+        // Trim leading empty lines.
+        while start_index < content_start_index {
+            if !self.source.line_text(start_index).trim().is_empty() {
+                break;
+            }
+            start_index = start_index.saturating_add(1);
+        }
+
+        let content_end_index = self.source.line_index(self.range.end());
+        let mut end_index = content_end_index
+            .saturating_add(2)
+            .min(OneIndexed::from_zero_indexed(self.source.line_count()));
+
+        // Trim trailing empty lines.
+        while end_index > content_end_index {
+            if !self.source.line_text(end_index).trim().is_empty() {
+                break;
+            }
+
+            end_index = end_index.saturating_sub(1);
+        }
+
+        let start_offset = self.source.line_start(start_index);
+        let end_offset = self.source.line_end(end_index);
+
+        let annotation_range = self.range - start_offset;
+        let source = self.source.slice(TextRange::new(start_offset, end_offset));
+
+        let start_char = source[TextRange::up_to(annotation_range.start())]
+            .chars()
+            .count();
+
+        let char_length = source[annotation_range].chars().count();
+        let label = format!("Syntax Error: {error}", error = self.error);
+
+        let snippet = Snippet {
+            title: None,
+            slices: vec![Slice {
+                source,
+                line_start: start_index.get(),
+                annotations: vec![SourceAnnotation {
+                    label: &label,
+                    annotation_type: AnnotationType::Error,
+                    range: (start_char, start_char + char_length),
+                }],
+                // The origin (file name, line number, and column number) is already encoded
+                // in the `label`.
+                origin: None,
+                fold: false,
+            }],
+            footer: Vec::new(),
+            opt: FormatOptions::default(),
+        };
+
+        writeln!(f, "{message}", message = DisplayList::from(snippet))
+    }
+}

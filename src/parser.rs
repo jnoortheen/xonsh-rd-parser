@@ -1,62 +1,67 @@
-use miette::{Diagnostic, NamedSource, Report, SourceSpan};
+use crate::annotate_src::CodeFrame;
 use py_ast::ast_module::AstModule;
 use py_ast::to_ast::ToAst;
 use pyo3::exceptions::PySyntaxError;
 use pyo3::{PyObject, PyResult, Python};
-use ruff_text_size::TextRange;
-use thiserror::Error;
+use ruff_source_file::{LineIndex, SourceCode};
 
-#[derive(Debug, Error, Diagnostic)]
-#[error("{message}")]
-struct PyParserError {
-    message: String,
-    #[source_code]
-    src: NamedSource<String>,
-    #[label("{message}")]
-    span: SourceSpan,
+pub fn parse_str<'py>(
+    py: Python<'py>,
+    src: &'py str,
+    filename: Option<&'py str>,
+) -> PyResult<PyObject> {
+    let parsed = ruff_python_parser::parse_module(src);
+    match parsed {
+        Ok(parsed) => {
+            let tree = parsed.into_syntax();
+            let module = AstModule::new(py)?;
+            tree.to_ast(&module)
+        }
+        Err(err) => {
+            let filename = filename.unwrap_or("<string>");
+            let msg = crate::annotate_src::to_exc_msg(src, filename, &err);
+            let err = PySyntaxError::new_err(msg);
+            Err(err)
+        }
+    }
 }
 
-fn annotate_err(msg: String, location: TextRange, src: &str, filename: &str) -> String {
-    let offset = location.start().to_usize();
-    let end_offset = location.end().to_usize();
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ruff_python_parser::{parse_unchecked, Mode};
+    use ruff_source_file::{LineIndex, SourceCode};
+    use ruff_text_size::TextLen;
+    use std::fmt::Write;
+    fn test_valid_source<'a>(source: &'a str) {
+        let parsed = parse_unchecked(&source, Mode::Module);
 
-    let err = PyParserError {
-        message: msg,
-        src: NamedSource::new(filename.to_string(), src.to_string()),
-        span: (offset..end_offset).into(),
-    };
+        if !parsed.is_valid() {
+            let line_index = LineIndex::from_source_text(&source);
+            let source_code = SourceCode::new(&source, &line_index);
 
-    // Create a report and convert it to string
-    let report = Report::new(err);
-    format!("{:?}", report)
-}
+            let mut message = "Expected no syntax errors for a valid program but the parser generated the following errors:\n".to_string();
 
-#[test]
-fn test_annotation() {
-    use ruff_text_size::TextSize;
+            for error in parsed.errors() {
+                let frame = CodeFrame::new(&source_code, error);
+                writeln!(&mut message, "{frame}\n").unwrap();
+            }
 
-    let text = r#"
-def foo(a: int b: str) -> int:
-    return a + b
-$
-"new line"
-    "#;
-    let result = annotate_err(
-        "exception and error".to_string(),
-        TextRange::new(TextSize::new(14), TextSize::new(20)),
-        text,
-        "test.py",
-    );
-    println!("{result}");
-}
+            panic!("{source:?}: {message}");
+        }
 
-pub fn parse_str(py: Python<'_>, src: &str, filename: Option<&str>) -> PyResult<PyObject> {
-    let parsed = ruff_python_parser::parse_module(src).map_err(|err| {
-        let msg = format!("{:?}", err.error);
-        let msg = annotate_err(msg, err.location, src, filename.unwrap_or("<string>"));
-        PySyntaxError::new_err(msg)
-    })?;
-    let tree = parsed.into_syntax();
-    let module = AstModule::new(py)?;
-    tree.to_ast(&module)
+        println!("Tokens: {:?}", parsed.tokens());
+        println!("length: {:?}", source.text_len());
+
+        let mut output = String::new();
+        writeln!(&mut output, "## AST").unwrap();
+        writeln!(&mut output, "\n```\n{:#?}\n```", parsed.syntax()).unwrap();
+    }
+
+    #[test]
+    fn test_tmp() {
+        let source = r#"print(@foo`hello`)"#;
+        // let source = r#"print('hello')"#;
+        test_valid_source(source)
+    }
 }

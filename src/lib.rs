@@ -1,3 +1,4 @@
+mod annotate_src;
 mod parser;
 
 use parser::parse_str;
