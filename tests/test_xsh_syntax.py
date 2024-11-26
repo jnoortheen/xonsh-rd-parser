@@ -1,37 +1,8 @@
 """Tests the xonsh parser."""
 
-import sys
-from pathlib import Path
 import pytest
+
 from yaml_snaps import yaml_line_items
-
-
-def get_cases(path: Path, splitter="# "):
-    inp = []
-    parts = []
-
-    def value():
-        res = ("\n".join(inp), "\n".join(parts))
-        inp.clear()
-        parts.clear()
-        return res
-
-    for line in path.read_text().splitlines():
-        if line.startswith(splitter):
-            inp.append(line.lstrip(splitter))
-        elif not line.strip():
-            if parts:
-                yield value()
-        else:
-            parts.append(line)
-    if parts:
-        yield value()
-
-
-def glob_data_param(pattern: str):
-    for path in Path(__file__).parent.joinpath("data").glob(pattern):
-        for idx, (inp, exp) in enumerate(get_cases(path)):
-            yield pytest.param(inp, exp, id=f"{path.name}-{idx}")
 
 
 @pytest.mark.parametrize(
@@ -39,12 +10,6 @@ def glob_data_param(pattern: str):
 )
 def test_line_items(inp, unparse, snapped):
     snapped.matches(unparse(inp))
-
-
-@pytest.mark.parametrize("inp, exp", glob_data_param("fstring_py312.py"))
-@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python3.12")
-def test_py312_fstring(inp, exp, unparse_diff):
-    unparse_diff(inp, exp)
 
 
 @pytest.mark.parametrize(

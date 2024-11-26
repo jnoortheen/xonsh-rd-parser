@@ -120,12 +120,9 @@ def check_xonsh_ast(xsh):
         inp: str,
         xenv: dict | None = None,
         mode="exec",
-        verbose=False,
         **locs,
     ):
         obs = parse_string(inp)
-        if obs is None:
-            return  # comment only
         bytecode = compile(obs, "<test-xonsh-ast>", mode)
         xsh.env = xenv or {}
         locs["__xonsh__"] = xsh
