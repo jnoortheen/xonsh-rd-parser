@@ -77,13 +77,11 @@ regex:
   exp: __xonsh__.cmd('ls', __xonsh__.Pattern('#[Ff]+i*LE').regex(), '-l').out()
 - inp: print(`#.*`)
   exp: print(__xonsh__.Pattern('#.*').regex())
-- inp: $(ls `[Ff]+i*LE` -l)
-  exp: __xonsh__.cmd('ls', __xonsh__.Pattern('[Ff]+i*LE').regex(), '-l').out()
-raw-regex:
+_prefix-regex:
 - inp: $(ls r`[Ff]+i*LE` -l)
-  exp: __xonsh__.cmd('ls', '[Ff]+i*LE', '-l').out()
-- inp: $(ls r`#[Ff]+i*LE` -l)
-  exp: __xonsh__.cmd('ls', '#[Ff]+i*LE', '-l').out()
+  exp: __xonsh__.cmd('ls', __xonsh__.Pattern('[Ff]+i*LE').regex(), '-l').out()
+- inp: $(ls f`{mypattern[0]}+` -l)
+  exp: __xonsh__.cmd('ls', __xonsh__.Pattern('[Ff]+i*LE').regex(), '-l').out()
 glob:
 - inp: $(ls g`[Ff]+i*LE` -l)
   exp: __xonsh__.cmd('ls', __xonsh__.Pattern('[Ff]+i*LE').glob(), '-l').out()
@@ -132,10 +130,10 @@ path-literals:
 - inp: Fp"/foo{1+1}"
   exp: f'/foo{1 + 1}'
 
-#proc-injection:
-#- inp: $[@$(which python)]
-#- inp: $[ls @$(dirname @$(which python))]
-#- inp: '![a@$(echo 1 2)b]'
+_proc-injection:
+- inp: $[@$(which python)]
+- inp: $[ls @$(dirname @$(which python))]
+- inp: '![a@$(echo 1 2)b]'
 
 redirects:
 - inp: '!(ls >> x.py)'
