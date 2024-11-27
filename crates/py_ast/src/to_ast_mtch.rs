@@ -2,9 +2,8 @@ use std::vec;
 
 use crate::ast_module::AstModule;
 use crate::to_ast::ToAst;
-use pyo3::{IntoPy, PyObject};
+use pyo3::{IntoPyObjectExt, PyObject};
 use ruff_python_ast::*;
-use ruff_text_size::Ranged;
 
 type PyResult = pyo3::PyResult<PyObject>;
 impl ToAst for MatchCase {
@@ -44,8 +43,8 @@ impl ToAst for PatternMatchSingleton {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let value = match self.value {
             Singleton::None => module.py.None(),
-            Singleton::True => true.into_py(module.py),
-            Singleton::False => false.into_py(module.py),
+            Singleton::True => true.into_py_any(module.py)?,
+            Singleton::False => false.into_py_any(module.py)?,
         };
         module
             .attr("MatchSingleton")?
@@ -109,8 +108,8 @@ impl ToAst for PatternMatchClass {
             [
                 ("cls", self.cls.to_ast(module)?),
                 ("patterns", self.arguments.patterns.to_ast(module)?),
-                ("kwd_attrs", kwd_attrs.into_py(module.py)),
-                ("kwd_patterns", kwd_patterns.into_py(module.py)),
+                ("kwd_attrs", kwd_attrs.into_py_any(module.py)?),
+                ("kwd_patterns", kwd_patterns.into_py_any(module.py)?),
             ],
         )
     }

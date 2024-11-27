@@ -2,7 +2,7 @@ use std::vec;
 
 use crate::ast_module::AstModule;
 use crate::to_ast::ToAst;
-use pyo3::{IntoPy, PyObject};
+use pyo3::{IntoPyObjectExt, PyObject};
 use ruff_python_ast::*;
 
 type PyResult = pyo3::PyResult<PyObject>;
@@ -54,11 +54,11 @@ impl ToAst for Parameters {
         module.attr("arguments")?.callk(
             // self.range,
             [
-                ("posonlyargs", posonlyargs.into_py(module.py)),
-                ("args", args.into_py(module.py)),
-                ("defaults", defaults.into_py(module.py)),
-                ("kwonlyargs", kwonlyargs.into_py(module.py)),
-                ("kw_defaults", kw_defaults.into_py(module.py)),
+                ("posonlyargs", posonlyargs.into_py_any(module.py)?),
+                ("args", args.into_py_any(module.py)?),
+                ("defaults", defaults.into_py_any(module.py)?),
+                ("kwonlyargs", kwonlyargs.into_py_any(module.py)?),
+                ("kw_defaults", kw_defaults.into_py_any(module.py)?),
                 ("vararg", self.vararg.to_ast(module)?),
                 ("kwarg", self.kwarg.to_ast(module)?),
             ],
@@ -131,7 +131,7 @@ impl ToAst for TypeParamTypeVarTuple {
 }
 impl ToAst for Identifier {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        Ok(self.as_str().to_string().into_py(module.py))
+        Ok(self.as_str().to_string().into_py_any(module.py)?)
     }
 }
 impl ToAst for StmtFunctionDef {
@@ -144,7 +144,10 @@ impl ToAst for StmtFunctionDef {
         obj.call(
             self.range,
             [
-                ("name", self.name.as_str().to_owned().into_py(module.py)),
+                (
+                    "name",
+                    self.name.as_str().to_owned().into_py_any(module.py)?,
+                ),
                 ("args", self.parameters.to_ast(module)?),
                 ("returns", self.returns.to_ast(module)?),
                 ("body", self.body.to_ast(module)?),
@@ -197,7 +200,7 @@ impl ToAst for StmtImportFrom {
             [
                 ("names", self.names.to_ast(module)?),
                 ("module", self.module.to_ast(module)?),
-                ("level", self.level.into_py(module.py)),
+                ("level", self.level.into_py_any(module.py)?),
             ],
         )
     }
@@ -238,7 +241,7 @@ impl ToAst for StmtAnnAssign {
                 ("value", self.value.to_ast(module)?),
                 ("target", self.target.to_ast(module)?),
                 ("annotation", self.annotation.to_ast(module)?),
-                ("simple", (self.simple as u8).into_py(module.py)),
+                ("simple", (self.simple as u8).into_py_any(module.py)?),
             ],
         )
     }
@@ -311,7 +314,7 @@ impl ToAst for Vec<ElifElseClause> {
                     ("orelse", rest.to_vec().to_ast(module)?),
                 ],
             );
-            Ok(vec![obj?].into_py(module.py))
+            Ok(vec![obj?].into_py_any(module.py)?)
         } else {
             first.body.to_ast(module)
         }

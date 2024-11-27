@@ -1,6 +1,6 @@
 /// Convert Ruff's AST to Python AST.
 use crate::ast_module::AstModule;
-use pyo3::{IntoPy, PyObject};
+use pyo3::{IntoPyObjectExt, PyObject};
 
 type PyResult = pyo3::PyResult<PyObject>;
 
@@ -26,7 +26,7 @@ impl<T: ToAst> ToAst for Vec<T> {
         for stmt in self {
             body.push(stmt.to_ast(module)?);
         }
-        Ok(body.into_py(module.py))
+        Ok(body.into_py_any(module.py)?)
     }
 }
 impl<T: ToAst> ToAst for [T] {
@@ -35,6 +35,6 @@ impl<T: ToAst> ToAst for [T] {
         for stmt in self {
             body.push(stmt.to_ast(module)?);
         }
-        Ok(body.into_py(module.py))
+        Ok(body.into_py_any(module.py)?)
     }
 }

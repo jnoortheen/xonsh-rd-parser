@@ -52,16 +52,12 @@ impl ToAst for Expr {
 impl ToAst for ExprNumberLiteral {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let value = match &self.value {
-            Number::Int(value) => value
-                .as_u64()
-                .into_pyobject(module.py)?
-                .into_py_any(module.py),
-            Number::Float(value) => value.into_pyobject(module.py)?.into_py_any(module.py),
+            Number::Int(value) => value.as_u64().into_py_any(module.py),
+            Number::Float(value) => value.into_py_any(module.py),
             Number::Complex { real, imag } => Complex {
                 re: *real,
                 im: *imag,
             }
-            .into_pyobject(module.py)?
             .into_py_any(module.py),
         };
         module.to_const(self.range(), value?.into_py_any(module.py)?)
@@ -98,16 +94,9 @@ impl ToAst for ExprStringLiteral {
         let kwargs = [
             (
                 "value",
-                self.value
-                    .to_str()
-                    .to_string()
-                    .into_pyobject(module.py)?
-                    .into_py_any(module.py)?,
+                self.value.to_str().to_string().into_py_any(module.py)?,
             ),
-            (
-                "kind",
-                kind.into_pyobject(module.py)?.into_py_any(module.py)?,
-            ),
+            ("kind", kind.into_py_any(module.py)?),
         ];
         module.attr("Constant")?.call(self.range(), kwargs)
     }
@@ -122,13 +111,12 @@ impl ToAst for ExprFString {
                         StringLiteralPrefix::Unicode => Some("u"),
                         _ => None,
                     }
-                    .into_pyobject(module.py)?
-                    .into();
+                    .into_py_any(module.py)?;
                     let obj = module.attr("Constant")?.call(
                         self.range(),
                         [
                             ("kind", kind),
-                            ("value", s.as_str().into_pyobject(module.py)?.into()),
+                            ("value", s.as_str().into_py_any(module.py)?),
                         ],
                     )?;
                     parts.push(obj);
@@ -142,13 +130,13 @@ impl ToAst for ExprFString {
         }
         module
             .attr("JoinedStr")?
-            .call(self.range, [("values", parts.into_pyobject(module.py)?)])
+            .call(self.range, [("values", parts)])
     }
 }
 impl ToAst for ConversionFlag {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let flag = *self as i8;
-        Ok(flag.into_pyobject(module.py)?.into())
+        flag.into_py_any(module.py)
     }
 }
 impl ToAst for FStringFormatSpec {
@@ -157,16 +145,9 @@ impl ToAst for FStringFormatSpec {
         for value in self.elements.iter() {
             values.push(value.to_ast(module)?);
         }
-        module.attr("JoinedStr")?.call(
-            self.range(),
-            [(
-                "values",
-                values
-                    .into_pyobject(module.py)?
-                    .into_pyobject(module.py)?
-                    .into_py_any(module.py)?,
-            )],
-        )
+        module
+            .attr("JoinedStr")?
+            .call(self.range(), [("values", values.into_py_any(module.py)?)])
     }
 }
 impl ToAst for FStringExpressionElement {
@@ -186,11 +167,7 @@ impl ToAst for FStringElement {
         let obj = match self {
             FStringElement::Literal(literal) => module.to_const(
                 self.range(),
-                literal
-                    .value
-                    .to_string()
-                    .into_pyobject(module.py)?
-                    .into_py_any(module.py)?,
+                literal.value.to_string().into_py_any(module.py)?,
             )?,
             FStringElement::Expression(expr) => expr.to_ast(module)?,
         };
@@ -260,10 +237,7 @@ impl ToAst for ExprName {
 }
 impl ToAst for name::Name {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        self.as_str()
-            .to_string()
-            .into_pyobject(module.py)?
-            .into_py_any(module.py)
+        self.as_str().to_string().into_py_any(module.py)
     }
 }
 impl ToAst for ExprStarred {
@@ -375,10 +349,7 @@ impl ToAst for Comprehension {
             ("target", self.target.to_ast(module)?),
             ("iter", self.iter.to_ast(module)?),
             ("ifs", self.ifs.to_ast(module)?),
-            (
-                "is_async",
-                (self.is_async as u8).into_pyobject(module.py)?.into(),
-            ),
+            ("is_async", (self.is_async as u8).into_py_any(module.py)?),
         ])
     }
 }
