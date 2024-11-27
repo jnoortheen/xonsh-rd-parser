@@ -4,6 +4,7 @@ use ruff_text_size::{TextRange, TextSize};
 
 use crate::ParseErrorType;
 
+use crate::parser::expression::ExpressionContext;
 use crate::{
     parser::{Parser, ParserProgress},
     token::TokenKind,
@@ -135,6 +136,17 @@ impl<'a> Parser<'a> {
             .call0(vec![string], range)
             .attr("invoke", range)
             .call0(vec![name], range)
+    }
+    pub(super) fn parse_proc_pyexpr(&mut self) -> Expr {
+        self.bump_any();
+
+        let start = self.node_start();
+        let name = self.xonsh_attr("list_of_strs_or_callables");
+        let expr = self.parse_conditional_expression_or_higher_impl(ExpressionContext::default());
+        let range = self.node_range(start);
+        let expr = name.call0(vec![expr.expr], range);
+        self.bump(TokenKind::Rpar);
+        expr
     }
 
     /// Creates a xonsh attribute expression.

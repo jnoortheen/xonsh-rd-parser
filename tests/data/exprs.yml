@@ -137,6 +137,10 @@ proc-injection:
 - inp: $[ls @$(dirname @$(which python))]
   exp: __xonsh__.cmd('ls', __xonsh__.cmd('dirname', __xonsh__.cmd('which', 'python').inject()).inject()).run()
 
+proc-py:
+- inp: '!(ls @(None or x))'
+  exp: __xonsh__.cmd('ls', __xonsh__.list_of_strs_or_callables(None or x)).obj()
+
 _expand:
 - inp: '![a@$(echo 1 2)b]'
 
