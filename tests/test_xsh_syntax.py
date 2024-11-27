@@ -123,7 +123,7 @@ def test_bang_procs(expr, exec_code):
 @pytest.mark.parametrize("f", ["", "f"])
 @pytest.mark.parametrize("glob_type", ["", "r", "g"])
 def test_backtick(p, f, glob_type, exec_code):
-    exec_code(f"print({p}{f}{glob_type}`.*`)", False)
+    exec_code(f"print({p}{f}{glob_type}`.*`)")
 
 
 @pytest.mark.parametrize(

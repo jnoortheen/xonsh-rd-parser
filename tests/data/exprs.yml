@@ -101,40 +101,43 @@ help:
   exp: __xonsh__.help(__xonsh__.help(range).index)
 - inp: range??
   exp: __xonsh__.superhelp(range)
-
-path-literals:
+paths:
 - inp: p"/foo"
   exp: __xonsh__.path_literal('/foo')
+_rpaths:
 - inp: pr"/foo"
-  exp: '"""/foo"""'
+  exp: __xonsh__.path_literal('/foo')
 - inp: rp"/foo"
-  exp: '"""/foo"""'
+  exp: __xonsh__.path_literal('/foo')
 - inp: pR"/foo"
-  exp: '"""/foo"""'
+  exp: __xonsh__.path_literal('/foo')
 - inp: Rp"/foo"
-  exp: '"""/foo"""'
+  exp: __xonsh__.path_literal('/foo')
+_fpaths:
 - inp: pf"/foo"
-  exp: f'/foo'
+  exp: __xonsh__.path_literal(f'/foo')
 - inp: fp"/foo"
-  exp: f'/foo'
+  exp: __xonsh__.path_literal(f'/foo')
 - inp: pF"/foo"
-  exp: f'/foo'
+  exp: __xonsh__.path_literal(f'/foo')
 - inp: Fp"/foo"
-  exp: f'/foo'
+  exp: __xonsh__.path_literal(f'/foo')
 - inp: pf"/foo{1+1}"
-  exp: f'/foo{1 + 1}'
+  exp: __xonsh__.path_literal(f'/foo{1 + 1}')
 - inp: fp"/foo{1+1}"
-  exp: f'/foo{1 + 1}'
+  exp: __xonsh__.path_literal(f'/foo{1 + 1}')
 - inp: pF"/foo{1+1}"
-  exp: f'/foo{1 + 1}'
+  exp: __xonsh__.path_literal(f'/foo{1 + 1}')
 - inp: Fp"/foo{1+1}"
-  exp: f'/foo{1 + 1}'
+  exp: __xonsh__.path_literal(f'/foo{1 + 1}')
 
 proc-injection:
 - inp: $[@$(which python)]
   exp: __xonsh__.cmd(__xonsh__.cmd('which', 'python').inject()).run()
 - inp: $[ls @$(dirname @$(which python))]
   exp: __xonsh__.cmd('ls', __xonsh__.cmd('dirname', __xonsh__.cmd('which', 'python').inject()).inject()).run()
+
+_expand:
 - inp: '![a@$(echo 1 2)b]'
 
 redirects:
