@@ -80,26 +80,31 @@ def xsh():
             self.args = list(args)
             self.kwargs = kwargs
             self.result = None
+            self.calls = []
             return self
 
         def out(self):
             self.result = self.args
+            self.calls.append("out")
             return self.result
 
         def run(self):
-            self.result = None
+            self.result = self.args
+            self.calls.append("run")
             return self.result
 
         def hide(self):
-            self.result = MagicMock()
+            self.result = self.args
+            self.calls.append("hide")
             return self.result
 
         def obj(self):
-            self.result = MagicMock(args=self.args)
+            self.result = self.args
+            self.calls.append("obj")
             return self.result
 
         def pipe(self, *args):
-            self.result = [self.result, args]
+            self.args = [self.args, args]
             return self
 
     def list_of_strs_or_callables(x):

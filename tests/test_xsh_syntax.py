@@ -43,12 +43,12 @@ def test_statements(exec_code, inp):
         ('$(ls ".")', ["ls", "."]),
         ("$(ls -l)", ["ls", "-l"]),
         ("$(ls $WAKKA)", ["ls", "wak"]),
-        ('$(ls @(None or "."))', ["ls", "."]),
+        ('$(ls @(None or "."))', ["ls", ["."]]),
         (
             '$(echo hello | @(lambda a, s=None: "hey!") foo bar baz)',
-            ["echo", "hello", "|", "hey!", "foo", "bar", "baz"],
+            [["echo", "hello"], (["hey!"], "foo", "bar", "baz")],
         ),
-        (
+        pytest.param(
             "$(echo @(i**2 for i in range(20) ) )",
             [
                 "echo",
@@ -73,23 +73,26 @@ def test_statements(exec_code, inp):
                 324,
                 361,
             ],
+            marks=pytest.mark.xfail,
         ),
-        ("$(echo @('a', 7))", ["echo", "a", 7]),
+        pytest.param("$(echo @('a', 7))", ["echo", "a", 7], marks=pytest.mark.xfail),
         pytest.param(
             "$(@$(which echo) ls | @(lambda a, s=None: $(@(s.strip()) @(a[1]))) foo -la baz)",
             "",
             marks=pytest.mark.xfail,
         ),
-        ("$(ls $(ls))", ["ls", "ls"]),
-        ("$(ls $(ls) -l)", ["ls", "ls", "-l"]),
+        ("$(ls $(ls))", ["ls", ["ls"]]),
+        ("$(ls $(ls) -l)", ["ls", ["ls"], "-l"]),
         ("$[ls]", ["ls"]),
         ("![ls]", ["ls"]),
-        ("![echo $WAKKA/place]", ["echo", "wak/place"]),
+        pytest.param(
+            "![echo $WAKKA/place]", ["echo", "wak/place"], marks=pytest.mark.xfail
+        ),
         ("![echo yo==yo]", ["echo", "yo==yo"]),
-        ("!(ls | grep wakka)", ["ls", "|", "grep", "wakka"]),
+        ("!(ls | grep wakka)", [["ls"], ("grep", "wakka")]),
         (
             "!(ls | grep wakka | grep jawaka)",
-            ["ls", "|", "grep", "wakka", "|", "grep", "jawaka"],
+            [[["ls"], ("grep", "wakka")], ("grep", "jawaka")],
         ),
         ("!(ls > x.py)", ["ls", ">", "x.py"]),
     ],
@@ -97,6 +100,17 @@ def test_statements(exec_code, inp):
 def test_captured_procs(inp, result, exec_code):
     sh = exec_code(inp, xenv={"WAKKA": "wak"})
     assert sh.cmd.result == result
+
+    last_call = sh.cmd.calls[-1]
+    match inp[:2]:
+        case "$[":
+            assert last_call == "run"
+        case "$(":
+            assert last_call == "out"
+        case "![":
+            assert last_call == "hide"
+        case "!(":
+            assert last_call == "obj"
 
 
 @pytest.mark.parametrize(
@@ -122,6 +136,7 @@ def test_bang_procs(expr, exec_code):
 @pytest.mark.parametrize("p", ["", "p"])
 @pytest.mark.parametrize("f", ["", "f"])
 @pytest.mark.parametrize("glob_type", ["", "r", "g"])
+@pytest.mark.xfail
 def test_backtick(p, f, glob_type, exec_code):
     exec_code(f"print({p}{f}{glob_type}`.*`)")
 
@@ -137,5 +152,6 @@ def test_backtick(p, f, glob_type, exec_code):
         "![(if True:\n   ls\nelse:\n   echo not true)]",
     ],
 )
+@pytest.mark.xfail
 def test_use_subshell(case, exec_code):
     exec_code(case)

@@ -143,6 +143,7 @@ proc-py:
 
 _expand:
 - inp: '![a@$(echo 1 2)b]'
+- inp: '![echo $WAKKA/place]'
 
 redirects:
 - inp: '!(ls >> x.py)'
