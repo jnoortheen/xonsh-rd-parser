@@ -38,6 +38,9 @@ mod tests {
     fn test_valid_source<'a>(source: &'a str) -> String {
         let parsed = parse_unchecked(&source, Mode::Module);
 
+        println!("Tokens: {:?}", parsed.tokens());
+        println!("length: {:?}", source.text_len());
+
         if !parsed.is_valid() {
             let line_index = LineIndex::from_source_text(&source);
             let source_code = SourceCode::new(&source, &line_index);
@@ -52,8 +55,6 @@ mod tests {
                 writeln!(&mut message,).unwrap();
             }
 
-            println!("Tokens: {:?}", parsed.tokens());
-            println!("length: {:?}", source.text_len());
             panic!("{source:?}: {message}");
         }
 
