@@ -98,6 +98,10 @@ def xsh():
             self.result = MagicMock(args=self.args)
             return self.result
 
+        def pipe(self, *args):
+            self.result = [self.result, args]
+            return self
+
     def list_of_strs_or_callables(x):
         """
         A simplified version of the xonsh function.

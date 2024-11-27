@@ -593,6 +593,13 @@ impl<'src> Parser<'src> {
             TokenKind::DollarLParen => self.parse_subprocs("out"),
             TokenKind::DollarLSqb => self.parse_subprocs("run"),
             TokenKind::AtDollarLParen => self.parse_subprocs("inject"),
+            TokenKind::AtLParen => {
+                self.bump_any();
+                let expr =
+                    self.parse_conditional_expression_or_higher_impl(ExpressionContext::default());
+                self.bump(TokenKind::Rpar);
+                expr.expr
+            }
             TokenKind::At => self.parse_decorator_or_interpolation(),
             TokenKind::IpyEscapeCommand => {
                 Expr::IpyEscapeCommand(self.parse_ipython_escape_command_expression())

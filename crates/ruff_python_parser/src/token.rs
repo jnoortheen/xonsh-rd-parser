@@ -416,6 +416,7 @@ impl TokenKind {
             | TokenKind::DollarLParen
             | TokenKind::DollarLSqb
             | TokenKind::AtDollarLParen
+            | TokenKind::AtLParen
             | TokenKind::BangLParen
             | TokenKind::BangLSqb)
     }
