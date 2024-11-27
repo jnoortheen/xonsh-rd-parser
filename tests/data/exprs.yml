@@ -130,9 +130,11 @@ path-literals:
 - inp: Fp"/foo{1+1}"
   exp: f'/foo{1 + 1}'
 
-_proc-injection:
+proc-injection:
 - inp: $[@$(which python)]
+  exp: __xonsh__.cmd(__xonsh__.cmd('which', 'python').inject()).run()
 - inp: $[ls @$(dirname @$(which python))]
+  exp: __xonsh__.cmd('ls', __xonsh__.cmd('dirname', __xonsh__.cmd('which', 'python').inject()).inject()).run()
 - inp: '![a@$(echo 1 2)b]'
 
 redirects:

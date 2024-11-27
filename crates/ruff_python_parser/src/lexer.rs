@@ -512,6 +512,8 @@ impl<'src> Lexer<'src> {
                     TokenKind::AtEqual
                 } else if self.cursor.eat_char('(') {
                     TokenKind::AtLParen
+                } else if self.cursor.eat_char('$') && self.cursor.first() == '(' {
+                    TokenKind::AtDollarLParen
                 } else {
                     TokenKind::At
                 }

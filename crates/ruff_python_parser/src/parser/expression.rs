@@ -592,6 +592,7 @@ impl<'src> Parser<'src> {
             TokenKind::BangLSqb => self.parse_subprocs("hide"),
             TokenKind::DollarLParen => self.parse_subprocs("out"),
             TokenKind::DollarLSqb => self.parse_subprocs("run"),
+            TokenKind::AtDollarLParen => self.parse_subprocs("inject"),
             TokenKind::At => self.parse_decorator_or_interpolation(),
             TokenKind::IpyEscapeCommand => {
                 Expr::IpyEscapeCommand(self.parse_ipython_escape_command_expression())
