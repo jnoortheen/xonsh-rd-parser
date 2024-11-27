@@ -6,8 +6,6 @@ A Rust library that parses Xonsh syntax to Python's AST.
 
 - implement invalid syntax errors
 - implement xonsh expr and stmts
-- fix col_offset, lineno
-
 
 # Credits
 
