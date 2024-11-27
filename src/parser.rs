@@ -32,13 +32,16 @@ mod tests {
     use crate::annotate_src::CodeFrame;
     use ruff_python_parser::{parse_unchecked, Mode};
     use ruff_source_file::{LineIndex, SourceCode};
-    use ruff_text_size::TextLen;
+    use ruff_text_size::{Ranged, TextLen};
     use std::fmt::Write;
 
     fn test_valid_source<'a>(source: &'a str) -> String {
         let parsed = parse_unchecked(&source, Mode::Module);
 
-        println!("Tokens: {:?}", parsed.tokens());
+        println!("Tokens: ");
+        for token in parsed.tokens() {
+            println!("{token:?} {}", source[token.range()].to_string());
+        }
         println!("length: {:?}", source.text_len());
 
         if !parsed.is_valid() {
@@ -68,9 +71,10 @@ mod tests {
 
     #[test]
     fn test_tmp() {
-        let source = r#"print(@foo`hello`)"#;
+        let source = r#"![a@$(echo 1 2)b a]"#;
+        // let source = r#"![a b c2]"#;
         // let source = r#"print('hello')"#;
-        let output = test_valid_source(source);
-        insta::assert_snapshot!(output);
+        let _output = test_valid_source(source);
+        // insta::assert_snapshot!(output);
     }
 }

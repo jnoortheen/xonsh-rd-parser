@@ -87,11 +87,8 @@ impl Default for ExtraState {
     }
 }
 impl ExtraState {
-    fn new_captured() -> Self {
+    fn captured() -> Self {
         ExtraState { captured: true }
-    }
-    fn new_uncaptured() -> Self {
-        ExtraState { captured: false }
     }
 }
 
@@ -385,10 +382,10 @@ impl<'src> Lexer<'src> {
             c if is_ascii_identifier_start(c) => self.lex_identifier(c),
             '$' => {
                 if self.cursor.first() == '[' {
-                    self.extras.push(ExtraState::new_uncaptured());
+                    self.extras.push(ExtraState::default());
                     TokenKind::DollarLSqb
                 } else if self.cursor.first() == '(' {
-                    self.extras.push(ExtraState::new_captured());
+                    self.extras.push(ExtraState::captured());
                     TokenKind::DollarLParen
                 } else if self.cursor.eat_char('{') {
                     TokenKind::DollarLBrace
@@ -522,10 +519,10 @@ impl<'src> Lexer<'src> {
                 if self.cursor.eat_char('=') {
                     TokenKind::NotEqual
                 } else if self.cursor.first() == '[' {
-                    self.extras.push(ExtraState::new_uncaptured());
+                    self.extras.push(ExtraState::default());
                     TokenKind::BangLSqb
                 } else if self.cursor.first() == '(' {
-                    self.extras.push(ExtraState::new_captured());
+                    self.extras.push(ExtraState::captured());
                     TokenKind::BangLParen
                 } else {
                     TokenKind::Exclamation
