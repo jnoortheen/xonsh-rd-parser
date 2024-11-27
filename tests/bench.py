@@ -19,5 +19,5 @@ def test_parse_file(benchmark):
 
         import xonsh_rd_parser as parser
 
-        path = Path(__file__).parent / "test_bench.py"
+        path = Path(__file__).parent / "bench.py"
         return parser.parse_file(str(path))
