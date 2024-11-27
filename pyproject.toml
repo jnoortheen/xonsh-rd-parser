@@ -30,7 +30,6 @@ features = ["pyo3/extension-module"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--benchmark-autosave"
 
 [tool.ruff]
 exclude = ["crates", "tests/data"]

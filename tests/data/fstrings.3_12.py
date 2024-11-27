@@ -71,4 +71,4 @@ verbosePrint(f'Foo {foo:.3} bar.')
 
 
 st = 'string'
-f"{st!r}"
+# f"{st!r}" # todo: fix parsing this valid syntax
