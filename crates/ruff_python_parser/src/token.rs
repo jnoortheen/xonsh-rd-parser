@@ -414,11 +414,8 @@ impl TokenKind {
     pub fn is_proc_atom(&self) -> bool {
         matches!(self, |TokenKind::Lpar| TokenKind::Dollar
             | TokenKind::DollarLParen
-            | TokenKind::DollarLSqb
             | TokenKind::AtDollarLParen
-            | TokenKind::AtLParen
-            | TokenKind::BangLParen
-            | TokenKind::BangLSqb)
+            | TokenKind::AtLParen)
     }
 
     /// Returns `true` if this is a singleton token i.e., `True`, `False`, or `None`.
