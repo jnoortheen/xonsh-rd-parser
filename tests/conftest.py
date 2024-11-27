@@ -75,6 +75,29 @@ def unparse_diff():
 def xsh():
     obj = MagicMock()
 
+    class Cmd:
+        def __call__(self, *args, **kwargs):
+            self.args = list(args)
+            self.kwargs = kwargs
+            self.result = None
+            return self
+
+        def out(self):
+            self.result = self.args
+            return self.result
+
+        def run(self):
+            self.result = None
+            return self.result
+
+        def hide(self):
+            self.result = MagicMock()
+            return self.result
+
+        def obj(self):
+            self.result = MagicMock(args=self.args)
+            return self.result
+
     def list_of_strs_or_callables(x):
         """
         A simplified version of the xonsh function.
@@ -85,14 +108,15 @@ def xsh():
             return [x([])]
         return x
 
-    obj.cmd = MagicMock()
+    # using instance to store the result
+    obj.cmd = Cmd()
     obj.list_of_strs_or_callables = MagicMock(wraps=list_of_strs_or_callables)
     return obj
 
 
 #
 @pytest.fixture
-def check_xonsh_ast(xsh):
+def exec_code(xsh):
     """compatibility fixture"""
 
     def factory(
@@ -106,7 +130,7 @@ def check_xonsh_ast(xsh):
         xsh.env = xenv or {}
         locs["__xonsh__"] = xsh
         exec(bytecode, {}, locs)
-        return obs
+        return xsh
 
     return factory
 

@@ -28,21 +28,19 @@ def test_line_items(inp, unparse, snapped):
         '![git commit -am "flock jawaka"]',
     ],
 )
-def test_statements(check_xonsh_ast, inp):
-    if not inp.endswith("\n"):
-        inp += "\n"
-    check_xonsh_ast(inp, mode="exec")
+def test_statements(exec_code, inp):
+    exec_code(inp, mode="exec")
 
 
 @pytest.mark.parametrize(
-    "inp, args",
+    "inp, result",
     [
         ("$(ls)", ["ls"]),
         ("$(ls )", ["ls"]),
         ("$( ls )", ["ls"]),
         ("$( ls)", ["ls"]),
         ("$(ls .)", ["ls", "."]),
-        ('$(ls ".")', ["ls", '"."']),
+        ('$(ls ".")', ["ls", "."]),
         ("$(ls -l)", ["ls", "-l"]),
         ("$(ls $WAKKA)", ["ls", "wak"]),
         ('$(ls @(None or "."))', ["ls", "."]),
@@ -96,9 +94,9 @@ def test_statements(check_xonsh_ast, inp):
         ("!(ls > x.py)", ["ls", ">", "x.py"]),
     ],
 )
-def test_captured_procs(inp, args, check_xonsh_ast, xsh):
-    check_xonsh_ast(inp, mode="exec", xenv={"WAKKA": "wak"})
-    xsh.cmd.assert_called_with(*args)
+def test_captured_procs(inp, result, exec_code):
+    sh = exec_code(inp, xenv={"WAKKA": "wak"})
+    assert sh.cmd.result == result
 
 
 @pytest.mark.parametrize(
@@ -117,19 +115,15 @@ def test_captured_procs(inp, args, check_xonsh_ast, xsh):
         "!($LS .)",
     ],
 )
-def test_bang_procs(expr, check_xonsh_ast):
-    check_xonsh_ast(expr, xenv={"LS": "ll", "WAKKA": "wak"})
+def test_bang_procs(expr, exec_code):
+    exec_code(expr, xenv={"LS": "ll", "WAKKA": "wak"})
 
 
 @pytest.mark.parametrize("p", ["", "p"])
 @pytest.mark.parametrize("f", ["", "f"])
 @pytest.mark.parametrize("glob_type", ["", "r", "g"])
-def test_backtick(p, f, glob_type, check_xonsh_ast):
-    check_xonsh_ast(f"print({p}{f}{glob_type}`.*`)", False)
-
-
-def test_comment_only(check_xonsh_ast):
-    check_xonsh_ast("# hello", mode="exec")
+def test_backtick(p, f, glob_type, exec_code):
+    exec_code(f"print({p}{f}{glob_type}`.*`)", False)
 
 
 @pytest.mark.parametrize(
@@ -143,5 +137,5 @@ def test_comment_only(check_xonsh_ast):
         "![(if True:\n   ls\nelse:\n   echo not true)]",
     ],
 )
-def test_use_subshell(case, check_xonsh_ast):
-    check_xonsh_ast(case)
+def test_use_subshell(case, exec_code):
+    exec_code(case)
