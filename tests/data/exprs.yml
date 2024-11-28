@@ -160,3 +160,19 @@ redirects:
   exp: __xonsh__.cmd('ls').pipe('grep', 'wakka', '>', 'x.py').out()
 - inp: $(ls | grep wakka >> x.py)
   exp: __xonsh__.cmd('ls').pipe('grep', 'wakka', '>>', 'x.py').out()
+
+_redir_inp:
+  - inp: "$[cat < input.txt]"
+    exp: __xonsh__.cmd('cat', '<', 'input.txt').run()
+  - inp: "$[< input.txt cat]"
+    exp: __xonsh__.cmd('cat', '<', 'input.txt').run()
+  - inp: "$[cat < /path/to/input.txt]"
+    exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').run()
+  - inp: "$[(cat) < /path/to/input.txt]"
+    exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').run()
+  - inp: "$[< /path/to/input.txt cat]"
+    exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').run()
+  - inp: "![< /path/to/input.txt]"
+    exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').hide()
+  - inp: "![< /path/to/input.txt > /path/to/output.txt]"
+    exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').pipe('>', '/path/to/output.txt').hide()
