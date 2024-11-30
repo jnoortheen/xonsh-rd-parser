@@ -2,11 +2,6 @@
 
 A Rust library that parses Xonsh syntax to Python's AST.
 
-# Todos
-
-- implement invalid syntax errors
-- implement xonsh expr and stmts
-
 # Credits
 
 This library is based on [ruff](https://github.com/charliermarsh/ruff)'s own Python parser.
