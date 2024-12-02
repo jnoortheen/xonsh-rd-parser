@@ -152,9 +152,21 @@ impl ToAst for StmtFunctionDef {
                 ("returns", self.returns.to_ast(module)?),
                 ("body", self.body.to_ast(module)?),
                 ("decorator_list", self.decorator_list.to_ast(module)?),
-                ("type_params", self.type_params.to_ast(module)?),
+                ("type_params", empty_vec(module, self.type_params.as_ref())?),
             ],
         )
+    }
+}
+
+fn empty_vec<'py, T, U>(module: &AstModule<'py>, obj: Option<U>) -> PyResult
+where
+    U: std::ops::Deref<Target = T>,
+    T: ToAst,
+{
+    if let Some(obj) = obj {
+        obj.deref().to_ast(module)
+    } else {
+        module.empty_list()
     }
 }
 
@@ -299,7 +311,7 @@ impl ToAst for Stmt {
 impl ToAst for Vec<ElifElseClause> {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         if self.is_empty() {
-            return Ok(module.py.None());
+            return module.empty_list();
         }
 
         // split as first and rest
@@ -409,7 +421,7 @@ impl ToAst for StmtClassDef {
                 ("keywords", self.keywords().to_ast(module)?),
                 ("body", self.body.to_ast(module)?),
                 ("decorator_list", self.decorator_list.to_ast(module)?),
-                ("type_params", self.type_params.to_ast(module)?),
+                ("type_params", empty_vec(module, self.type_params.as_ref())?),
             ],
         )
     }
@@ -481,7 +493,7 @@ impl ToAst for StmtTypeAlias {
             self.range,
             [
                 ("name", self.name.to_ast(module)?),
-                ("type_params", self.type_params.to_ast(module)?),
+                ("type_params", empty_vec(module, self.type_params.as_ref())?),
                 ("value", self.value.to_ast(module)?),
             ],
         )
