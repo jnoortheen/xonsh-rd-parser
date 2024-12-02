@@ -13,15 +13,9 @@ use crate::{
 impl<'a> Parser<'a> {
     /// Parses a subprocess expression.
     /// This includes various forms of subprocess capture like `$(...)`, `$[...]`, `!(...)`, and `![...]`.
-    pub(super) fn parse_subprocs(&mut self, method: impl Into<Name>) -> Expr {
+    pub(super) fn parse_subprocs(&mut self, method: impl Into<Name>, closing: TokenKind) -> Expr {
         let start = self.node_start();
-        let closing = TokenKind::Rpar;
-        self.bump_any(); // skip the `$`
-        self.bump(TokenKind::Lpar); // skip the `(`
-
-        if self.current_token_kind() == closing {
-            self.bump_any();
-        }
+        self.bump_any(); // skip the `$(`
 
         let mut cmd = self
             .xonsh_attr("cmd")
@@ -47,7 +41,7 @@ impl<'a> Parser<'a> {
         let mut keywords = Vec::new();
 
         loop {
-            if self.at(TokenKind::Rpar) {
+            if self.at(closing) {
                 self.bump_any();
                 break;
             }
@@ -64,7 +58,7 @@ impl<'a> Parser<'a> {
                 self.bump(closing); // skip the `)`
                 break;
             }
-            cmds.push(self.parse_proc_arg(&mut progress));
+            cmds.push(self.parse_proc_arg(&mut progress, closing));
         }
         ast::Arguments {
             range: self.node_range(start),
@@ -74,7 +68,7 @@ impl<'a> Parser<'a> {
     }
 
     /// Parses arguments in a subprocess expression.
-    fn parse_proc_arg(&mut self, parser_progress: &mut ParserProgress) -> Expr {
+    fn parse_proc_arg(&mut self, parser_progress: &mut ParserProgress, closing: TokenKind) -> Expr {
         parser_progress.assert_progressing(self);
         match self.current_token_kind() {
             kind => {
@@ -106,7 +100,7 @@ impl<'a> Parser<'a> {
                 loop {
                     if self.current_token_kind().is_proc_op()
                         || (offset != self.node_start())
-                        || (self.current_token_kind() == TokenKind::Rpar && nesting == 0)
+                        || (self.current_token_kind() == closing && nesting == 0)
                     {
                         break;
                     }
@@ -207,7 +201,7 @@ impl<'a> Parser<'a> {
         Expr::Subscript(ast)
     }
     pub(super) fn parse_env_expr(&mut self) -> Expr {
-        self.bump_any();
+        self.bump(TokenKind::DollarLBrace);
         let attr = self.xonsh_attr("env");
 
         // Slice range doesn't include the `[` token.

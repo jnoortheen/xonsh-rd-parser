@@ -54,9 +54,6 @@ pub struct Lexer<'src> {
     /// Lexer state.
     state: State,
 
-    /// Xonsh's sub-proc mode
-    extras: Vec<ExtraState>,
-
     /// Represents the current level of nesting in the lexer, indicating the depth of parentheses.
     /// The lexer is within a parenthesized context if the value is greater than 0.
     nesting: u32,
@@ -75,23 +72,6 @@ pub struct Lexer<'src> {
     errors: Vec<LexicalError>,
 }
 
-#[derive(Clone, Copy, Debug)]
-struct ExtraState {
-    /// true -> () ; false -> []
-    captured: bool,
-}
-
-impl Default for ExtraState {
-    fn default() -> ExtraState {
-        ExtraState { captured: false }
-    }
-}
-impl ExtraState {
-    fn captured() -> Self {
-        ExtraState { captured: true }
-    }
-}
-
 impl<'src> Lexer<'src> {
     /// Create a new lexer for the given input source which starts at the given offset.
     ///
@@ -108,7 +88,6 @@ impl<'src> Lexer<'src> {
             source,
             cursor: Cursor::new(source),
             state: State::AfterNewline,
-            extras: Vec::new(),
             current_kind: TokenKind::EndOfFile,
             current_range: TextRange::empty(start_offset),
             current_value: TokenValue::None,
@@ -381,13 +360,14 @@ impl<'src> Lexer<'src> {
         let token = match c {
             c if is_ascii_identifier_start(c) => self.lex_identifier(c),
             '$' => {
-                if self.cursor.first() == '[' {
-                    self.extras.push(ExtraState::default());
+                if self.cursor.eat_char('[') {
+                    self.nesting += 1;
                     TokenKind::DollarLSqb
-                } else if self.cursor.first() == '(' {
-                    self.extras.push(ExtraState::captured());
+                } else if self.cursor.eat_char('(') {
+                    self.nesting += 1;
                     TokenKind::DollarLParen
                 } else if self.cursor.eat_char('{') {
+                    self.nesting += 1;
                     TokenKind::DollarLBrace
                 } else {
                     TokenKind::Dollar
@@ -508,8 +488,10 @@ impl<'src> Lexer<'src> {
                 if self.cursor.eat_char('=') {
                     TokenKind::AtEqual
                 } else if self.cursor.eat_char('(') {
+                    self.nesting += 1;
                     TokenKind::AtLParen
-                } else if self.cursor.eat_char('$') && self.cursor.first() == '(' {
+                } else if self.cursor.eat_char('$') && self.cursor.eat_char('(') {
+                    self.nesting += 1;
                     TokenKind::AtDollarLParen
                 } else {
                     TokenKind::At
@@ -518,11 +500,11 @@ impl<'src> Lexer<'src> {
             '!' => {
                 if self.cursor.eat_char('=') {
                     TokenKind::NotEqual
-                } else if self.cursor.first() == '[' {
-                    self.extras.push(ExtraState::default());
+                } else if self.cursor.eat_char('[') {
+                    self.nesting += 1;
                     TokenKind::BangLSqb
-                } else if self.cursor.first() == '(' {
-                    self.extras.push(ExtraState::captured());
+                } else if self.cursor.eat_char('(') {
+                    self.nesting += 1;
                     TokenKind::BangLParen
                 } else {
                     TokenKind::Exclamation
@@ -535,30 +517,14 @@ impl<'src> Lexer<'src> {
             }
             ')' => {
                 self.nesting = self.nesting.saturating_sub(1);
-                if let Some(extra) = self.extras.last() {
-                    if extra.captured {
-                        self.extras.pop();
-                    }
-                }
                 TokenKind::Rpar
             }
             '[' => {
                 self.nesting += 1;
-                if let Some(extra) = self.extras.last() {
-                    if !extra.captured {
-                        return TokenKind::Lpar;
-                    }
-                }
                 TokenKind::Lsqb
             }
             ']' => {
                 self.nesting = self.nesting.saturating_sub(1);
-                if let Some(extra) = self.extras.last() {
-                    if !extra.captured {
-                        self.extras.pop();
-                        return TokenKind::Rpar;
-                    }
-                }
                 TokenKind::Rsqb
             }
             '{' => {
