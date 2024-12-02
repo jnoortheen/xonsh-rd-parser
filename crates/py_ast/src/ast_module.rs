@@ -1,7 +1,7 @@
 /// A wrapper around the Python ast module.
 use pyo3::prelude::PyModule;
 use pyo3::types::{IntoPyDict, PyAnyMethods};
-use pyo3::{IntoPyObject, PyObject, PyResult, Python};
+use pyo3::{IntoPyObject, IntoPyObjectExt, PyObject, PyResult, Python};
 use ruff_source_file::SourceCode;
 use ruff_text_size::TextRange;
 
@@ -55,5 +55,10 @@ impl<'py> AstModule<'py> {
     pub fn callk<T: IntoPyDict<'py>>(&self, kwargs: T) -> PyResult<PyObject> {
         let kwargs = kwargs.into_py_dict(self.py)?;
         Ok(self.obj.bind(self.py).call((), Some(&kwargs))?.into())
+    }
+
+    pub fn empty_list(&self) -> PyResult<PyObject> {
+        let empty_vec: Vec<i32> = vec![]; // Explicitly specify the type of Vec
+        empty_vec.into_py_any(self.py)
     }
 }

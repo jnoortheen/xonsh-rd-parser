@@ -4,7 +4,7 @@ use std::vec;
 use super::ToAst;
 use crate::ast_module::AstModule;
 use num_complex::Complex;
-use pyo3::{IntoPyObject, IntoPyObjectExt, PyObject, Python};
+use pyo3::{IntoPyObjectExt, PyObject};
 use ruff_python_ast::str_prefix::StringLiteralPrefix;
 use ruff_python_ast::*;
 use ruff_text_size::Ranged;
@@ -436,18 +436,14 @@ struct OptionalParameters(pub Option<Box<Parameters>>);
 // special case for Parameters
 impl ToAst for OptionalParameters {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        fn empty_list<'py>(py: Python<'py>) -> PyResult {
-            let empty_vec: Vec<i32> = vec![]; // Explicitly specify the type of Vec
-            empty_vec.into_pyobject(py)?.into_py_any(py)
-        }
         match &self.0 {
             Some(parameters) => parameters.to_ast(module),
             None => module.attr("arguments")?.callk([
-                ("posonlyargs", empty_list(module.py)?),
-                ("args", empty_list(module.py)?),
-                ("defaults", empty_list(module.py)?),
-                ("kwonlyargs", empty_list(module.py)?),
-                ("kw_defaults", empty_list(module.py)?),
+                ("posonlyargs", module.empty_list()?),
+                ("args", module.empty_list()?),
+                ("defaults", module.empty_list()?),
+                ("kwonlyargs", module.empty_list()?),
+                ("kw_defaults", module.empty_list()?),
                 ("vararg", module.py.None()),
                 ("kwarg", module.py.None()),
             ]),

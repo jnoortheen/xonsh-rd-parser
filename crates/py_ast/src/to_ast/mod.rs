@@ -24,21 +24,23 @@ impl<T: ToAst> ToAst for Box<T> {
         self.as_ref().to_ast(module)
     }
 }
+// Shared implementation for sequences
+fn to_ast_sequence<T: ToAst>(items: &[T], module: &AstModule) -> PyResult {
+    let py_objects: Vec<PyObject> = items
+        .iter()
+        .map(|item| item.to_ast(module))
+        .collect::<Result<_, _>>()?;
+    Ok(py_objects.into_py_any(module.py)?)
+}
+
 impl<T: ToAst> ToAst for Vec<T> {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        let mut body: Vec<PyObject> = vec![];
-        for stmt in self {
-            body.push(stmt.to_ast(module)?);
-        }
-        Ok(body.into_py_any(module.py)?)
+        to_ast_sequence(self, module)
     }
 }
+
 impl<T: ToAst> ToAst for [T] {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        let mut body: Vec<PyObject> = vec![];
-        for stmt in self {
-            body.push(stmt.to_ast(module)?);
-        }
-        Ok(body.into_py_any(module.py)?)
+        to_ast_sequence(self, module)
     }
 }
