@@ -1,8 +1,8 @@
 use std::borrow::Cow;
 use std::vec;
 
+use super::ToAst;
 use crate::ast_module::AstModule;
-use crate::to_ast::ToAst;
 use num_complex::Complex;
 use pyo3::{IntoPyObject, IntoPyObjectExt, PyObject, Python};
 use ruff_python_ast::str_prefix::StringLiteralPrefix;
@@ -431,7 +431,7 @@ impl ToAst for ExprIf {
     }
 }
 
-pub struct OptionalParameters(pub Option<Box<Parameters>>);
+struct OptionalParameters(pub Option<Box<Parameters>>);
 
 // special case for Parameters
 impl ToAst for OptionalParameters {

@@ -1,9 +1,11 @@
 use std::vec;
 
 use crate::ast_module::AstModule;
-use crate::to_ast::ToAst;
+
 use pyo3::{IntoPyObjectExt, PyObject};
 use ruff_python_ast::*;
+
+use super::ToAst;
 
 type PyResult = pyo3::PyResult<PyObject>;
 impl ToAst for MatchCase {

@@ -1,7 +1,7 @@
 use std::vec;
 
+use super::ToAst;
 use crate::ast_module::AstModule;
-use crate::to_ast::ToAst;
 use pyo3::{IntoPyObjectExt, PyObject};
 use ruff_python_ast::*;
 
@@ -489,8 +489,10 @@ impl ToAst for StmtTypeAlias {
 }
 impl ToAst for ModModule {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        module
-            .attr("Module")?
-            .callk([("body", self.body.to_ast(module)?)])
+        let type_ignores: Vec<Expr> = vec![];
+        module.attr("Module")?.callk([
+            ("body", self.body.to_ast(module)?),
+            ("type_ignores", type_ignores.to_ast(module)?),
+        ])
     }
 }
