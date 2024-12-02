@@ -1,0 +1,11 @@
+{
+  "include": ["tests/"],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    ".local",
+    ".venv",
+    "tests/data",
+    "crates/"
+  ]
+}
