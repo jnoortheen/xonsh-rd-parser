@@ -1,3 +1,15 @@
+import os
+
+if not os.environ.get("GITHUB_ACTIONS"):
+    import maturin_import_hook
+    from maturin_import_hook.settings import MaturinSettings
+
+    maturin_import_hook.install(
+        settings=MaturinSettings(
+            release=False,
+            # uv=True,
+        )
+    )
 import ast
 import logging
 from unittest.mock import MagicMock
