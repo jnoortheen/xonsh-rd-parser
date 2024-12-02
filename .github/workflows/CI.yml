@@ -152,6 +152,28 @@ jobs:
         with:
           name: wheels-sdist
           path: dist
+  test:
+    runs-on: ubuntu-latest
+    needs: [linux, musllinux, windows, macos, sdist]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+      - name: install project dependencies
+        run: uv sync --frozen --no-install-project
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheels-linux-x86_64
+          path: dist
+      - name: install project wheel
+        run: ls dist && uv pip install xonsh_rd_parser --find-links dist
+      - name: test with pytest
+        run: uv run --no-sync pytest
 
   release:
     name: Release

@@ -1,9 +1,3 @@
-from __future__ import annotations
-
-import maturin_import_hook
-
-maturin_import_hook.install()
-
 import ast
 import logging
 from unittest.mock import MagicMock
