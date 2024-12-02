@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.1.1...v0.2.0) (2024-12-02)
+
+
+### Features
+
+* add lexer python interface and tests ([9f92fa1](https://github.com/jnoortheen/xonsh-rd-parser/commit/9f92fa1abd987c9f9aedf176bf0b3260e6164e2f))
+* remove lexing with extra-state ([ea46c4d](https://github.com/jnoortheen/xonsh-rd-parser/commit/ea46c4d0c67ca7f846dcdfe9e9f5b143a531fb4e))
+
 ## [0.1.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.1.0...v0.1.1) (2024-12-02)
 
 
