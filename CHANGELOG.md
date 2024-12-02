@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.1.0...v0.1.1) (2024-12-02)
+
+
+### Bug Fixes
+
+* release with PyPI's trusted publisher ([b7ed5bd](https://github.com/jnoortheen/xonsh-rd-parser/commit/b7ed5bd8f4b54674a0615475d8c5c1e638b9451a))
+
 ## 0.1.0 (2024-12-02)
 
 
