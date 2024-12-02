@@ -20,10 +20,10 @@ dev = [
     "maturin-import-hook>=0.1.0",
     "pytest-benchmark>=4.0.0",
     "pytest-memray",
-#    "pytest-insta",
+    #    "pytest-insta",
     "psutil",
-#    "inline-snapshot",
-    "ruamel.yaml"
+    "inline-snapshot",
+    "ruamel.yaml",
 ]
 [tool.maturin]
 features = ["pyo3/extension-module"]

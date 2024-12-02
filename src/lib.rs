@@ -1,4 +1,5 @@
 mod annotate_src;
+mod lexer;
 mod parser;
 
 use parser::parse_str;
@@ -18,6 +19,10 @@ mod xonsh_rd_parser {
     pub fn parse_file<'py>(py: Python<'py>, path: &str) -> PyResult<PyObject> {
         let src = std::fs::read_to_string(path).unwrap();
         parse_str(py, &src, Some(path))
+    }
+    #[pyfunction]
+    pub fn lex_string<'py>(py: Python<'py>, src: &str) -> PyResult<Vec<lexer::Token>> {
+        lexer::lex_str(py, src, None)
     }
 }
 
