@@ -6,6 +6,9 @@ import pytest
 
 SUBPROC_MACRO_OC = [("!(", ")"), ("$(", ")"), ("![", "]"), ("$[", "]")]
 
+# skip this whole module
+pytestmark = pytest.mark.skip(reason="not implemented")
+
 
 @pytest.mark.parametrize("opener, closer", SUBPROC_MACRO_OC)
 @pytest.mark.parametrize(

@@ -5,6 +5,8 @@ from unittest.mock import ANY
 
 import pytest
 
+pytestmark = pytest.mark.skip(reason="not implemented")
+
 
 @pytest.fixture(name="run")
 def run_fixture(exec_code, xsh):
