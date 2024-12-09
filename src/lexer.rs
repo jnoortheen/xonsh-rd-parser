@@ -11,7 +11,7 @@ pub(crate) struct Token {
 }
 
 pub fn lex_str<'py>(
-    py: Python<'py>,
+    _py: Python<'py>,
     src: &'py str,
     filename: Option<&'py str>,
 ) -> PyResult<Vec<Token>> {
