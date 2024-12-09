@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.1.1...v0.2.0) (2024-12-09)
+
+
+### Features
+
+* accept file_name for parse_string function ([cdacde2](https://github.com/jnoortheen/xonsh-rd-parser/commit/cdacde296844f72b60c058ebe23445f1f652d5c2))
+* add lexer python interface and tests ([9f92fa1](https://github.com/jnoortheen/xonsh-rd-parser/commit/9f92fa1abd987c9f9aedf176bf0b3260e6164e2f))
+* add py.typed ([fcec046](https://github.com/jnoortheen/xonsh-rd-parser/commit/fcec0469830b39fa8f81791b14ef45c664609df2))
+* remove lexing with extra-state ([ea46c4d](https://github.com/jnoortheen/xonsh-rd-parser/commit/ea46c4d0c67ca7f846dcdfe9e9f5b143a531fb4e))
+
+
+### Bug Fixes
+
+* warnings ([5820637](https://github.com/jnoortheen/xonsh-rd-parser/commit/5820637ed7844772f07a2c13137ae8d6437e78e7))
+
 ## [0.1.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.1.0...v0.1.1) (2024-12-02)
 
 
