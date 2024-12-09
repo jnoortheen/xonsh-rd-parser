@@ -4,11 +4,7 @@ use pyo3::exceptions::PySyntaxError;
 use pyo3::{PyObject, PyResult, Python};
 use ruff_source_file::{LineIndex, SourceCode};
 
-pub fn parse_str<'py>(
-    py: Python<'py>,
-    src: &'py str,
-    filename: Option<&'py str>,
-) -> PyResult<PyObject> {
+pub fn parse_str<'py>(py: Python<'py>, src: &'py str, filename: &'py str) -> PyResult<PyObject> {
     let parsed = ruff_python_parser::parse_module(src);
     match parsed {
         Ok(parsed) => {
@@ -19,7 +15,6 @@ pub fn parse_str<'py>(
             tree.to_ast(&module)
         }
         Err(err) => {
-            let filename = filename.unwrap_or("<string>");
             let msg = crate::annotate_src::to_exc_msg(src, filename, &err);
             let err = PySyntaxError::new_err(msg);
             Err(err)
