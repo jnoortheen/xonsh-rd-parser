@@ -1,6 +1,19 @@
 # Xonsh Recursive Descent Parser
 
-A Rust library that parses Xonsh syntax to Python's AST.
+A Rust based, Python recursive descent parser for [Xonsh](https://xon.sh).
+
+# Usage
+
+- install it with pip
+
+```
+pip install xonsh-rd-parser
+```
+
+```py
+from xonsh_rd_parser import parse_string
+parse_string("print($HOME)")
+```
 
 # Credits
 
