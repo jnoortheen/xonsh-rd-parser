@@ -1,13 +1,53 @@
 use pyo3::exceptions::PySyntaxError;
+use pyo3::prelude::*;
 use pyo3::{pyclass, PyResult, Python};
+use ruff_python_parser::TokenKind;
 use ruff_python_parser::{lexer::Lexer, Mode};
 use ruff_text_size::TextSize;
 
-#[pyclass(get_all)]
+#[pyclass]
 pub(crate) struct Token {
-    kind: String,
+    kind: TokenKind,
+    #[pyo3(get)]
     start: usize,
+    #[pyo3(get)]
     end: usize,
+}
+
+#[pymethods]
+impl Token {
+    #[getter]
+    fn get_type(&self) -> PyResult<&str> {
+        use TokenKind::*;
+
+        // get Python token name
+        let name = match self.kind {
+            EndOfFile => "ENDMARKER",
+            Name => "NAME",
+            Int | Float | Complex => "NUMBER",
+            String => "STRING",
+            FStringStart => "FSTRING_START",
+            FStringMiddle => "FSTRING_MIDDLE",
+            FStringEnd => "FSTRING_END",
+            Newline => "NEWLINE",
+            Comment => "COMMENT",
+            Indent => "INDENT",
+            Dedent => "DEDENT",
+            NonLogicalNewline => "NL",
+            IpyEscapeCommand => unreachable!(),
+            TokenKind::Unknown => "ErrorToken",
+            _ => {
+                if self.kind.is_operator() {
+                    "OP"
+                } else if self.kind.is_keyword() {
+                    "NAME"
+                } else {
+                    "UNKNOWN"
+                }
+            }
+        };
+        Ok(name)
+    }
 }
 
 pub fn lex_str<'py>(
@@ -25,7 +65,7 @@ pub fn lex_str<'py>(
         }
         let range = lexer.current_range();
         tokens.push(Token {
-            kind: format!("{:?}", kind),
+            kind: kind,
             start: range.start().to_usize(),
             end: range.end().to_usize(),
         });
