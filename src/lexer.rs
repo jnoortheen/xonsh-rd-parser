@@ -17,6 +17,10 @@ pub(crate) struct Token {
 #[pymethods]
 impl Token {
     #[getter]
+    fn get_kind(&self) -> PyResult<String> {
+        Ok(format!("{:?}", self.kind))
+    }
+    #[getter]
     fn get_type(&self) -> PyResult<&str> {
         use TokenKind::*;
 
