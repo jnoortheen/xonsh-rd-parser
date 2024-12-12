@@ -2,7 +2,7 @@
 
 import pytest
 
-from xonsh_rd_parser import lex_string
+from xonsh_rd_parser import Lexer
 from inline_snapshot import snapshot
 
 LEXER_ARGS = {"lextab": "lexer_test_table", "debug": 0}
@@ -10,7 +10,8 @@ LEXER_ARGS = {"lextab": "lexer_test_table", "debug": 0}
 
 def lex_input(inp: str):
     return [
-        (t.kind, f"{t.start}..{t.end}", inp[t.start : t.end]) for t in lex_string(inp)
+        (t.kind, f"{t.start}..{t.end}", inp[t.start : t.end])
+        for t in Lexer(inp).tokens()
     ][:-1]
 
 

@@ -25,10 +25,9 @@ mod xonsh_rd_parser {
         let src = std::fs::read_to_string(path).unwrap();
         parse_str(py, &src, path)
     }
-    #[pyfunction]
-    pub fn lex_string<'py>(py: Python<'py>, src: &str) -> PyResult<Vec<lexer::Token>> {
-        lexer::lex_str(py, src, None)
-    }
+
+    #[pymodule_export]
+    use lexer::PyLexer;
 }
 
 #[cfg(test)]
