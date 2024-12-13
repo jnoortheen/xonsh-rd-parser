@@ -60,6 +60,26 @@ impl Token {
         };
         Ok(name)
     }
+
+    #[pyo3(signature = (suffix = None))]
+    fn has_suffix(&self, suffix: Option<&Self>) -> bool {
+        dbg!(self, suffix);
+        if let Some(next) = suffix {
+            return next.range.start() == self.range.end();
+        }
+        false
+    }
+    #[pyo3(signature = (prefix = None))]
+    fn has_prefix(&self, prefix: Option<&Self>) -> bool {
+        if let Some(prefix) = prefix {
+            return prefix.range.end() == self.range.start();
+        }
+        false
+    }
+
+    fn is_combinator(&self) -> bool {
+        matches!(self.kind, TokenKind::And | TokenKind::Or)
+    }
 }
 
 #[pyclass(name = "Lexer", module = "xonsh_rd_parser")]
@@ -117,10 +137,10 @@ impl PyLexer {
         let mincol = mincol.unwrap_or(-1);
         let returnline = returnline.unwrap_or(false);
         let greedy = greedy.unwrap_or(false);
-        let mut tokens = self.tokens(py)?;
+        let mut tokens = self.tokens(py).ok().unwrap_or_default();
         let result = if let Some(range) = tokens.find_subproc_line(mincol, maxcol, greedy) {
             let line = format!("![{}]", &src[range]);
-            dbg!(range, &line);
+
             if returnline {
                 let line = format!(
                     "{}{}{}",
@@ -159,6 +179,10 @@ impl LexerExt for Vec<Token> {
             let pos = token.get_start();
 
             if pos >= maxcol && !tok.is_proc_end() {
+                break;
+            }
+
+            if tok == TokenKind::Comment {
                 break;
             }
 
@@ -203,22 +227,22 @@ impl LexerExt for Vec<Token> {
                 continue;
             }
 
-            dbg!(&toks);
             if let Some(last) = toks.last() {
                 if last.kind.is_proc_end() {
-                    if is_not_lparen_and_rparen(&lparens, &last.kind) {
+                    dbg!(&self);
+                    if last.is_combinator() && last.has_suffix(Some(&token)) {
+                        // pass
+                    } else if is_not_lparen_and_rparen(&lparens, &last.kind) {
                         lparens.pop();
-                    } else {
-                        if pos < maxcol && !tok.is_macro_end() {
-                            if !greedy {
-                                toks.clear();
-                            }
-                            if tok.is_beg_skip() {
-                                continue;
-                            }
-                        } else {
-                            break;
+                    } else if pos < maxcol && !tok.is_macro_end() {
+                        if !greedy {
+                            toks.clear();
                         }
+                        if tok.is_beg_skip() {
+                            continue;
+                        }
+                    } else {
+                        break;
                     }
                 }
             } else if tok.is_beg_skip() {
@@ -241,19 +265,21 @@ impl LexerExt for Vec<Token> {
             //     tok = handle_dedent_token(&mut toks, tok); //Needs Mutability fix
             //     break;
             // }
-            // if check_bad_str_token(&tok) {
-            //     return Ok(None);
-            // }
         }
 
-        dbg!(&toks);
         if let Some(last) = toks.last() {
-            if (last.kind.is_proc_end()
-                && !(is_not_lparen_and_rparen(&lparens, &last.kind)
-                    || (greedy && last.kind.is_rparen())))
-                || last.kind.is_any_newline()
-            {
+            if last.kind.is_any_newline() {
                 toks.pop();
+            } else if last.kind.is_proc_end() {
+                if is_not_lparen_and_rparen(&lparens, &last.kind)
+                    || (greedy && last.kind.is_rparen())
+                {
+                    // pass
+                } else if last.is_combinator() && last.has_prefix(toks.get(toks.len() - 2)) {
+                    // pass
+                } else {
+                    toks.pop();
+                }
             }
         }
 

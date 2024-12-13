@@ -129,6 +129,18 @@ def test_not_really_or_post():
     )
 
 
+def test_pref_suff_and():
+    inp = "echo and-y"
+    assert lex_input(inp) == snapshot(
+        [
+            ("Name", "0..4", "echo"),
+            ("And", "5..8", "and"),
+            ("Minus", "8..9", "-"),
+            ("Name", "9..10", "y"),
+        ]
+    )
+
+
 def test_not_really_or_pre_post():
     inp = "![foo-or-bar]"
     assert lex_input(inp) == snapshot(
