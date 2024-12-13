@@ -81,3 +81,5 @@ pdm.lock
 
 # Zed settings
 .zed/
+
+rustc-ice-*.txt
