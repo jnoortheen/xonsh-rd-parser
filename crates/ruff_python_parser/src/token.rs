@@ -418,6 +418,31 @@ impl TokenKind {
             | TokenKind::AtLParen)
     }
 
+    pub const fn is_macro(&self) -> bool {
+        matches!(self, TokenKind::Exclamation)
+    }
+    pub const fn is_macro_end(&self) -> bool {
+        matches!(self, TokenKind::Newline | TokenKind::Dedent)
+    }
+    pub const fn is_open_paren(&self) -> bool {
+        use TokenKind::*;
+        matches!(
+            self,
+            Lpar | AtLParen | BangLParen | DollarLParen | AtDollarLParen
+        )
+    }
+    pub const fn is_rparen(&self) -> bool {
+        matches!(self, TokenKind::Rpar)
+    }
+    pub const fn is_beg_skip(&self) -> bool {
+        use TokenKind::*;
+        matches!(self, Indent | Lpar | Not)
+    }
+    pub const fn is_proc_end(&self) -> bool {
+        use TokenKind::*;
+        matches!(self, Semi | And | Or | Rpar)
+    }
+
     /// Returns `true` if this is a singleton token i.e., `True`, `False`, or `None`.
     #[inline]
     pub const fn is_singleton(self) -> bool {

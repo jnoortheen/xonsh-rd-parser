@@ -4,15 +4,13 @@ use pyo3::types::PyString;
 use pyo3::{pyclass, PyResult, Python};
 use ruff_python_parser::TokenKind;
 use ruff_python_parser::{lexer::Lexer, Mode};
+use ruff_text_size::TextRange;
 use ruff_text_size::TextSize;
 
 #[pyclass]
 pub(crate) struct Token {
     kind: TokenKind,
-    #[pyo3(get)]
-    start: usize,
-    #[pyo3(get)]
-    end: usize,
+    range: TextRange,
 }
 
 #[pymethods]
@@ -20,6 +18,14 @@ impl Token {
     #[getter]
     fn get_kind(&self) -> PyResult<String> {
         Ok(format!("{:?}", self.kind))
+    }
+    #[getter]
+    fn get_start(&self) -> usize {
+        self.range.start().to_usize()
+    }
+    #[getter]
+    fn get_end(&self) -> usize {
+        self.range.end().to_usize()
     }
     #[getter]
     fn get_type(&self) -> PyResult<&str> {
@@ -73,8 +79,8 @@ impl PyLexer {
         })
     }
 
-    fn tokens(slf: PyRef<'_, Self>) -> PyResult<Vec<Token>> {
-        let src = slf.src.to_str(slf.py())?;
+    fn tokens(&self, py: Python<'_>) -> PyResult<Vec<Token>> {
+        let src = self.src.to_str(py)?;
         let mut lexer = Lexer::new(src, Mode::Module, TextSize::default());
 
         let mut tokens = Vec::new();
@@ -84,14 +90,10 @@ impl PyLexer {
                 break;
             }
             let range = lexer.current_range();
-            tokens.push(Token {
-                kind: kind,
-                start: range.start().to_usize(),
-                end: range.end().to_usize(),
-            });
+            tokens.push(Token { kind, range });
         }
         if let Some(err) = lexer.finish().pop() {
-            let filename = slf.file.as_str();
+            let filename = self.file.as_str();
             let msg = crate::annotate_src::to_exc_msg(src, filename, &err.into());
             let err = PySyntaxError::new_err(msg);
             Err(err)
