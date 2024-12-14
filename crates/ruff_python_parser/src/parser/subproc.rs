@@ -152,7 +152,7 @@ impl<'a> Parser<'a> {
         let end = if self.at(*closing) {
             start
         } else {
-            self.take_while(|t| !(t.is_macro_end() || &t == closing))
+            self.take_while(|t| !(t.is_macro_end()), closing)
         };
 
         let range = TextRange::new(start, end);
@@ -161,9 +161,29 @@ impl<'a> Parser<'a> {
         expr
     }
 
-    fn take_while(&mut self, mut f: impl FnMut(TokenKind) -> bool) -> TextSize {
+    fn take_while(
+        &mut self,
+        mut f: impl FnMut(TokenKind) -> bool,
+        closing: &TokenKind,
+    ) -> TextSize {
+        let mut nesting = 0;
         let mut range = self.current_token_range();
+        let is_opening = match closing {
+            TokenKind::Rpar => TokenKind::is_open_paren,
+            TokenKind::Rsqb => TokenKind::is_open_square,
+            _ => unreachable!(),
+        };
+
         while f(self.current_token_kind()) {
+            if is_opening(&self.current_token_kind()) {
+                nesting += 1;
+            }
+            if self.current_token_kind() == *closing {
+                if nesting == 0 {
+                    break;
+                }
+                nesting -= 1;
+            }
             range = self.current_token_range();
             self.bump_any();
         }

@@ -52,13 +52,10 @@ def test_empty_subprocbang(opener, closer, body, args, exec_code):
         'timeit!"!)"',
     ],
 )
-@pytest.mark.xfail
-def test_many_subprocbang(opener, closer, body, check_xonsh_ast, xsh_proc_method):
-    tree = check_xonsh_ast(opener + body + closer)
-    assert isinstance(tree, AST)
-    method = xsh_proc_method(opener)
+def test_many_subprocbang(opener, closer, body, exec_code):
+    sh = exec_code(opener + body + closer)
     cmd, arg = body.split("!", 1)
-    method.assert_called_once_with(cmd.strip(), arg.strip())
+    assert sh.cmd.result == [cmd.strip(), arg.strip()]
 
 
 @pytest.mark.xfail

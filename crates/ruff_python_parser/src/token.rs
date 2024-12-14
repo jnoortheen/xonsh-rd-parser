@@ -432,6 +432,10 @@ impl TokenKind {
             Lpar | AtLParen | BangLParen | DollarLParen | AtDollarLParen
         )
     }
+    pub const fn is_open_square(&self) -> bool {
+        use TokenKind::*;
+        matches!(self, Lsqb | BangLSqb | DollarLSqb)
+    }
     pub const fn is_rparen(&self) -> bool {
         matches!(self, TokenKind::Rpar)
     }
