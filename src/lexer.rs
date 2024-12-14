@@ -229,7 +229,6 @@ impl LexerExt for Vec<Token> {
 
             if let Some(last) = toks.last() {
                 if last.kind.is_proc_end() {
-                    dbg!(&self);
                     if last.is_combinator() && last.has_suffix(Some(&token)) {
                         // pass
                     } else if is_not_lparen_and_rparen(&lparens, &last.kind) {
