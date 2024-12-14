@@ -83,3 +83,5 @@ pdm.lock
 .zed/
 
 rustc-ice-*.txt
+
+.env
