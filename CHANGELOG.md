@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.2.0...v0.3.0) (2024-12-14)
+
+
+### Features
+
+* add lexer helpers ([b4edd04](https://github.com/jnoortheen/xonsh-rd-parser/commit/b4edd04c9b7437684fcbfde6ea00777303a36cba))
+* add lexing for subproc_tokens ([b429e1b](https://github.com/jnoortheen/xonsh-rd-parser/commit/b429e1bd9279e3529428ac0caa880d29adaf01cd))
+* implement parsing subproc macros ([f0775b0](https://github.com/jnoortheen/xonsh-rd-parser/commit/f0775b094f2a01ef68a3beecb29747990cce13ad))
+* Lexer class interface ([1d9fd70](https://github.com/jnoortheen/xonsh-rd-parser/commit/1d9fd704076d391b2e8c4dd0424f8089fe5de47e))
+* macros implement recursive nested ([30be297](https://github.com/jnoortheen/xonsh-rd-parser/commit/30be2978f3eedf82a67a2aaeae49895e50a26a5c))
+
 ## [0.2.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.1.1...v0.2.0) (2024-12-12)
 
 
