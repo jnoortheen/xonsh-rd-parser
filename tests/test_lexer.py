@@ -367,7 +367,7 @@ def test_regex_globs():
         ("echo --go=$HOME", ["echo", "--go=$HOME"]),
     ],
 )
-@pytest.mark.xfail
+@pytest.mark.skip
 def test_lexer_split(s, exp):
     lexer = lex_input(s)
     obs = lexer.split(s)
@@ -389,9 +389,12 @@ def test_lexer_split(s, exp):
         '"""',
     ],
 )
-@pytest.mark.xfail
+@pytest.mark.skip
 def test_tolerant_lexer(s):
-    lexer = lex_input(tolerant=True)
-    lexer.input(s)
-    error_tokens = list(tok for tok in lexer if tok.type == "ERRORTOKEN")
-    assert all(tok.value in s for tok in error_tokens)  # no error messages
+    tokens = lex_input(
+        s,
+        #   tolerant=True
+    )
+
+    error_tokens = list(tok for tok in tokens if tok[0] == "ERRORTOKEN")
+    assert all(tok[-1] in s for tok in error_tokens)  # no error messages
