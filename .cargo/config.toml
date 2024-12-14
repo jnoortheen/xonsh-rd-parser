@@ -5,12 +5,15 @@ rustflags = ["-Z", "threads=8"]
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]
 #opt-level = 1
-#codegen-backend = "cranelift"
-
-# Enable a large amount of optimization in the dev profile for dependencies.
-[profile.dev.package."*"]
-opt-level = 3
-codegen-backend = "llvm"
+# codegen-backend = "cranelift"
+debug = true
+# Optional: Additional Cranelift-specific flags for dev profile
+# rustflags = ["-Zcodegen-backend=cranelift"]
+# # Enable a large amount of optimization in the dev profile for dependencies.
+[profile.dev.package]
+insta.opt-level = 3
+similar.opt-level = 3
+# codegen-backend = "llvm"
 
 # Enable more optimization in the release profile at the cost of compile time.
 [profile.release]
