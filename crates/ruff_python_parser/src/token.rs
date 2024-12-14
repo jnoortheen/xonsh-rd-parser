@@ -408,6 +408,7 @@ impl TokenKind {
             | TokenKind::Less
             | TokenKind::Greater
             | TokenKind::Amper
+            | TokenKind::Exclamation
             | TokenKind::RightShift)
     }
 

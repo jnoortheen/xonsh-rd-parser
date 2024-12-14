@@ -176,3 +176,26 @@ _redir_inp:
     exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').hide()
   - inp: "![< /path/to/input.txt > /path/to/output.txt]"
     exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').pipe('>', '/path/to/output.txt').hide()
+proc_macros:
+  - inp: "![echo !]"
+    exp: __xonsh__.cmd('echo', '').hide()
+  - inp: "![echo  !]"
+    exp: __xonsh__.cmd('echo', '').hide()
+  - inp: "![echo  ! ]"
+    exp: __xonsh__.cmd('echo', '').hide()
+  - inp: "![echo !x]"
+    exp: __xonsh__.cmd('echo', 'x').hide()
+  - inp: "![echo  !x]"
+    exp: __xonsh__.cmd('echo', 'x').hide()
+  - inp: "![echo  ! x]"
+    exp: __xonsh__.cmd('echo', 'x').hide()
+  - inp: "![echo  ! x ]"
+    exp: __xonsh__.cmd('echo', 'x').hide()
+  - inp: "![echo  -n!x]"
+    exp: __xonsh__.cmd('echo', '-n', 'x').hide()
+  - inp: "![echo  -n !x]"
+    exp: __xonsh__.cmd('echo', '-n', 'x').hide()
+  - inp: "![echo  -n ! x]"
+    exp: __xonsh__.cmd('echo', '-n', 'x').hide()
+  - inp: "![echo  -n ! x ]"
+    exp: __xonsh__.cmd('echo', '-n', 'x').hide()

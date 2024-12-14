@@ -6,9 +6,6 @@ import pytest
 
 SUBPROC_MACRO_OC = [("!(", ")"), ("$(", ")"), ("![", "]"), ("$[", "]")]
 
-# skip this whole module
-pytestmark = pytest.mark.skip(reason="not implemented")
-
 
 @pytest.mark.parametrize("opener, closer", SUBPROC_MACRO_OC)
 @pytest.mark.parametrize(
@@ -27,14 +24,9 @@ pytestmark = pytest.mark.skip(reason="not implemented")
         ("echo -n ! x ", ["-n", "x"]),
     ],
 )
-@pytest.mark.xfail
-def test_empty_subprocbang(
-    opener, closer, body, args, check_xonsh_ast, xsh_proc_method
-):
-    tree = check_xonsh_ast(opener + body + closer)
-    assert isinstance(tree, AST)
-    method = xsh_proc_method(opener)
-    method.assert_called_once_with("echo", *args)
+def test_empty_subprocbang(opener, closer, body, args, exec_code):
+    sh = exec_code(opener + body + closer)
+    assert sh.cmd.result == ["echo"] + args
 
 
 @pytest.mark.parametrize("opener, closer", SUBPROC_MACRO_OC)

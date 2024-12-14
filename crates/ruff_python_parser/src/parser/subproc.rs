@@ -77,6 +77,9 @@ impl<'a> Parser<'a> {
                         .parse_decorator_or_interpolation()
                         .star(self.node_range(self.node_start()));
                 }
+                if kind.is_macro() {
+                    return self.parse_proc_macro(&closing);
+                }
                 if kind.is_proc_atom()
                     || matches!(kind, TokenKind::String | TokenKind::FStringStart)
                 {
@@ -141,6 +144,30 @@ impl<'a> Parser<'a> {
         let expr = name.call0(vec![expr.expr], range);
         self.bump(TokenKind::Rpar);
         expr
+    }
+    /// consume any tokens until the closing token or `is_macro_end` and strip whitespace
+    pub(super) fn parse_proc_macro(&mut self, closing: &TokenKind) -> Expr {
+        self.bump_any(); // skip the `!`
+        let start = self.node_start();
+        let end = if self.at(*closing) {
+            start
+        } else {
+            self.take_while(|t| !(t.is_macro_end() || &t == closing))
+        };
+
+        let range = TextRange::new(start, end);
+
+        let expr = self.to_string_literal(range);
+        expr
+    }
+
+    fn take_while(&mut self, mut f: impl FnMut(TokenKind) -> bool) -> TextSize {
+        let mut range = self.current_token_range();
+        while f(self.current_token_kind()) {
+            range = self.current_token_range();
+            self.bump_any();
+        }
+        range.end()
     }
 
     /// Creates a xonsh attribute expression.

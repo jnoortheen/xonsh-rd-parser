@@ -67,7 +67,7 @@ mod tests {
     #[test]
     fn test_tmp() {
         // let source = r#"![a@$(echo 1 2)b a]"#;
-        let source = r#"!(ls @(None or "."))"#;
+        let source = r#"!(ls !micro)"#;
         // let source = r#"![a b c2]"#;
         // let source = r#"print('hello')"#;
         let _output = test_valid_source(source);
