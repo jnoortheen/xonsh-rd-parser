@@ -16,9 +16,8 @@ license = { workspace = true }
 ruff_python_ast = { workspace = true }
 ruff_python_trivia = { workspace = true }
 ruff_text_size = { workspace = true }
-py_ast = { workspace = true }
 
-pyo3 = { workspace = true }
+# pyo3 = { workspace = true }
 bitflags = { workspace = true }
 bstr = { workspace = true }
 compact_str = { workspace = true }
