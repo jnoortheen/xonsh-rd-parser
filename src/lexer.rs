@@ -229,7 +229,7 @@ impl LexerExt for Vec<Token> {
 
             if let Some(last) = toks.last() {
                 if last.kind.is_proc_end() {
-                    if last.is_combinator() && last.has_suffix(Some(&token)) {
+                    if last.is_combinator() && last.has_suffix(Some(token)) {
                         // pass
                     } else if is_not_lparen_and_rparen(&lparens, &last.kind) {
                         lparens.pop();
@@ -290,7 +290,7 @@ impl LexerExt for Vec<Token> {
             }
         }
 
-        return None;
+        None
     }
 }
 
@@ -303,5 +303,5 @@ fn is_not_lparen_and_rparen(lparens: &[TokenKind], tok: &TokenKind) -> bool {
             return true;
         }
     }
-    return false;
+    false
 }

@@ -2262,7 +2262,7 @@ impl<'src> Parser<'src> {
         }
     }
 
-    /// Parses an IPython escape command at the expression level.
+    /// Parses an `IPython` escape command at the expression level.
     ///
     /// # Panics
     ///

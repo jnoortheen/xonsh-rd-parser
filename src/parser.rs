@@ -30,18 +30,18 @@ mod tests {
     use ruff_text_size::{Ranged, TextLen};
     use std::fmt::Write;
 
-    fn test_valid_source<'a>(source: &'a str) -> String {
-        let parsed = parse_unchecked(&source, Mode::Module);
+    fn test_valid_source(source: &str) -> String {
+        let parsed = parse_unchecked(source, Mode::Module);
 
         println!("Tokens: ");
         for token in parsed.tokens() {
-            println!("{token:?} {}", source[token.range()].to_string());
+            println!("{token:?} {}", &source[token.range()]);
         }
         println!("length: {:?}", source.text_len());
 
         if !parsed.is_valid() {
-            let line_index = LineIndex::from_source_text(&source);
-            let source_code = SourceCode::new(&source, &line_index);
+            let line_index = LineIndex::from_source_text(source);
+            let source_code = SourceCode::new(source, &line_index);
 
             let mut message = "Expected no syntax errors for a valid \
             program but the parser generated the following errors:\n"

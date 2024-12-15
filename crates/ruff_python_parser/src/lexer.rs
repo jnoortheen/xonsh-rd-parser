@@ -1203,7 +1203,7 @@ impl<'src> Lexer<'src> {
         TokenKind::Comment
     }
 
-    /// Lex a single IPython escape command.
+    /// Lex a single `IPython` escape command.
     fn lex_ipython_escape_command(&mut self, escape_kind: IpyEscapeKind) -> TokenKind {
         let mut value = String::new();
 

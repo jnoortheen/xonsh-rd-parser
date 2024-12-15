@@ -12,8 +12,8 @@ mod xonsh_rd_parser {
 
     #[pyfunction] // This will be part of the module
     #[pyo3(signature = (src, file_name = None))]
-    pub fn parse_string<'py>(
-        py: Python<'py>,
+    pub fn parse_string(
+        py: Python<'_>,
         src: &str,
         file_name: Option<&str>,
     ) -> PyResult<PyObject> {
@@ -21,7 +21,7 @@ mod xonsh_rd_parser {
     }
 
     #[pyfunction]
-    pub fn parse_file<'py>(py: Python<'py>, path: &str) -> PyResult<PyObject> {
+    pub fn parse_file(py: Python<'_>, path: &str) -> PyResult<PyObject> {
         let src = std::fs::read_to_string(path).unwrap();
         parse_str(py, &src, path)
     }

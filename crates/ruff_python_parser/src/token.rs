@@ -123,7 +123,7 @@ pub enum TokenKind {
     FStringMiddle,
     /// Token kind for the end of an f-string. This includes the closing quote.
     FStringEnd,
-    /// Token kind for a IPython escape command.
+    /// Token kind for a `IPython` escape command.
     IpyEscapeCommand,
     /// Token kind for a comment. These are filtered out of the token stream prior to parsing.
     Comment,
@@ -426,25 +426,25 @@ impl TokenKind {
         matches!(self, TokenKind::Newline | TokenKind::Dedent)
     }
     pub const fn is_open_paren(&self) -> bool {
-        use TokenKind::*;
+        use TokenKind::{AtDollarLParen, AtLParen, BangLParen, DollarLParen, Lpar};
         matches!(
             self,
             Lpar | AtLParen | BangLParen | DollarLParen | AtDollarLParen
         )
     }
     pub const fn is_open_square(&self) -> bool {
-        use TokenKind::*;
+        use TokenKind::{BangLSqb, DollarLSqb, Lsqb};
         matches!(self, Lsqb | BangLSqb | DollarLSqb)
     }
     pub const fn is_rparen(&self) -> bool {
         matches!(self, TokenKind::Rpar)
     }
     pub const fn is_beg_skip(&self) -> bool {
-        use TokenKind::*;
+        use TokenKind::{Indent, Lpar, Not};
         matches!(self, Indent | Lpar | Not)
     }
     pub const fn is_proc_end(&self) -> bool {
-        use TokenKind::*;
+        use TokenKind::{And, Or, Rpar, Semi};
         matches!(self, Semi | And | Or | Rpar)
     }
 
@@ -885,7 +885,7 @@ pub(crate) enum TokenValue {
     /// Token value that includes the portion of text inside the f-string that's not
     /// part of the expression part and isn't an opening or closing brace.
     FStringMiddle(Box<str>),
-    /// Token value for IPython escape commands. These are recognized by the lexer
+    /// Token value for `IPython` escape commands. These are recognized by the lexer
     /// only when the mode is [`Mode::Ipython`].
     IpyEscapeCommand {
         /// The magic command value.

@@ -10,7 +10,7 @@ use crate::{
     token::TokenKind,
 };
 
-impl<'a> Parser<'a> {
+impl Parser<'_> {
     /// Parses a subprocess expression.
     /// This includes various forms of subprocess capture like `$(...)`, `$[...]`, `!(...)`, and `![...]`.
     pub(super) fn parse_subprocs(&mut self, method: impl Into<Name>, closing: TokenKind) -> Expr {
@@ -96,7 +96,7 @@ impl<'a> Parser<'a> {
                 // current range
                 let start = self.node_start();
                 let mut offset = self.node_end();
-                let mut nesting = 0 as usize;
+                let mut nesting = 0_usize;
                 self.bump_any(); // move cursor to next token
 
                 // check to see if we need concat next tokens
@@ -157,8 +157,8 @@ impl<'a> Parser<'a> {
 
         let range = TextRange::new(start, end);
 
-        let expr = self.to_string_literal(range);
-        expr
+
+        self.to_string_literal(range)
     }
 
     fn take_while(
@@ -280,27 +280,24 @@ impl<'a> Parser<'a> {
         Expr::Subscript(ast)
     }
     pub(super) fn parse_special_strings(&mut self, expr: Expr, start: TextSize) -> Expr {
-        match &expr {
-            Expr::StringLiteral(s) => {
-                if s.value.is_path() {
-                    return self
-                        .xonsh_attr("path_literal")
-                        .call0(vec![expr], self.node_range(start));
-                } else if s.value.is_regex() {
-                    return self
-                        .xonsh_attr("Pattern")
-                        .call0(vec![expr], self.node_range(start))
-                        .attr("regex", self.node_range(start))
-                        .call_empty(self.node_range(start));
-                } else if s.value.is_glob() {
-                    return self
-                        .xonsh_attr("Pattern")
-                        .call0(vec![expr], self.node_range(start))
-                        .attr("glob", self.node_range(start))
-                        .call_empty(self.node_range(start));
-                }
+        if let Expr::StringLiteral(s) = &expr {
+            if s.value.is_path() {
+                return self
+                    .xonsh_attr("path_literal")
+                    .call0(vec![expr], self.node_range(start));
+            } else if s.value.is_regex() {
+                return self
+                    .xonsh_attr("Pattern")
+                    .call0(vec![expr], self.node_range(start))
+                    .attr("regex", self.node_range(start))
+                    .call_empty(self.node_range(start));
+            } else if s.value.is_glob() {
+                return self
+                    .xonsh_attr("Pattern")
+                    .call0(vec![expr], self.node_range(start))
+                    .attr("glob", self.node_range(start))
+                    .call_empty(self.node_range(start));
             }
-            _ => (),
         }
         expr
     }

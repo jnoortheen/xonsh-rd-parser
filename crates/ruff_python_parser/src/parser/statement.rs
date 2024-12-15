@@ -904,7 +904,7 @@ impl<'src> Parser<'src> {
         }
     }
 
-    /// Parses an IPython escape command at the statement level.
+    /// Parses an `IPython` escape command at the statement level.
     ///
     /// # Panics
     ///
@@ -926,7 +926,7 @@ impl<'src> Parser<'src> {
         ast::StmtIpyEscapeCommand { range, kind, value }
     }
 
-    /// Parses an IPython help end escape command at the statement level.
+    /// Parses an `IPython` help end escape command at the statement level.
     ///
     /// # Panics
     ///

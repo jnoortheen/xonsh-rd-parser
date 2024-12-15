@@ -170,7 +170,7 @@ pub fn parse_expression_range(
 ///
 /// This function is the most general function to parse Python code. Based on the [`Mode`] supplied,
 /// it can be used to parse a single expression, a full Python program, an interactive expression
-/// or a Python program containing IPython escape commands.
+/// or a Python program containing `IPython` escape commands.
 ///
 /// # Example
 ///
@@ -199,7 +199,7 @@ pub fn parse_expression_range(
 /// assert!(parsed.is_ok());
 /// ```
 ///
-/// Additionally, we can parse a Python program containing IPython escapes:
+/// Additionally, we can parse a Python program containing `IPython` escapes:
 ///
 /// ```
 /// use ruff_python_parser::{Mode, parse};
@@ -583,7 +583,7 @@ pub enum Mode {
     Expression,
 
     /// The code consists of a sequence of statements which can include the
-    /// escape commands that are part of IPython syntax.
+    /// escape commands that are part of `IPython` syntax.
     ///
     /// ## Supported escape commands:
     ///
