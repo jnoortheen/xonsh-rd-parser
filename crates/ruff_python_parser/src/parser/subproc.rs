@@ -70,54 +70,50 @@ impl Parser<'_> {
     /// Parses arguments in a subprocess expression.
     fn parse_proc_arg(&mut self, parser_progress: &mut ParserProgress, closing: TokenKind) -> Expr {
         parser_progress.assert_progressing(self);
-        match self.current_token_kind() {
-            kind => {
-                if self.at(TokenKind::At) {
-                    return self
-                        .parse_decorator_or_interpolation()
-                        .star(self.node_range(self.node_start()));
-                }
-                if kind.is_macro() {
-                    return self.parse_proc_macro(&closing);
-                }
-                if kind.is_proc_atom()
-                    || matches!(kind, TokenKind::String | TokenKind::FStringStart)
-                {
-                    return self.parse_atom().expr;
-                }
+        let kind = self.current_token_kind();
 
-                // no need to check next tokens
-                if kind.is_proc_op() {
-                    let range = self.current_token_range();
-                    self.bump_any();
-                    return self.to_string_literal(range);
-                }
-
-                // current range
-                let start = self.node_start();
-                let mut offset = self.node_end();
-                let mut nesting = 0_usize;
-                self.bump_any(); // move cursor to next token
-
-                // check to see if we need concat next tokens
-                loop {
-                    if self.current_token_kind().is_proc_op()
-                        || (offset != self.node_start())
-                        || (self.current_token_kind() == closing && nesting == 0)
-                    {
-                        break;
-                    }
-                    if self.current_token_kind() == TokenKind::Lpar {
-                        nesting += 1;
-                    }
-                    offset = self.node_end();
-                    self.bump_any();
-                }
-
-                let range = TextRange::new(start, offset);
-                self.to_string_literal(range)
-            }
+        if self.at(TokenKind::At) {
+            return self
+                .parse_decorator_or_interpolation()
+                .star(self.node_range(self.node_start()));
         }
+        if kind.is_macro() {
+            return self.parse_proc_macro(closing);
+        }
+        if kind.is_proc_atom() || matches!(kind, TokenKind::String | TokenKind::FStringStart) {
+            return self.parse_atom().expr;
+        }
+
+        // no need to check next tokens
+        if kind.is_proc_op() {
+            let range = self.current_token_range();
+            self.bump_any();
+            return self.to_string_literal(range);
+        }
+
+        // current range
+        let start = self.node_start();
+        let mut offset = self.node_end();
+        let mut nesting = 0_usize;
+        self.bump_any(); // move cursor to next token
+
+        // check to see if we need concat next tokens
+        loop {
+            if self.current_token_kind().is_proc_op()
+                || (offset != self.node_start())
+                || (self.current_token_kind() == closing && nesting == 0)
+            {
+                break;
+            }
+            if self.current_token_kind() == TokenKind::Lpar {
+                nesting += 1;
+            }
+            offset = self.node_end();
+            self.bump_any();
+        }
+
+        let range = TextRange::new(start, offset);
+        self.to_string_literal(range)
     }
     pub(super) fn parse_decorator_or_interpolation(&mut self) -> Expr {
         self.bump_any(); // skip the `@`
@@ -146,10 +142,10 @@ impl Parser<'_> {
         expr
     }
     /// consume any tokens until the closing token or `is_macro_end` and strip whitespace
-    pub(super) fn parse_proc_macro(&mut self, closing: &TokenKind) -> Expr {
+    pub(super) fn parse_proc_macro(&mut self, closing: TokenKind) -> Expr {
         self.bump_any(); // skip the `!`
         let start = self.node_start();
-        let end = if self.at(*closing) {
+        let end = if self.at(closing) {
             start
         } else {
             self.take_while(|t| !(t.is_macro_end()), closing)
@@ -157,15 +153,10 @@ impl Parser<'_> {
 
         let range = TextRange::new(start, end);
 
-
         self.to_string_literal(range)
     }
 
-    fn take_while(
-        &mut self,
-        mut f: impl FnMut(TokenKind) -> bool,
-        closing: &TokenKind,
-    ) -> TextSize {
+    fn take_while(&mut self, mut f: impl FnMut(TokenKind) -> bool, closing: TokenKind) -> TextSize {
         let mut nesting = 0;
         let mut range = self.current_token_range();
         let is_opening = match closing {
@@ -178,7 +169,7 @@ impl Parser<'_> {
             if is_opening(&self.current_token_kind()) {
                 nesting += 1;
             }
-            if self.current_token_kind() == *closing {
+            if self.current_token_kind() == closing {
                 if nesting == 0 {
                     break;
                 }

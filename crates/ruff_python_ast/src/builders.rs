@@ -1,3 +1,5 @@
+#![allow(clippy::return_self_not_must_use)]
+
 use ruff_text_size::TextRange;
 
 use crate::name::Name;

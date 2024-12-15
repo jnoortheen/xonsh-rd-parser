@@ -1679,24 +1679,24 @@ impl StringLiteralValue {
     pub fn is_unicode(&self) -> bool {
         self.iter()
             .next()
-            .map_or(false, |part| part.flags.prefix().is_unicode())
+            .is_some_and(|part| part.flags.prefix().is_unicode())
     }
 
     /// Returns `true` if the string literal is a path string.
     pub fn is_path(&self) -> bool {
         self.iter()
             .next()
-            .map_or(false, |part| part.flags.prefix().is_path())
+            .is_some_and(|part| part.flags.prefix().is_path())
     }
     pub fn is_glob(&self) -> bool {
         self.iter()
             .next()
-            .map_or(false, |part| part.flags.prefix().is_glob())
+            .is_some_and(|part| part.flags.prefix().is_glob())
     }
     pub fn is_regex(&self) -> bool {
         self.iter()
             .next()
-            .map_or(false, |part| part.flags.prefix().is_regex())
+            .is_some_and(|part| part.flags.prefix().is_regex())
     }
 
     /// Returns a slice of all the [`StringLiteral`] parts contained in this value.

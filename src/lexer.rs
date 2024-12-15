@@ -272,9 +272,8 @@ impl LexerExt for Vec<Token> {
             } else if last.kind.is_proc_end() {
                 if is_not_lparen_and_rparen(&lparens, &last.kind)
                     || (greedy && last.kind.is_rparen())
+                    || (last.is_combinator() && last.has_prefix(toks.get(toks.len() - 2)))
                 {
-                    // pass
-                } else if last.is_combinator() && last.has_prefix(toks.get(toks.len() - 2)) {
                     // pass
                 } else {
                     toks.pop();
