@@ -66,8 +66,8 @@ impl Parser<'_> {
     }
 
     /// Parses arguments in a subprocess expression.
-    fn parse_proc_arg(&mut self, parser_progress: &mut ParserProgress, closing: TokenKind) -> Expr {
-        parser_progress.assert_progressing(self);
+    fn parse_proc_arg(&mut self, progress: &mut ParserProgress, closing: TokenKind) -> Expr {
+        progress.assert_progressing(self);
         let kind = self.current_token_kind();
 
         match kind {
