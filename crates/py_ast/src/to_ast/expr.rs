@@ -1,3 +1,5 @@
+#![allow(clippy::wildcard_imports)]
+
 use std::borrow::Cow;
 use std::vec;
 
@@ -104,7 +106,7 @@ impl ToAst for ExprStringLiteral {
 impl ToAst for ExprFString {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let mut parts = vec![];
-        for p in self.value.as_slice().iter() {
+        for p in self.value.as_slice() {
             match p {
                 FStringPart::Literal(s) => {
                     let kind: PyObject = match s.flags.prefix() {
@@ -122,7 +124,7 @@ impl ToAst for ExprFString {
                     parts.push(obj);
                 }
                 FStringPart::FString(fs) => {
-                    for p in fs.elements.iter() {
+                    for p in &fs.elements {
                         parts.push(p.to_ast(module)?);
                     }
                 }
@@ -142,7 +144,7 @@ impl ToAst for ConversionFlag {
 impl ToAst for FStringFormatSpec {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let mut values = vec![];
-        for value in self.elements.iter() {
+        for value in &self.elements {
             values.push(value.to_ast(module)?);
         }
         module
@@ -177,16 +179,16 @@ impl ToAst for FStringElement {
 impl ToAst for CmpOp {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let obj = match self {
-            CmpOp::Eq => module.attr("Eq")?.call0()?.into(),
-            CmpOp::NotEq => module.attr("NotEq")?.call0()?.into(),
-            CmpOp::Lt => module.attr("Lt")?.call0()?.into(),
-            CmpOp::LtE => module.attr("LtE")?.call0()?.into(),
-            CmpOp::Gt => module.attr("Gt")?.call0()?.into(),
-            CmpOp::GtE => module.attr("GtE")?.call0()?.into(),
-            CmpOp::Is => module.attr("Is")?.call0()?.into(),
-            CmpOp::IsNot => module.attr("IsNot")?.call0()?.into(),
-            CmpOp::In => module.attr("In")?.call0()?.into(),
-            CmpOp::NotIn => module.attr("NotIn")?.call0()?.into(),
+            CmpOp::Eq => module.attr("Eq")?.call0()?,
+            CmpOp::NotEq => module.attr("NotEq")?.call0()?,
+            CmpOp::Lt => module.attr("Lt")?.call0()?,
+            CmpOp::LtE => module.attr("LtE")?.call0()?,
+            CmpOp::Gt => module.attr("Gt")?.call0()?,
+            CmpOp::GtE => module.attr("GtE")?.call0()?,
+            CmpOp::Is => module.attr("Is")?.call0()?,
+            CmpOp::IsNot => module.attr("IsNot")?.call0()?,
+            CmpOp::In => module.attr("In")?.call0()?,
+            CmpOp::NotIn => module.attr("NotIn")?.call0()?,
         };
         Ok(obj)
     }
@@ -313,9 +315,9 @@ impl ToAst for ExprSlice {
 impl ToAst for ExprContext {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let obj = match self {
-            ExprContext::Del => module.attr("Del")?.call0()?.into(),
-            ExprContext::Load => module.attr("Load")?.call0()?.into(),
-            ExprContext::Store => module.attr("Store")?.call0()?.into(),
+            ExprContext::Del => module.attr("Del")?.call0()?,
+            ExprContext::Load => module.attr("Load")?.call0()?,
+            ExprContext::Store => module.attr("Store")?.call0()?,
             ExprContext::Invalid => todo!(),
         };
         Ok(obj)
@@ -349,7 +351,7 @@ impl ToAst for Comprehension {
             ("target", self.target.to_ast(module)?),
             ("iter", self.iter.to_ast(module)?),
             ("ifs", self.ifs.to_ast(module)?),
-            ("is_async", (self.is_async as u8).into_py_any(module.py)?),
+            ("is_async", u8::from(self.is_async).into_py_any(module.py)?),
         ])
     }
 }
@@ -409,7 +411,7 @@ impl ToAst for ExprDict {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let mut keys = vec![];
         let mut values = vec![];
-        for item in self.items.iter() {
+        for item in &self.items {
             keys.push(item.key.to_ast(module)?);
             values.push(item.value.to_ast(module)?);
         }
@@ -477,10 +479,10 @@ impl ToAst for ExprBinOp {
 impl ToAst for UnaryOp {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let obj = match self {
-            UnaryOp::Invert => module.attr("Invert")?.call0()?.into(),
-            UnaryOp::Not => module.attr("Not")?.call0()?.into(),
-            UnaryOp::UAdd => module.attr("UAdd")?.call0()?.into(),
-            UnaryOp::USub => module.attr("USub")?.call0()?.into(),
+            UnaryOp::Invert => module.attr("Invert")?.call0()?,
+            UnaryOp::Not => module.attr("Not")?.call0()?,
+            UnaryOp::UAdd => module.attr("UAdd")?.call0()?,
+            UnaryOp::USub => module.attr("USub")?.call0()?,
         };
         Ok(obj)
     }
@@ -499,19 +501,19 @@ impl ToAst for ExprUnaryOp {
 impl ToAst for Operator {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let obj = match self {
-            Operator::Add => module.attr("Add")?.call0()?.into(),
-            Operator::Sub => module.attr("Sub")?.call0()?.into(),
-            Operator::Mult => module.attr("Mult")?.call0()?.into(),
-            Operator::MatMult => module.attr("MatMult")?.call0()?.into(),
-            Operator::Div => module.attr("Div")?.call0()?.into(),
-            Operator::Mod => module.attr("Mod")?.call0()?.into(),
-            Operator::Pow => module.attr("Pow")?.call0()?.into(),
-            Operator::LShift => module.attr("LShift")?.call0()?.into(),
-            Operator::RShift => module.attr("RShift")?.call0()?.into(),
-            Operator::BitOr => module.attr("BitOr")?.call0()?.into(),
-            Operator::BitXor => module.attr("BitXor")?.call0()?.into(),
-            Operator::FloorDiv => module.attr("FloorDiv")?.call0()?.into(),
-            Operator::BitAnd => module.attr("BitAnd")?.call0()?.into(),
+            Operator::Add => module.attr("Add")?.call0()?,
+            Operator::Sub => module.attr("Sub")?.call0()?,
+            Operator::Mult => module.attr("Mult")?.call0()?,
+            Operator::MatMult => module.attr("MatMult")?.call0()?,
+            Operator::Div => module.attr("Div")?.call0()?,
+            Operator::Mod => module.attr("Mod")?.call0()?,
+            Operator::Pow => module.attr("Pow")?.call0()?,
+            Operator::LShift => module.attr("LShift")?.call0()?,
+            Operator::RShift => module.attr("RShift")?.call0()?,
+            Operator::BitOr => module.attr("BitOr")?.call0()?,
+            Operator::BitXor => module.attr("BitXor")?.call0()?,
+            Operator::FloorDiv => module.attr("FloorDiv")?.call0()?,
+            Operator::BitAnd => module.attr("BitAnd")?.call0()?,
         };
         Ok(obj)
     }
@@ -519,8 +521,8 @@ impl ToAst for Operator {
 impl ToAst for BoolOp {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let obj = match self {
-            BoolOp::And | BoolOp::And2 => module.attr("And")?.call0()?.into(),
-            BoolOp::Or | BoolOp::Or2 => module.attr("Or")?.call0()?.into(),
+            BoolOp::And | BoolOp::And2 => module.attr("And")?.call0()?,
+            BoolOp::Or | BoolOp::Or2 => module.attr("Or")?.call0()?,
         };
         Ok(obj)
     }

@@ -12,7 +12,7 @@ class LineItem:
     idx: int
     write: bool = False
 
-    def matches(self, other: str) -> bool:
+    def matches(self, other: str) -> None:
         if self.write:
             self.write_yaml(other)
             assert False

@@ -3,7 +3,10 @@ use std::vec;
 use crate::ast_module::AstModule;
 
 use pyo3::{IntoPyObjectExt, PyObject};
-use ruff_python_ast::*;
+use ruff_python_ast::{
+    MatchCase, Pattern, PatternMatchAs, PatternMatchClass, PatternMatchMapping, PatternMatchOr,
+    PatternMatchSequence, PatternMatchSingleton, PatternMatchStar, PatternMatchValue, Singleton,
+};
 
 use super::ToAst;
 
@@ -101,7 +104,7 @@ impl ToAst for PatternMatchClass {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let mut kwd_attrs = vec![];
         let mut kwd_patterns = vec![];
-        for kwd in self.arguments.keywords.iter() {
+        for kwd in &self.arguments.keywords {
             kwd_attrs.push(kwd.attr.to_ast(module)?);
             kwd_patterns.push(kwd.pattern.to_ast(module)?);
         }

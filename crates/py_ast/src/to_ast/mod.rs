@@ -30,7 +30,7 @@ fn to_ast_sequence<T: ToAst>(items: &[T], module: &AstModule) -> PyResult {
         .iter()
         .map(|item| item.to_ast(module))
         .collect::<Result<_, _>>()?;
-    Ok(py_objects.into_py_any(module.py)?)
+    py_objects.into_py_any(module.py)
 }
 
 impl<T: ToAst> ToAst for Vec<T> {

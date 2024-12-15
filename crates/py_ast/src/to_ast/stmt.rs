@@ -3,7 +3,14 @@ use std::vec;
 use super::ToAst;
 use crate::ast_module::AstModule;
 use pyo3::{IntoPyObjectExt, PyObject};
-use ruff_python_ast::*;
+use ruff_python_ast::{
+    Alias, Decorator, ElifElseClause, ExceptHandler, Expr, Identifier, ModModule, Parameter,
+    ParameterWithDefault, Parameters, Stmt, StmtAnnAssign, StmtAssert, StmtAssign, StmtAugAssign,
+    StmtBreak, StmtClassDef, StmtContinue, StmtDelete, StmtExpr, StmtFor, StmtFunctionDef,
+    StmtGlobal, StmtIf, StmtImport, StmtImportFrom, StmtMatch, StmtNonlocal, StmtPass, StmtRaise,
+    StmtReturn, StmtTry, StmtTypeAlias, StmtWhile, StmtWith, TypeParam, TypeParamParamSpec,
+    TypeParamTypeVar, TypeParamTypeVarTuple, TypeParams, WithItem,
+};
 
 type PyResult = pyo3::PyResult<PyObject>;
 
@@ -29,24 +36,24 @@ impl ToAst for Parameters {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let mut defaults = vec![];
         let mut posonlyargs = vec![];
-        for arg in self.posonlyargs.iter() {
+        for arg in &self.posonlyargs {
             posonlyargs.push(arg.to_ast(module)?);
             if let Some(default) = arg.default.as_ref() {
-                defaults.push(default.to_ast(module)?)
+                defaults.push(default.to_ast(module)?);
             }
         }
 
         let mut args = vec![];
-        for arg in self.args.iter() {
+        for arg in &self.args {
             args.push(arg.to_ast(module)?);
             if let Some(default) = arg.default.as_ref() {
-                defaults.push(default.to_ast(module)?)
+                defaults.push(default.to_ast(module)?);
             }
         }
 
         let mut kw_defaults = vec![];
         let mut kwonlyargs = vec![];
-        for arg in self.kwonlyargs.iter() {
+        for arg in &self.kwonlyargs {
             kwonlyargs.push(arg.to_ast(module)?);
             kw_defaults.push(arg.default.to_ast(module)?);
         }
@@ -68,16 +75,13 @@ impl ToAst for Parameters {
 
 impl ToAst for StmtAssert {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        Ok(module
-            .attr("Assert")?
-            .call(
-                self.range,
-                [
-                    ("test", self.test.to_ast(module)?),
-                    ("msg", self.msg.to_ast(module)?),
-                ],
-            )?
-            .into())
+        module.attr("Assert")?.call(
+            self.range,
+            [
+                ("test", self.test.to_ast(module)?),
+                ("msg", self.msg.to_ast(module)?),
+            ],
+        )
     }
 }
 
@@ -131,7 +135,7 @@ impl ToAst for TypeParamTypeVarTuple {
 }
 impl ToAst for Identifier {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        Ok(self.as_str().to_string().into_py_any(module.py)?)
+        self.as_str().to_string().into_py_any(module.py)
     }
 }
 impl ToAst for StmtFunctionDef {
@@ -158,7 +162,7 @@ impl ToAst for StmtFunctionDef {
     }
 }
 
-fn empty_vec<'py, T, U>(module: &AstModule<'py>, obj: Option<U>) -> PyResult
+fn empty_vec<T, U>(module: &AstModule<'_>, obj: Option<U>) -> PyResult
 where
     U: std::ops::Deref<Target = T>,
     T: ToAst,
@@ -253,7 +257,7 @@ impl ToAst for StmtAnnAssign {
                 ("value", self.value.to_ast(module)?),
                 ("target", self.target.to_ast(module)?),
                 ("annotation", self.annotation.to_ast(module)?),
-                ("simple", (self.simple as u8).into_py_any(module.py)?),
+                ("simple", u8::from(self.simple).into_py_any(module.py)?),
             ],
         )
     }
@@ -304,7 +308,7 @@ impl ToAst for Stmt {
             Stmt::Delete(stmt) => stmt.to_ast(module),
             Stmt::TypeAlias(stmt) => stmt.to_ast(module),
             Stmt::Match(stmt) => stmt.to_ast(module),
-            _ => unreachable!(),
+            Stmt::IpyEscapeCommand(_) => unreachable!(),
         }
     }
 }
