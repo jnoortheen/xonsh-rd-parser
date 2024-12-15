@@ -20,46 +20,44 @@ impl Parser<'_> {
         let mut cmd = self
             .xonsh_attr("cmd")
             .call(self.parse_cmd_group(closing), self.node_range(start));
-        loop {
-            if self.at(TokenKind::Vbar) {
-                let start = self.node_start();
-                self.bump_any();
-                cmd = cmd
-                    .attr("pipe", self.node_range(start))
-                    .call(self.parse_cmd_group(closing), self.node_range(start));
-            } else {
-                break;
-            }
+        while self.at(TokenKind::Vbar) {
+            let pipe_start = self.node_start();
+            self.bump_any();
+            cmd = cmd
+                .attr("pipe", self.node_range(pipe_start))
+                .call(self.parse_cmd_group(closing), self.node_range(pipe_start));
         }
         cmd.attr(method, self.node_range(start))
             .call_empty(self.node_range(start))
     }
+
     fn parse_cmd_group(&mut self, closing: TokenKind) -> ast::Arguments {
         let start = self.node_start();
-        let mut progress = ParserProgress::default();
         let mut cmds = Vec::new();
         let mut keywords = Vec::new();
+        let mut progress = ParserProgress::default();
 
         loop {
-            if self.at(closing) {
-                self.bump_any();
-                break;
+            match self.current_token_kind() {
+                tk if tk == closing => {
+                    self.bump_any();
+                    break;
+                }
+                TokenKind::Vbar => break,
+                TokenKind::Amper if self.peek() == closing => {
+                    keywords.push(ast::Keyword {
+                        arg: Some(self.to_identifier("bg")),
+                        value: self.literal_true(),
+                        range: self.current_token_range(),
+                    });
+                    self.bump_any(); // skip `&`
+                    self.bump(closing); // skip `)`
+                    break;
+                }
+                _ => cmds.push(self.parse_proc_arg(&mut progress, closing)),
             }
-            if self.at(TokenKind::Vbar) {
-                break;
-            }
-            if self.at(TokenKind::Amper) && self.peek() == closing {
-                keywords.push(ast::Keyword {
-                    arg: Some(self.to_identifier("bg")),
-                    value: self.literal_true(),
-                    range: self.current_token_range(),
-                });
-                self.bump_any(); // skip the `&`
-                self.bump(closing); // skip the `)`
-                break;
-            }
-            cmds.push(self.parse_proc_arg(&mut progress, closing));
         }
+
         ast::Arguments {
             range: self.node_range(start),
             args: cmds.into_boxed_slice(),
@@ -72,39 +70,35 @@ impl Parser<'_> {
         parser_progress.assert_progressing(self);
         let kind = self.current_token_kind();
 
-        if self.at(TokenKind::At) {
-            return self
+        match kind {
+            TokenKind::At => self
                 .parse_decorator_or_interpolation()
-                .star(self.node_range(self.node_start()));
+                .star(self.node_range(self.node_start())),
+            tk if tk.is_macro() => self.parse_proc_macro(closing),
+            tk if tk.is_proc_atom()
+                || matches!(tk, TokenKind::String | TokenKind::FStringStart) =>
+            {
+                self.parse_atom().expr
+            }
+            tk if tk.is_proc_op() => {
+                let range = self.current_token_range();
+                self.bump_any();
+                self.to_string_literal(range)
+            }
+            _ => self.parse_proc_single(closing),
         }
-        if kind.is_macro() {
-            return self.parse_proc_macro(closing);
-        }
-        if kind.is_proc_atom() || matches!(kind, TokenKind::String | TokenKind::FStringStart) {
-            return self.parse_atom().expr;
-        }
-
-        // no need to check next tokens
-        if kind.is_proc_op() {
-            let range = self.current_token_range();
-            self.bump_any();
-            return self.to_string_literal(range);
-        }
-
-        // current range
+    }
+    fn parse_proc_single(&mut self, closing: TokenKind) -> Expr {
         let start = self.node_start();
         let mut offset = self.node_end();
-        let mut nesting = 0_usize;
-        self.bump_any(); // move cursor to next token
+        let mut nesting = 0;
+        self.bump_any();
 
-        // check to see if we need concat next tokens
-        loop {
-            if self.current_token_kind().is_proc_op()
-                || (offset != self.node_start())
-                || (self.current_token_kind() == closing && nesting == 0)
-            {
-                break;
-            }
+        while !matches!(self.current_token_kind(), tk if
+            tk.is_proc_op() ||
+            offset != self.node_start() ||
+            (tk == closing && nesting == 0)
+        ) {
             if self.current_token_kind() == TokenKind::Lpar {
                 nesting += 1;
             }
@@ -112,8 +106,7 @@ impl Parser<'_> {
             self.bump_any();
         }
 
-        let range = TextRange::new(start, offset);
-        self.to_string_literal(range)
+        self.to_string_literal(TextRange::new(start, offset))
     }
     pub(super) fn parse_decorator_or_interpolation(&mut self) -> Expr {
         self.bump_any(); // skip the `@`
@@ -148,7 +141,7 @@ impl Parser<'_> {
         let end = if self.at(closing) {
             start
         } else {
-            self.take_while(|t| !(t.is_macro_end()), closing)
+            self.take_while(|t| !t.is_macro_end(), closing)
         };
 
         let range = TextRange::new(start, end);
