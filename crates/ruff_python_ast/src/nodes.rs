@@ -111,7 +111,7 @@ pub enum Stmt {
     IpyEscapeCommand(StmtIpyEscapeCommand),
 }
 
-/// An AST node used to represent a IPython escape command at the statement level.
+/// An AST node used to represent a `IPython` escape command at the statement level.
 ///
 /// For example,
 /// ```python
@@ -120,7 +120,7 @@ pub enum Stmt {
 ///
 /// ## Terminology
 ///
-/// Escape commands are special IPython syntax which starts with a token to identify
+/// Escape commands are special `IPython` syntax which starts with a token to identify
 /// the escape kind followed by the command value itself. [Escape kind] are the kind
 /// of escape commands that are recognized by the token: `%`, `%%`, `!`, `!!`,
 /// `?`, `??`, `/`, `;`, and `,`.
@@ -664,7 +664,7 @@ impl Expr {
     }
 }
 
-/// An AST node used to represent a IPython escape command at the expression level.
+/// An AST node used to represent a `IPython` escape command at the expression level.
 ///
 /// For example,
 /// ```python
@@ -898,14 +898,14 @@ impl<'a> Iterator for DictKeyIterator<'a> {
     }
 }
 
-impl<'a> DoubleEndedIterator for DictKeyIterator<'a> {
+impl DoubleEndedIterator for DictKeyIterator<'_> {
     fn next_back(&mut self) -> Option<Self::Item> {
         self.items.next_back().map(DictItem::key)
     }
 }
 
-impl<'a> FusedIterator for DictKeyIterator<'a> {}
-impl<'a> ExactSizeIterator for DictKeyIterator<'a> {}
+impl FusedIterator for DictKeyIterator<'_> {}
+impl ExactSizeIterator for DictKeyIterator<'_> {}
 
 #[derive(Debug, Clone)]
 pub struct DictValueIterator<'a> {
@@ -940,14 +940,14 @@ impl<'a> Iterator for DictValueIterator<'a> {
     }
 }
 
-impl<'a> DoubleEndedIterator for DictValueIterator<'a> {
+impl DoubleEndedIterator for DictValueIterator<'_> {
     fn next_back(&mut self) -> Option<Self::Item> {
         self.items.next_back().map(DictItem::value)
     }
 }
 
-impl<'a> FusedIterator for DictValueIterator<'a> {}
-impl<'a> ExactSizeIterator for DictValueIterator<'a> {}
+impl FusedIterator for DictValueIterator<'_> {}
+impl ExactSizeIterator for DictValueIterator<'_> {}
 
 /// See also [Set](https://docs.python.org/3/library/ast.html#ast.Set)
 #[derive(Clone, Debug, PartialEq)]
@@ -3512,7 +3512,7 @@ impl<'a> Iterator for ParametersIterator<'a> {
     }
 }
 
-impl<'a> DoubleEndedIterator for ParametersIterator<'a> {
+impl DoubleEndedIterator for ParametersIterator<'_> {
     fn next_back(&mut self) -> Option<Self::Item> {
         let ParametersIterator {
             posonlyargs,
@@ -3538,11 +3538,11 @@ impl<'a> DoubleEndedIterator for ParametersIterator<'a> {
     }
 }
 
-impl<'a> FusedIterator for ParametersIterator<'a> {}
+impl FusedIterator for ParametersIterator<'_> {}
 
 /// We rely on the same invariants outlined in the comment above `Parameters::len()`
 /// in order to implement `ExactSizeIterator` here
-impl<'a> ExactSizeIterator for ParametersIterator<'a> {}
+impl ExactSizeIterator for ParametersIterator<'_> {}
 
 impl<'a> IntoIterator for &'a Parameters {
     type IntoIter = ParametersIterator<'a>;
@@ -3726,7 +3726,7 @@ impl Deref for TypeParams {
 /// See: <https://docs.python.org/3/reference/compound_stmts.html#grammar-token-python-grammar-suite>
 pub type Suite = Vec<Stmt>;
 
-/// The kind of escape command as defined in [IPython Syntax] in the IPython codebase.
+/// The kind of escape command as defined in [IPython Syntax] in the `IPython` codebase.
 ///
 /// [IPython Syntax]: https://github.com/ipython/ipython/blob/635815e8f1ded5b764d66cacc80bbe25e9e2587f/IPython/core/inputtransformer2.py#L335-L343
 #[derive(PartialEq, Eq, Debug, Clone, Hash, Copy)]

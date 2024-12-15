@@ -12,12 +12,12 @@ impl Expr {
         Expr::from(ast::ExprCall {
             func: Box::new(self),
             arguments,
-            range: range,
+            range,
         })
     }
     pub fn call0(self, args: Vec<Expr>, range: TextRange) -> Self {
         let arguments = ast::Arguments {
-            range: range,
+            range,
             args: args.into_boxed_slice(),
             keywords: vec![].into_boxed_slice(),
         };
@@ -27,7 +27,7 @@ impl Expr {
         Expr::from(ast::ExprStarred {
             value: Box::new(self),
             ctx: ExprContext::Load,
-            range: range,
+            range,
         })
     }
     pub fn call_empty(self, range: TextRange) -> Self {
@@ -35,7 +35,7 @@ impl Expr {
     }
     pub fn attr(self, name: impl Into<Name>, range: TextRange) -> Expr {
         let name = ast::ExprAttribute {
-            range: range,
+            range,
             attr: Expr::identifier(name, range),
             value: Box::new(self),
             ctx: ExprContext::Load,

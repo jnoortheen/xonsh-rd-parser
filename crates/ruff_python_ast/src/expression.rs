@@ -404,7 +404,7 @@ pub enum StringLike<'a> {
     FString(&'a ast::ExprFString),
 }
 
-impl<'a> StringLike<'a> {
+impl StringLike<'_> {
     /// Returns an iterator over the [`StringLikePart`] contained in this string-like expression.
     pub fn parts(&self) -> StringLikePartIter<'_> {
         match self {
