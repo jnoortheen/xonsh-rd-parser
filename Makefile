@@ -1,6 +1,7 @@
 test:
-	cargo test --workspace --all-features
 	pytest
+	cargo clippy
+	cargo test --workspace --all-features
 .PHONY: test
 
 bench:
