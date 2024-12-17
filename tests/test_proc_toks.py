@@ -1,11 +1,11 @@
 import pytest
-from xonsh_rd_parser import Lexer
+from xonsh_rd_parser import Parser
 
 INDENT = "    "
 
 
 def subproc_toks(inp, returnline=False, greedy=False, mincol=0, maxcol=None):
-    lexer = Lexer(inp)
+    lexer = Parser(inp)
     return lexer.subproc_toks(
         returnline=returnline, greedy=greedy, mincol=mincol, maxcol=maxcol
     )

@@ -75,6 +75,7 @@ use crate::parser::Parser;
 use ruff_python_ast::{Expr, Mod, ModExpression, ModModule, PySourceType, Suite};
 use ruff_python_trivia::CommentRanges;
 use ruff_text_size::{Ranged, TextRange, TextSize};
+use token_source::TokenSource;
 
 mod error;
 pub mod lexer;
@@ -113,6 +114,25 @@ pub fn parse_module(source: &str) -> Result<Parsed<ModModule>, ParseError> {
         .try_into_module()
         .unwrap()
         .into_result()
+}
+
+pub fn lex_module(source: &str) -> Result<Vec<Token>, ParseError> {
+    let mut lexer = TokenSource::from_source(source, Mode::Module, TextSize::default());
+    loop {
+        let kind = lexer.current_kind();
+        lexer.bump(kind);
+        if kind.is_eof() {
+            break;
+        }
+    }
+    let (tokens, mut errors) = lexer.finish();
+    if errors.is_empty() {
+        Ok(tokens)
+    } else {
+        let err = errors.pop().unwrap();
+        let err = ParseError::from(err);
+        Err(err)
+    }
 }
 
 /// Parses a single Python expression.

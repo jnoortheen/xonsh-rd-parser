@@ -11,7 +11,5 @@ mod xonsh_rd_parser {
     use super::*;
 
     #[pymodule_export]
-    use lexer::PyLexer;
-    #[pymodule_export]
     use parser::PyParser;
 }

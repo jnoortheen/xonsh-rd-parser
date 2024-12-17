@@ -1,16 +1,19 @@
 use pyo3::prelude::*;
-use pyo3::types::PyString;
-use pyo3::{pyclass, PyResult, Python};
+use pyo3::{pyclass, PyResult};
 use ruff_python_parser::TokenKind;
-use ruff_python_parser::{lexer::Lexer, Mode};
 use ruff_text_size::TextRange;
-use ruff_text_size::TextSize;
 
 #[derive(Debug, Clone)]
 #[pyclass]
 pub(crate) struct Token {
     kind: TokenKind,
     range: TextRange,
+}
+
+impl Token {
+    pub fn new(kind: TokenKind, range: TextRange) -> Self {
+        Self { kind, range }
+    }
 }
 
 #[pymethods]
@@ -81,83 +84,7 @@ impl Token {
     }
 }
 
-#[pyclass(name = "Lexer", module = "xonsh_rd_parser")]
-pub(crate) struct PyLexer {
-    src: Py<PyString>,
-    file: String,
-}
-
-#[pymethods]
-impl PyLexer {
-    #[new]
-    #[pyo3(signature = (src, file_name = None))]
-    fn new(src: Bound<'_, PyString>, file_name: Option<&'_ str>) -> PyResult<Self> {
-        let file = file_name.unwrap_or("<string>").to_string();
-        Ok(Self {
-            src: src.into(),
-            file,
-        })
-    }
-
-    fn tokens(&self, py: Python<'_>) -> PyResult<Vec<Token>> {
-        let src = self.src.to_str(py)?;
-        let mut lexer = Lexer::new(src, Mode::Module, TextSize::default());
-
-        let mut tokens = Vec::new();
-        loop {
-            let kind = lexer.next_token();
-            if kind.is_eof() {
-                break;
-            }
-            let range = lexer.current_range();
-            tokens.push(Token { kind, range });
-        }
-        if let Some(err) = lexer.finish().pop() {
-            let filename = self.file.as_str();
-            let err = crate::annotate_src::to_syntax_err(src, filename, &err.into());
-            Err(err)
-        } else {
-            Ok(tokens)
-        }
-    }
-
-    #[pyo3(signature = (mincol = None, returnline = None, greedy = None, maxcol = None))]
-    fn subproc_toks(
-        &mut self,
-        py: Python<'_>,
-        mincol: Option<i64>,
-        returnline: Option<bool>,
-        greedy: Option<bool>,
-        maxcol: Option<usize>,
-    ) -> PyResult<Option<String>> {
-        let src = self.src.to_str(py)?;
-        let maxcol = maxcol.unwrap_or(src.len());
-        let mincol = mincol.unwrap_or(-1);
-        let returnline = returnline.unwrap_or(false);
-        let greedy = greedy.unwrap_or(false);
-        let mut tokens = self.tokens(py).ok().unwrap_or_default();
-        let result = if let Some(range) = tokens.find_subproc_line(mincol, maxcol, greedy) {
-            let line = format!("![{}]", &src[range]);
-
-            if returnline {
-                let line = format!(
-                    "{}{}{}",
-                    &src[..range.start().to_usize()],
-                    line,
-                    &src[range.end().to_usize()..]
-                );
-                Some(line)
-            } else {
-                Some(line)
-            }
-        } else {
-            None
-        };
-        Ok(result)
-    }
-}
-
-trait LexerExt {
+pub trait LexerExt {
     fn find_subproc_line(&mut self, mincol: i64, maxcol: usize, greedy: bool) -> Option<TextRange>;
 }
 
