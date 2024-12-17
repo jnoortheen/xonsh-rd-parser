@@ -1,3 +1,4 @@
+use crate::location::HasKind;
 use pyo3::prelude::*;
 use pyo3::{pyclass, PyResult};
 use ruff_python_parser::TokenKind;
@@ -13,6 +14,12 @@ pub(crate) struct Token {
 impl Token {
     pub fn new(kind: TokenKind, range: TextRange) -> Self {
         Self { kind, range }
+    }
+}
+
+impl HasKind for Token {
+    fn kind(&self) -> TokenKind {
+        self.kind
     }
 }
 
@@ -32,40 +39,13 @@ impl Token {
     }
     #[getter]
     fn get_type(&self) -> PyResult<&str> {
-        use TokenKind::*;
-
         // get Python token name
-        let name = match self.kind {
-            EndOfFile => "ENDMARKER",
-            Name => "NAME",
-            Int | Float | Complex => "NUMBER",
-            String => "STRING",
-            FStringStart => "FSTRING_START",
-            FStringMiddle => "FSTRING_MIDDLE",
-            FStringEnd => "FSTRING_END",
-            Newline => "NEWLINE",
-            Comment => "COMMENT",
-            Indent => "INDENT",
-            Dedent => "DEDENT",
-            NonLogicalNewline => "NL",
-            IpyEscapeCommand => unreachable!(),
-            TokenKind::Unknown => "ErrorToken",
-            _ => {
-                if self.kind.is_operator() {
-                    "OP"
-                } else if self.kind.is_keyword() {
-                    "NAME"
-                } else {
-                    "UNKNOWN"
-                }
-            }
-        };
+        let name = self.type_str();
         Ok(name)
     }
 
     #[pyo3(signature = (suffix = None))]
     fn has_suffix(&self, suffix: Option<&Self>) -> bool {
-        dbg!(self, suffix);
         if let Some(next) = suffix {
             return next.range.start() == self.range.end();
         }
@@ -77,10 +57,6 @@ impl Token {
             return prefix.range.end() == self.range.start();
         }
         false
-    }
-
-    fn is_combinator(&self) -> bool {
-        matches!(self.kind, TokenKind::And | TokenKind::Or)
     }
 }
 

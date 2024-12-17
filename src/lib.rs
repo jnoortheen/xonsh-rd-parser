@@ -1,5 +1,6 @@
 mod annotate_src;
 mod lexer;
+mod location;
 pub mod parser;
 mod parser_test;
 
