@@ -1,6 +1,7 @@
 mod annotate_src;
 mod lexer;
 mod parser;
+mod parser_test;
 
 use parser::parse_str;
 use pyo3::prelude::*;
@@ -12,11 +13,7 @@ mod xonsh_rd_parser {
 
     #[pyfunction] // This will be part of the module
     #[pyo3(signature = (src, file_name = None))]
-    pub fn parse_string(
-        py: Python<'_>,
-        src: &str,
-        file_name: Option<&str>,
-    ) -> PyResult<PyObject> {
+    pub fn parse_string(py: Python<'_>, src: &str, file_name: Option<&str>) -> PyResult<PyObject> {
         parse_str(py, src, file_name.unwrap_or("<code>"))
     }
 
