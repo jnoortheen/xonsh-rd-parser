@@ -81,7 +81,14 @@ impl PyParser {
 
         let tokens = tokens
             .iter()
-            .map(|t| Token::new(t.kind(), t.range(), &source_code))
+            .map(|t| {
+                Token::builder()
+                    .kind(t.kind())
+                    .range(t.range())
+                    .source(&source_code)
+                    .maybe_src(Some(self.src.clone_ref(py)))
+                    .build()
+            })
             .collect::<Vec<_>>();
         Ok(tokens)
     }

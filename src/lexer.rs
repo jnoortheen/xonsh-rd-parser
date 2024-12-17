@@ -1,5 +1,7 @@
 use crate::location::{HasKind, HasLocation};
+use bon::bon;
 use pyo3::prelude::*;
+use pyo3::types::PyString;
 use pyo3::{pyclass, PyResult};
 use ruff_python_parser::TokenKind;
 use ruff_source_file::{SourceCode, SourceLocation};
@@ -7,22 +9,34 @@ use ruff_text_size::{Ranged, TextRange, TextSize};
 use std::iter::Peekable;
 use std::ops::Range;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 #[pyclass]
 pub(crate) struct Token {
     kind: TokenKind,
     range: TextRange,
     location: Range<SourceLocation>,
+    src: Option<Py<PyString>>,
 }
 
+#[bon]
 impl Token {
-    pub fn new(kind: TokenKind, range: TextRange, source: &SourceCode) -> Self {
-        let start = source.source_location(range.start());
-        let end = source.source_location(range.end());
+    #[builder]
+    pub fn new<'a>(
+        kind: TokenKind,
+        range: TextRange,
+        source: &SourceCode<'a, 'a>,
+        src: Option<Py<PyString>>,
+    ) -> Self {
+        let location = {
+            let start = source.source_location(range.start());
+            let end = source.source_location(range.end());
+            start..end
+        };
         Self {
             kind,
             range,
-            location: start..end,
+            location,
+            src,
         }
     }
 
@@ -81,6 +95,21 @@ impl Token {
     #[getter]
     fn get_lineno(&self) -> usize {
         self.lineno()
+    }
+    #[getter]
+    fn get_value(&self, py: Python<'_>) -> PyResult<Option<&str>> {
+        if let Some(src) = &self.src {
+            let src = src.to_str(py)?;
+            let value = &src[self.range()];
+            Ok(Some(value))
+        } else {
+            Ok(None)
+        }
+    }
+}
+impl Ranged for Token {
+    fn range(&self) -> TextRange {
+        self.range
     }
 }
 
