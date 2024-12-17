@@ -1,4 +1,3 @@
-use pyo3::exceptions::PySyntaxError;
 use pyo3::prelude::*;
 use pyo3::types::PyString;
 use pyo3::{pyclass, PyResult, Python};
@@ -115,8 +114,7 @@ impl PyLexer {
         }
         if let Some(err) = lexer.finish().pop() {
             let filename = self.file.as_str();
-            let msg = crate::annotate_src::to_exc_msg(src, filename, &err.into());
-            let err = PySyntaxError::new_err(msg);
+            let err = crate::annotate_src::to_syntax_err(src, filename, &err.into());
             Err(err)
         } else {
             Ok(tokens)

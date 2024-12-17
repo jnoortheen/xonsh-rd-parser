@@ -1,16 +1,29 @@
 use ruff_python_parser::{ParseError, ParseErrorType};
-use ruff_source_file::{LineIndex, OneIndexed, SourceCode};
+use ruff_source_file::{LineIndex, OneIndexed, SourceCode, SourceLocation};
 use ruff_text_size::TextRange;
 use std::fmt::Formatter;
 
 use annotate_snippets::display_list::{DisplayList, FormatOptions};
 use annotate_snippets::snippet::{AnnotationType, Slice, Snippet, SourceAnnotation};
+use pyo3::exceptions::PySyntaxError;
+use pyo3::PyErr;
 
-pub(crate) fn to_exc_msg(src: &str, filename: &str, err: &ParseError) -> String {
+pub(crate) fn to_syntax_err(src: &str, filename: &str, err: &ParseError) -> PyErr {
     let line_index = LineIndex::from_source_text(src);
     let source_code = SourceCode::new(src, &line_index);
     let code_frame = CodeFrame::new(&source_code, err);
-    format!("{err} in {filename}:\n{code_frame}")
+    let msg = format!("{err} in {filename}:\n{code_frame}");
+    PySyntaxError::new_err((
+        msg,
+        (
+            filename.to_string(),
+            code_frame.lineno(),
+            code_frame.col_offset(),
+            "".to_string(),
+            code_frame.end_lineno(),
+            code_frame.end_col_offset(),
+        ),
+    ))
 }
 pub(crate) struct CodeFrame<'a> {
     range: TextRange,
@@ -25,6 +38,24 @@ impl<'a> CodeFrame<'a> {
             error: &error.error,
             source,
         }
+    }
+    pub(crate) fn start(&self) -> SourceLocation {
+        self.source.source_location(self.range.start())
+    }
+    pub(crate) fn end(&self) -> SourceLocation {
+        self.source.source_location(self.range.end())
+    }
+    pub(crate) fn lineno(&self) -> usize {
+        self.start().row.get()
+    }
+    pub(crate) fn end_lineno(&self) -> usize {
+        self.end().row.get()
+    }
+    pub(crate) fn col_offset(&self) -> usize {
+        self.start().column.get()
+    }
+    pub(crate) fn end_col_offset(&self) -> usize {
+        self.end().column.get()
     }
 }
 

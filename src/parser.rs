@@ -1,6 +1,5 @@
 use py_ast::ast_module::AstModule;
 use py_ast::to_ast::ToAst;
-use pyo3::exceptions::PySyntaxError;
 use pyo3::{PyObject, PyResult, Python};
 use ruff_source_file::{LineIndex, SourceCode};
 
@@ -15,8 +14,7 @@ pub fn parse_str<'py>(py: Python<'py>, src: &'py str, filename: &'py str) -> PyR
             tree.to_ast(&module)
         }
         Err(err) => {
-            let msg = crate::annotate_src::to_exc_msg(src, filename, &err);
-            let err = PySyntaxError::new_err(msg);
+            let err = crate::annotate_src::to_syntax_err(src, filename, &err);
             Err(err)
         }
     }
