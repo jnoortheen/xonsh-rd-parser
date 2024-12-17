@@ -6,7 +6,6 @@ import sys
 from pathlib import Path
 
 import pytest
-from xonsh_rd_parser import parse_file, parse_string
 
 files = []
 for py in (Path(__file__).parent / "data").glob("*.py"):
@@ -48,7 +47,7 @@ marks = {"marks": pytest.mark.xfail} if sys.version_info < (3, 12) else {}
 
 
 @pytest.mark.parametrize("filename", files)
-def test_pure_python_parsing(filename):
+def test_pure_python_parsing(filename, parse_string, parse_file):
     source = filename.read_text()
     for part in source.split("\n\n\n"):
         original = ast.parse(part)

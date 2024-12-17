@@ -15,45 +15,32 @@ import logging
 from unittest.mock import MagicMock
 
 import pytest
-from xonsh_rd_parser import parse_string
 
 log = logging.getLogger(__name__)
 
 
-def nodes_equal(x, y):
-    assert type(x) is type(
-        y
-    ), f"Ast nodes do not have the same type: '{type(x)}' != '{type(y)}' "
-    if isinstance(x, ast.Constant):
-        assert x.value == y.value, (
-            f"Constant ast nodes do not have the same value: "
-            f"{x.value!r} != {y.value!r}"
-        )
-    if isinstance(x, ast.Expr | ast.FunctionDef | ast.ClassDef):
-        assert (
-            x.lineno == y.lineno
-        ), f"Ast nodes do not have the same line number : {x.lineno} != {y.lineno}"
-        assert (
-            x.col_offset == y.col_offset
-        ), f"Ast nodes do not have the same column offset number : {x.col_offset} != {y.col_offset}"
-    for (xname, xval), (yname, yval) in zip(
-        ast.iter_fields(x), ast.iter_fields(y), strict=False
-    ):
-        assert (
-            xname == yname
-        ), f"Ast nodes fields differ : {xname} (of type {type(xval)}) != {yname} (of type {type(yval)})"
-        assert (
-            type(xval) is type(yval)
-        ), f"Ast nodes fields differ : {xname} (of type {type(xval)}) != {yname} (of type {type(yval)})"
-    for xchild, ychild in zip(
-        ast.iter_child_nodes(x), ast.iter_child_nodes(y), strict=False
-    ):
-        assert nodes_equal(xchild, ychild), "Ast node children differs"
-    return True
+@pytest.fixture
+def parse_string():
+    from xonsh_rd_parser import Parser
+
+    def factory(text: str):
+        return Parser(text).parse()
+
+    return factory
 
 
 @pytest.fixture
-def unparse(unparse_diff):
+def parse_file():
+    from xonsh_rd_parser import Parser
+
+    def factory(path: str):
+        return Parser.parse_file(path)
+
+    return factory
+
+
+@pytest.fixture
+def unparse(unparse_diff, parse_string):
     def factory(text: str):
         left_tree = parse_string(text)
         return ast.unparse(left_tree)
@@ -64,7 +51,7 @@ def unparse(unparse_diff):
 
 
 @pytest.fixture
-def unparse_diff():
+def unparse_diff(parse_string):
     def factory(text: str, right: str | None = None):
         left_tree = parse_string(text)
         left = ast.unparse(left_tree)
@@ -131,7 +118,7 @@ def xsh():
 
 #
 @pytest.fixture
-def exec_code(xsh):
+def exec_code(xsh, parse_string):
     """compatibility fixture"""
 
     def factory(
