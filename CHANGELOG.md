@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.3.0...v0.3.1) (2024-12-17)
+
+
+### Bug Fixes
+
+* call syntaxerror with filename and location ([b9aaf27](https://github.com/jnoortheen/xonsh-rd-parser/commit/b9aaf2724aa0d44a516de77322a3e24b6b236756))
+* cargo fix ([3798a69](https://github.com/jnoortheen/xonsh-rd-parser/commit/3798a69a30b6ca0f42da0fc3c26fd1fa29e31991))
+* clippy autofixes ([b3fc53e](https://github.com/jnoortheen/xonsh-rd-parser/commit/b3fc53e386634733f04f10787a937ef2ff48f0f3))
+* clippy warnings ([4df93af](https://github.com/jnoortheen/xonsh-rd-parser/commit/4df93af0986c85954d431c977c85b2290792897b))
+* clippy warnings ([6cafbb6](https://github.com/jnoortheen/xonsh-rd-parser/commit/6cafbb65ada99bbc02eaa5c03d07cdad77c2d300))
+
 ## [0.3.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.2.0...v0.3.0) (2024-12-14)
 
 
