@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.0.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.3.1...v1.0.0) (2024-12-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* single interface Parser for lexing and parsing
+
+### Features
+
+* add Parser class ([88b488d](https://github.com/jnoortheen/xonsh-rd-parser/commit/88b488da211c10b45b864862fca6f17b06f67a46))
+* Token.lexpos and line numbers passed ([9fadf13](https://github.com/jnoortheen/xonsh-rd-parser/commit/9fadf130ea54b93342ad3829a29d368e81607f73))
+* Token.value is now supported ([e788d90](https://github.com/jnoortheen/xonsh-rd-parser/commit/e788d904779f5a4e7acd46cf49839dcfee9622cb))
+
+
+### Code Refactoring
+
+* single interface Parser for lexing and parsing ([6ddd96f](https://github.com/jnoortheen/xonsh-rd-parser/commit/6ddd96f43483a9059515d5316e845efde2e0946e))
+
 ## [0.3.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.3.0...v0.3.1) (2024-12-17)
 
 
