@@ -96,31 +96,28 @@ impl PyParser {
         maxcol: Option<usize>,
     ) -> PyResult<Option<String>> {
         let src = self.src(py)?;
-        let line_index = LineIndex::from_source_text(src);
-        let source_code = SourceCode::new(src, &line_index);
         let maxcol = maxcol.unwrap_or(src.len());
         let mincol = mincol.unwrap_or(-1);
         let returnline = returnline.unwrap_or(false);
         let greedy = greedy.unwrap_or(false);
         let mut tokens = self.tokens(py).ok().unwrap_or_default();
-        let result =
-            if let Some(range) = tokens.find_subproc_line(mincol, maxcol, greedy, &source_code) {
-                let line = format!("![{}]", &src[range]);
+        let result = if let Some(range) = tokens.find_subproc_line(mincol, maxcol, greedy) {
+            let line = format!("![{}]", &src[range]);
 
-                if returnline {
-                    let line = format!(
-                        "{}{}{}",
-                        &src[..range.start().to_usize()],
-                        line,
-                        &src[range.end().to_usize()..]
-                    );
-                    Some(line)
-                } else {
-                    Some(line)
-                }
+            if returnline {
+                let line = format!(
+                    "{}{}{}",
+                    &src[..range.start().to_usize()],
+                    line,
+                    &src[range.end().to_usize()..]
+                );
+                Some(line)
             } else {
-                None
-            };
+                Some(line)
+            }
+        } else {
+            None
+        };
         Ok(result)
     }
 }

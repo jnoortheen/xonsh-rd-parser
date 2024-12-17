@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 use pyo3::{pyclass, PyResult};
 use ruff_python_parser::TokenKind;
 use ruff_source_file::{SourceCode, SourceLocation};
-use ruff_text_size::{TextRange, TextSize};
+use ruff_text_size::{Ranged, TextRange, TextSize};
 use std::iter::Peekable;
 use std::ops::Range;
 
@@ -25,8 +25,19 @@ impl Token {
             location: start..end,
         }
     }
-}
 
+    fn small(&self) -> SmallToken {
+        SmallToken {
+            kind: self.kind,
+            range: self.range,
+        }
+    }
+}
+impl HasKind for SmallToken {
+    fn kind(&self) -> TokenKind {
+        self.kind
+    }
+}
 impl HasKind for Token {
     fn kind(&self) -> TokenKind {
         self.kind
@@ -71,45 +82,42 @@ impl Token {
     fn get_lineno(&self) -> usize {
         self.lineno()
     }
-    #[pyo3(signature = (suffix = None))]
-    fn has_suffix(&self, suffix: Option<&Self>) -> bool {
-        if let Some(next) = suffix {
-            return next.range.start() == self.range.end();
-        }
-        false
-    }
-    #[pyo3(signature = (prefix = None))]
-    fn has_prefix(&self, prefix: Option<&Self>) -> bool {
-        if let Some(prefix) = prefix {
-            return prefix.range.end() == self.range.start();
-        }
-        false
-    }
 }
 
 pub trait LexerExt {
-    fn find_subproc_line(
-        &mut self,
-        mincol: i64,
-        maxcol: usize,
-        greedy: bool,
-        source: &SourceCode,
-    ) -> Option<TextRange>;
+    fn find_subproc_line(&mut self, mincol: i64, maxcol: usize, greedy: bool) -> Option<TextRange>;
 }
 
+struct SmallToken {
+    kind: TokenKind,
+    range: TextRange,
+}
+impl Ranged for SmallToken {
+    fn range(&self) -> TextRange {
+        self.range
+    }
+}
+impl SmallToken {
+    fn has_suffix(&self, suffix: Option<&Self>) -> bool {
+        if let Some(next) = suffix {
+            return next.start() == self.end();
+        }
+        false
+    }
+    fn has_prefix(&self, prefix: Option<&Self>) -> bool {
+        if let Some(prefix) = prefix {
+            return prefix.end() == self.start();
+        }
+        false
+    }
+}
 impl LexerExt for Vec<Token> {
     /// Encapsulates tokens in a source code line in an uncaptured
     // subprocess ![] starting at a minimum column. If there are no tokens
     // (ie in a comment line) this returns None. If greedy is True, it will encapsulate
     // normal parentheses. Greedy is False by default.
-    fn find_subproc_line(
-        &mut self,
-        mincol: i64,
-        maxcol: usize,
-        greedy: bool,
-        source: &SourceCode,
-    ) -> Option<TextRange> {
-        let mut toks: Vec<Token> = Vec::new();
+    fn find_subproc_line(&mut self, mincol: i64, maxcol: usize, greedy: bool) -> Option<TextRange> {
+        let mut toks: Vec<SmallToken> = Vec::new();
         let mut lparens = Vec::new();
         let mut saw_macro = false;
 
@@ -135,7 +143,10 @@ impl LexerExt for Vec<Token> {
                 let end = handle_macro_tokens(&mut iterator, token.range.end());
 
                 let range = TextRange::new(start, end);
-                let new_token = Token::new(TokenKind::String, range, source);
+                let new_token = SmallToken {
+                    kind: TokenKind::String,
+                    range,
+                };
                 toks.push(new_token);
                 continue;
             }
@@ -145,7 +156,7 @@ impl LexerExt for Vec<Token> {
             }
 
             if greedy && !lparens.is_empty() && lparens.contains(&TokenKind::Lpar) {
-                toks.push(token.clone());
+                toks.push(token.small());
                 if tok.is_rparen() {
                     lparens.pop();
                 }
@@ -154,7 +165,7 @@ impl LexerExt for Vec<Token> {
 
             if let Some(last) = toks.last() {
                 if last.kind.is_proc_end() {
-                    if last.is_combinator() && last.has_suffix(Some(token)) {
+                    if last.is_combinator() && last.has_suffix(Some(&token.small())) {
                         // pass
                     } else if is_not_lparen_and_rparen(&lparens, &last.kind) {
                         lparens.pop();
@@ -177,7 +188,7 @@ impl LexerExt for Vec<Token> {
                 continue;
             }
 
-            toks.push(token.clone());
+            toks.push(token.small());
 
             // if tok.type_ == "WS" && tok.value == "\\" {
             //     continue;
