@@ -1,15 +1,15 @@
 #![allow(clippy::wildcard_imports)]
 
-use std::borrow::Cow;
-use std::vec;
-
 use super::ToAst;
 use crate::ast_module::AstModule;
+use crate::impl_to_ast;
 use num_complex::Complex;
 use pyo3::{IntoPyObjectExt, PyObject};
 use ruff_python_ast::str_prefix::StringLiteralPrefix;
 use ruff_python_ast::*;
 use ruff_text_size::Ranged;
+use std::borrow::Cow;
+use std::vec;
 
 type PyResult = pyo3::PyResult<PyObject>;
 
@@ -65,16 +65,8 @@ impl ToAst for ExprNumberLiteral {
         module.to_const(self.range(), value?.into_py_any(module.py)?)
     }
 }
-impl ToAst for ExprEllipsisLiteral {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.to_const(self.range(), module.py.Ellipsis())
-    }
-}
-impl ToAst for ExprNoneLiteral {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.to_const(self.range(), module.py.None())
-    }
-}
+impl_to_ast!(ExprEllipsisLiteral, |module| module.py.Ellipsis());
+impl_to_ast!(ExprNoneLiteral, |module| module.py.None());
 impl ToAst for ExprBooleanLiteral {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module.to_const(self.range(), self.value)
@@ -193,101 +185,24 @@ impl ToAst for CmpOp {
         Ok(obj)
     }
 }
-impl ToAst for ExprCompare {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Compare")?.call(
-            self.range,
-            [
-                ("left", self.left.to_ast(module)?),
-                ("ops", self.ops.to_ast(module)?),
-                ("comparators", self.comparators.to_ast(module)?),
-            ],
-        )
-    }
-}
-impl ToAst for ExprYieldFrom {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module
-            .attr("YieldFrom")?
-            .call(self.range, [("value", self.value.to_ast(module)?)])
-    }
-}
-impl ToAst for ExprYield {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module
-            .attr("Yield")?
-            .call(self.range, [("value", self.value.to_ast(module)?)])
-    }
-}
-impl ToAst for ExprAwait {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module
-            .attr("Await")?
-            .call(self.range, [("value", self.value.to_ast(module)?)])
-    }
-}
-impl ToAst for ExprName {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Name")?.call(
-            self.range,
-            [
-                ("id", self.id.to_ast(module)?),
-                ("ctx", self.ctx.to_ast(module)?),
-            ],
-        )
-    }
-}
+impl_to_ast!(ExprCompare, call "Compare" with fields [
+    left,
+    ops,
+    comparators
+]);
+impl_to_ast!(ExprYieldFrom, call "YieldFrom" with fields [value]);
+impl_to_ast!(ExprYield, call "Yield" with fields [value]);
+impl_to_ast!(ExprAwait, call "Await" with fields [value]);
+impl_to_ast!(ExprName, call "Name" with fields [id, ctx]);
 impl ToAst for name::Name {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         self.as_str().to_string().into_py_any(module.py)
     }
 }
-impl ToAst for ExprStarred {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Starred")?.call(
-            self.range,
-            [
-                ("value", self.value.to_ast(module)?),
-                ("ctx", self.ctx.to_ast(module)?),
-            ],
-        )
-    }
-}
-impl ToAst for ExprSubscript {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Subscript")?.call(
-            self.range,
-            [
-                ("ctx", self.ctx.to_ast(module)?),
-                ("value", self.value.to_ast(module)?),
-                ("slice", self.slice.to_ast(module)?),
-            ],
-        )
-    }
-}
-impl ToAst for ExprAttribute {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Attribute")?.call(
-            self.range,
-            [
-                ("value", self.value.to_ast(module)?),
-                ("attr", self.attr.to_ast(module)?),
-                ("ctx", self.ctx.to_ast(module)?),
-            ],
-        )
-    }
-}
-impl ToAst for Keyword {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("keyword")?.call(
-            self.range,
-            [
-                ("arg", self.arg.to_ast(module)?),
-                ("value", self.value.to_ast(module)?),
-            ],
-        )
-    }
-}
+impl_to_ast!(ExprStarred, call "Starred" with fields [value, ctx]);
+impl_to_ast!(ExprSubscript, call "Subscript" with fields [value, slice, ctx]);
+impl_to_ast!(ExprAttribute, call "Attribute" with fields [value, attr, ctx]);
+impl_to_ast!(Keyword, call "keyword" with fields [arg, value]);
 impl ToAst for ExprCall {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module.attr("Call")?.call(
@@ -300,18 +215,7 @@ impl ToAst for ExprCall {
         )
     }
 }
-impl ToAst for ExprSlice {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Slice")?.call(
-            self.range,
-            [
-                ("lower", self.lower.to_ast(module)?),
-                ("upper", self.upper.to_ast(module)?),
-                ("step", self.step.to_ast(module)?),
-            ],
-        )
-    }
-}
+impl_to_ast!(ExprSlice, call "Slice" with fields [lower, upper, step]);
 impl ToAst for ExprContext {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let obj = match self {
@@ -323,28 +227,8 @@ impl ToAst for ExprContext {
         Ok(obj)
     }
 }
-impl ToAst for ExprTuple {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("Tuple")?.call(
-            self.range,
-            [
-                ("elts", self.elts.to_ast(module)?),
-                ("ctx", self.ctx.to_ast(module)?),
-            ],
-        )
-    }
-}
-impl ToAst for ExprGenerator {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("GeneratorExp")?.call(
-            self.range,
-            [
-                ("elt", self.elt.to_ast(module)?),
-                ("generators", self.generators.to_ast(module)?),
-            ],
-        )
-    }
-}
+impl_to_ast!(ExprTuple, call "Tuple" with fields [elts, ctx]);
+impl_to_ast!(ExprGenerator, call "GeneratorExp" with fields [elt, generators]);
 impl ToAst for Comprehension {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module.attr("comprehension")?.callk([
@@ -355,58 +239,21 @@ impl ToAst for Comprehension {
         ])
     }
 }
-impl ToAst for ExprDictComp {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("DictComp")?.call(
-            self.range,
-            [
-                ("key", self.key.to_ast(module)?),
-                ("value", self.value.to_ast(module)?),
-                ("generators", self.generators.to_ast(module)?),
-            ],
-        )
-    }
-}
-impl ToAst for ExprSetComp {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("SetComp")?.call(
-            self.range,
-            [
-                ("elt", self.elt.to_ast(module)?),
-                ("generators", self.generators.to_ast(module)?),
-            ],
-        )
-    }
-}
-impl ToAst for ExprListComp {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("ListComp")?.call(
-            self.range,
-            [
-                ("elt", self.elt.to_ast(module)?),
-                ("generators", self.generators.to_ast(module)?),
-            ],
-        )
-    }
-}
-impl ToAst for ExprList {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("List")?.call(
-            self.range,
-            [
-                ("elts", self.elts.to_ast(module)?),
-                ("ctx", self.ctx.to_ast(module)?),
-            ],
-        )
-    }
-}
-impl ToAst for ExprSet {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module
-            .attr("Set")?
-            .call(self.range, [("elts", self.elts.to_ast(module)?)])
-    }
-}
+impl_to_ast!(ExprDictComp, call "DictComp" with fields [
+    key,
+    value,
+    generators
+]);
+impl_to_ast!(ExprSetComp, call "SetComp" with fields [
+    elt,
+    generators
+]);
+impl_to_ast!(ExprListComp, call "ListComp" with fields [
+    elt,
+    generators
+]);
+impl_to_ast!(ExprList, call "List" with fields [elts, ctx]);
+impl_to_ast!(ExprSet, call "Set" with fields [elts]);
 impl ToAst for ExprDict {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let mut keys = vec![];
@@ -420,18 +267,7 @@ impl ToAst for ExprDict {
             .call(self.range, [("keys", keys), ("values", values)])
     }
 }
-impl ToAst for ExprIf {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("IfExp")?.call(
-            self.range,
-            [
-                ("test", self.test.to_ast(module)?),
-                ("body", self.body.to_ast(module)?),
-                ("orelse", self.orelse.to_ast(module)?),
-            ],
-        )
-    }
-}
+impl_to_ast!(ExprIf, call "IfExp" with fields [test, body, orelse]);
 
 struct OptionalParameters(pub Option<Box<Parameters>>);
 
@@ -464,18 +300,7 @@ impl ToAst for ExprLambda {
         )
     }
 }
-impl ToAst for ExprBinOp {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("BinOp")?.call(
-            self.range,
-            [
-                ("left", self.left.to_ast(module)?),
-                ("op", self.op.to_ast(module)?),
-                ("right", self.right.to_ast(module)?),
-            ],
-        )
-    }
-}
+impl_to_ast!(ExprBinOp, call "BinOp" with fields [left, op, right]);
 impl ToAst for UnaryOp {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let obj = match self {
@@ -487,17 +312,9 @@ impl ToAst for UnaryOp {
         Ok(obj)
     }
 }
-impl ToAst for ExprUnaryOp {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("UnaryOp")?.call(
-            self.range,
-            [
-                ("op", self.op.to_ast(module)?),
-                ("operand", self.operand.to_ast(module)?),
-            ],
-        )
-    }
-}
+
+impl_to_ast!(ExprUnaryOp, call "UnaryOp" with fields [op, operand]);
+
 impl ToAst for Operator {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let obj = match self {
@@ -527,27 +344,5 @@ impl ToAst for BoolOp {
         Ok(obj)
     }
 }
-
-impl ToAst for ExprNamed {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("NamedExpr")?.call(
-            self.range,
-            [
-                ("target", self.target.to_ast(module)?),
-                ("value", self.value.to_ast(module)?),
-            ],
-        )
-    }
-}
-
-impl ToAst for ExprBoolOp {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
-        module.attr("BoolOp")?.call(
-            self.range,
-            [
-                ("op", self.op.to_ast(module)?),
-                ("values", self.values.to_ast(module)?),
-            ],
-        )
-    }
-}
+impl_to_ast!(ExprNamed, call "NamedExpr" with fields [target, value]);
+impl_to_ast!(ExprBoolOp, call "BoolOp" with fields [op, values]);

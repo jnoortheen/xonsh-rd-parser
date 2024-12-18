@@ -44,3 +44,30 @@ impl<T: ToAst> ToAst for [T] {
         to_ast_sequence(self, module)
     }
 }
+
+#[macro_export]
+macro_rules! impl_to_ast {
+    // Basic variant for direct value conversion
+    ($type:ty, |$module:ident| $value:expr) => {
+        impl ToAst for $type {
+            fn to_ast(&self, $module: &AstModule) -> PyResult {
+                $module.to_const(self.range(), $value)
+            }
+        }
+    };
+    // Variant for structs with multiple fields
+    ($type:ty, call $attr:literal with fields [$($field:ident),+ $(,)?]) => {
+        impl ToAst for $type {
+            fn to_ast(&self, module: &AstModule) -> PyResult {
+                module.attr($attr)?.call(
+                    self.range,
+                    [
+                        $(
+                            (stringify!($field), self.$field.to_ast(module)?),
+                        )+
+                    ],
+                )
+            }
+        }
+    };
+}
