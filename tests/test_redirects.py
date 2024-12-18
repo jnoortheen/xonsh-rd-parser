@@ -82,7 +82,27 @@ def test_redirect_error_to_output(r, o, cmd):
     ],
 )
 @pytest.mark.parametrize("e", ["e", "err", "2"])
-def test_redirect_output_to_error(r, e, exec_code):
-    assert exec_code(f'$[echo "test" {r} {e}> test.txt]')
-    assert exec_code(f'$[< input.txt echo "test" {r} {e}> test.txt]')
-    assert exec_code(f'$[echo "test" {r} {e}> test.txt < input.txt]')
+def test_redirect_output_to_error(r, e, cmd):
+    assert cmd(f'$[echo "test" {r} {e}> test.txt]') == [
+        "echo",
+        "test",
+        {f"{e}>": "test.txt", r.split(">")[0] + ">": r.split(">")[1]},
+    ]
+    assert cmd(f'$[< input.txt echo "test" {r} {e}> test.txt]') == [
+        "echo",
+        "test",
+        {
+            f"{e}>": "test.txt",
+            r.split(">")[0] + ">": r.split(">")[1],
+            "<": "input.txt",
+        },
+    ]
+    assert cmd(f'$[echo "test" {r} {e}> test.txt < input.txt]') == [
+        "echo",
+        "test",
+        {
+            f"{e}>": "test.txt",
+            r.split(">")[0] + ">": r.split(">")[1],
+            "<": "input.txt",
+        },
+    ]
