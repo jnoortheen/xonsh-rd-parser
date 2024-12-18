@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.0.0...v1.1.0) (2024-12-18)
+
+
+### Features
+
+* implement redirects parsing ([c86bf3d](https://github.com/jnoortheen/xonsh-rd-parser/commit/c86bf3dd0753688791dcc5d233a82e9edf4dcdf3))
+
+
+### Bug Fixes
+
+* clippy warnings ([0483810](https://github.com/jnoortheen/xonsh-rd-parser/commit/0483810012e107c98453489fd029a48db9c5356c))
+
 ## [1.0.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v0.3.1...v1.0.0) (2024-12-17)
 
 
