@@ -32,12 +32,12 @@ impl Parser<'_> {
     }
 
     fn parse_cmd_group(&mut self, closing: TokenKind) -> ast::Arguments {
+        const REDIR_NAMES: &[&str] = &["o", "out", "e", "err", "a", "all"];
         let start = self.node_start();
         let mut cmds = Vec::new();
         let mut keywords = Vec::new();
         let mut redirects = Vec::new();
         let mut progress = ParserProgress::default();
-        const REDIR_NAMES: &[&str] = &["o", "out", "e", "err", "a", "all"];
 
         loop {
             match self.current_token_kind() {
@@ -148,12 +148,12 @@ impl Parser<'_> {
         self.parse_redirection(Some(range), closing)
     }
     fn parse_redirection(&mut self, key_range: Option<TextRange>, closing: TokenKind) -> DictItem {
-        let range = if key_range.is_none() {
+        let range = if let Some(key_range) = key_range {
+            key_range
+        } else {
             let range = self.current_token_range();
             self.bump_any();
             range
-        } else {
-            key_range.unwrap()
         };
 
         let key = Some(self.to_string_literal(range));
