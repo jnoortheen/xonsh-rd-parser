@@ -2,22 +2,18 @@ import pytest
 
 
 @pytest.mark.benchmark(group="parse_string")
-def test_parse_string(benchmark):
+def test_parse_string(benchmark, parse_string):
     @benchmark
     def main():
-        import xonsh_rd_parser as parser
-
         src_txt = "print(1)"
-        return parser.parse_string(src_txt)
+        return parse_string(src_txt)
 
 
 @pytest.mark.benchmark(group="parse_file")
-def test_parse_file(benchmark):
+def test_parse_file(benchmark, parse_file):
     @benchmark
     def main():
         from pathlib import Path
 
-        import xonsh_rd_parser as parser
-
         path = Path(__file__).parent / "bench.py"
-        return parser.parse_file(str(path))
+        return parse_file(str(path))
