@@ -4,10 +4,22 @@ import pytest
 @pytest.mark.parametrize(
     "case", ["", "o", "out", "1", "e", "err", "2", "a", "all", "&"]
 )
-def test_redirect_output(case, exec_code):
-    assert exec_code(f'$[echo "test" {case}> test.txt]')
-    assert exec_code(f'$[< input.txt echo "test" {case}> test.txt]')
-    assert exec_code(f'$[echo "test" {case}> test.txt < input.txt]')
+def test_redirect_output(case, cmd):
+    assert cmd(f'$[echo "test" {case}> test.txt]') == [
+        "echo",
+        "test",
+        {f"{case}>": "test.txt"},
+    ], f'$[echo "test" {case}> test.txt]'
+    assert cmd(f'$[< input.txt echo "test" {case}> test.txt]') == [
+        "echo",
+        "test",
+        {"<": "input.txt", f"{case}>": "test.txt"},
+    ]
+    assert cmd(f'$[echo "test" {case}> test.txt < input.txt]') == [
+        "echo",
+        "test",
+        {"<": "input.txt", f"{case}>": "test.txt"},
+    ]
 
 
 @pytest.mark.parametrize(
@@ -27,10 +39,30 @@ def test_redirect_output(case, exec_code):
     ],
 )
 @pytest.mark.parametrize("o", ["", "o", "out", "1"])
-def test_redirect_error_to_output(r, o, exec_code):
-    assert exec_code(f'$[echo "test" {r} {o}> test.txt]')
-    assert exec_code(f'$[< input.txt echo "test" {r} {o}> test.txt]')
-    assert exec_code(f'$[echo "test" {r} {o}> test.txt < input.txt]')
+def test_redirect_error_to_output(r, o, cmd):
+    assert cmd(f'$[echo "test" {r} {o}> test.txt]') == [
+        "echo",
+        "test",
+        {f"{o}>".strip(): "test.txt", r.split(">")[0] + ">": r.split(">")[1]},
+    ]
+    assert cmd(f'$[< input.txt echo "test" {r} {o}> test.txt]') == [
+        "echo",
+        "test",
+        {
+            f"{o}>".strip(): "test.txt",
+            r.split(">")[0] + ">": r.split(">")[1],
+            "<": "input.txt",
+        },
+    ]
+    assert cmd(f'$[echo "test" {r} {o}> test.txt < input.txt]') == [
+        "echo",
+        "test",
+        {
+            f"{o}>".strip(): "test.txt",
+            r.split(">")[0] + ">": r.split(">")[1],
+            "<": "input.txt",
+        },
+    ]
 
 
 @pytest.mark.parametrize(

@@ -76,25 +76,22 @@ def xsh():
             self.calls = []
             return self
 
-        def out(self):
-            self.result = self.args
-            self.calls.append("out")
+        def _call(self, mode: str):
+            self.result = self.args + list(self.kwargs.values())
+            self.calls.append(mode)
             return self.result
+
+        def out(self):
+            return self._call("out")
 
         def run(self):
-            self.result = self.args
-            self.calls.append("run")
-            return self.result
+            return self._call("run")
 
         def hide(self):
-            self.result = self.args
-            self.calls.append("hide")
-            return self.result
+            return self._call("hide")
 
         def obj(self):
-            self.result = self.args
-            self.calls.append("obj")
-            return self.result
+            return self._call("obj")
 
         def pipe(self, *args):
             self.args = [self.args, args]
@@ -133,6 +130,20 @@ def exec_code(xsh, parse_string):
         locs["__xonsh__"] = xsh
         exec(bytecode, {}, locs)
         return xsh
+
+    return factory
+
+
+@pytest.fixture
+def cmd(exec_code):
+    def factory(
+        inp: str,
+        xenv: dict | None = None,
+        mode="exec",
+        **locs,
+    ):
+        xsh = exec_code(inp, xenv, mode, **locs)
+        return xsh.cmd.result
 
     return factory
 

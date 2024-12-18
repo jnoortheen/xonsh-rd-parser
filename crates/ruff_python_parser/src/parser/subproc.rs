@@ -37,6 +37,7 @@ impl Parser<'_> {
         let mut keywords = Vec::new();
         let mut redirects = Vec::new();
         let mut progress = ParserProgress::default();
+        const REDIR_NAMES: &[&str] = &["o", "out", "e", "err", "a", "all"];
 
         loop {
             match self.current_token_kind() {
@@ -45,8 +46,19 @@ impl Parser<'_> {
                     break;
                 }
                 TokenKind::Vbar => break,
+                TokenKind::Int | TokenKind::Amper if matches!(self.peek(), TokenKind::Greater) => {
+                    let result = self.parse_redirection1(closing);
+                    redirects.push(result);
+                }
+                TokenKind::Name
+                    if matches!(self.peek(), TokenKind::Greater)
+                        && REDIR_NAMES.contains(&&self.source[self.current_token_range()]) =>
+                {
+                    let result = self.parse_redirection1(closing);
+                    redirects.push(result);
+                }
                 TokenKind::RightShift | TokenKind::Greater | TokenKind::Less => {
-                    let result = self.parse_redirection(closing);
+                    let result = self.parse_redirection(None, closing);
                     redirects.push(result);
                 }
                 TokenKind::Amper if self.peek() == closing => {
@@ -128,9 +140,22 @@ impl Parser<'_> {
 
         self.to_string_literal(TextRange::new(start, offset))
     }
-    fn parse_redirection(&mut self, closing: TokenKind) -> DictItem {
-        let range = self.current_token_range();
-        self.bump_any();
+    fn parse_redirection1(&mut self, closing: TokenKind) -> DictItem {
+        let start = self.node_start();
+        self.bump_any(); // skip the name or number
+        self.bump_any(); // skip the `>`
+        let range = self.node_range(start);
+        self.parse_redirection(Some(range), closing)
+    }
+    fn parse_redirection(&mut self, key_range: Option<TextRange>, closing: TokenKind) -> DictItem {
+        let range = if key_range.is_none() {
+            let range = self.current_token_range();
+            self.bump_any();
+            range
+        } else {
+            key_range.unwrap()
+        };
+
         let key = Some(self.to_string_literal(range));
         let value = self.parse_proc_single(closing);
 
