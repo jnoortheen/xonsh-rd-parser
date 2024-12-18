@@ -11,6 +11,7 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dynamic = ["version"]
+description = "A Rust parser for the xonsh language"
 
 [dependency-groups]
 dev = [
