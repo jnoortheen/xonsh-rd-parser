@@ -147,35 +147,35 @@ _expand:
 
 redirects:
 - inp: '!(ls >> x.py)'
-  exp: __xonsh__.cmd('ls', '>>', 'x.py').obj()
+  exp: "__xonsh__.cmd('ls', redirects={'>>': 'x.py'}).obj()"
 - inp: '!(ls | grep wakka > x.py)'
-  exp: __xonsh__.cmd('ls').pipe('grep', 'wakka', '>', 'x.py').obj()
+  exp: "__xonsh__.cmd('ls').pipe('grep', 'wakka', redirects={'>': 'x.py'}).obj()"
 - inp: '!(ls | grep wakka >> x.py)'
-  exp: __xonsh__.cmd('ls').pipe('grep', 'wakka', '>>', 'x.py').obj()
+  exp: "__xonsh__.cmd('ls').pipe('grep', 'wakka', redirects={'>>': 'x.py'}).obj()"
 - inp: $(ls > x.py)
-  exp: __xonsh__.cmd('ls', '>', 'x.py').out()
+  exp: "__xonsh__.cmd('ls', redirects={'>': 'x.py'}).out()"
 - inp: $(ls >> x.py)
-  exp: __xonsh__.cmd('ls', '>>', 'x.py').out()
+  exp: "__xonsh__.cmd('ls', redirects={'>>': 'x.py'}).out()"
 - inp: $(ls | grep wakka > x.py)
-  exp: __xonsh__.cmd('ls').pipe('grep', 'wakka', '>', 'x.py').out()
+  exp: "__xonsh__.cmd('ls').pipe('grep', 'wakka', redirects={'>': 'x.py'}).out()"
 - inp: $(ls | grep wakka >> x.py)
-  exp: __xonsh__.cmd('ls').pipe('grep', 'wakka', '>>', 'x.py').out()
+  exp: "__xonsh__.cmd('ls').pipe('grep', 'wakka', redirects={'>>': 'x.py'}).out()"
 
-_redir_inp:
+redir_inp:
   - inp: "$[cat < input.txt]"
-    exp: __xonsh__.cmd('cat', '<', 'input.txt').run()
+    exp: "__xonsh__.cmd('cat', redirects={'<': 'input.txt'}).run()"
   - inp: "$[< input.txt cat]"
-    exp: __xonsh__.cmd('cat', '<', 'input.txt').run()
+    exp: "__xonsh__.cmd('cat', redirects={'<': 'input.txt'}).run()"
   - inp: "$[cat < /path/to/input.txt]"
-    exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').run()
+    exp: "__xonsh__.cmd('cat', redirects={'<': 'input.txt'}).run()"
   - inp: "$[(cat) < /path/to/input.txt]"
-    exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').run()
+    exp: "__xonsh__.cmd('cat', redirects={'<': '/path/to/output.txt'}).run()"
   - inp: "$[< /path/to/input.txt cat]"
-    exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').run()
+    exp: "__xonsh__.cmd('cat', redirects={'<': 'input.txt'}).run()"
   - inp: "![< /path/to/input.txt]"
-    exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').hide()
+    exp: "__xonsh__.cmd('cat', redirects={'<': 'input.txt'}).hide()"
   - inp: "![< /path/to/input.txt > /path/to/output.txt]"
-    exp: __xonsh__.cmd('cat', '<', '/path/to/input.txt').pipe('>', '/path/to/output.txt').hide()
+    exp: "__xonsh__.cmd('cat', redirects={'<': '/path/to/output.txt'}).hide()"
 proc_macros:
   - inp: "![echo !]"
     exp: __xonsh__.cmd('echo', '').hide()

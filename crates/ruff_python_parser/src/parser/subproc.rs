@@ -1,6 +1,6 @@
 use ruff_python_ast::name::Name;
-use ruff_python_ast::{self as ast, Expr, ExprContext};
-use ruff_text_size::{TextRange, TextSize};
+use ruff_python_ast::{self as ast, DictItem, Expr, ExprContext, ExprDict};
+use ruff_text_size::{Ranged, TextRange, TextSize};
 
 use crate::ParseErrorType;
 
@@ -35,6 +35,7 @@ impl Parser<'_> {
         let start = self.node_start();
         let mut cmds = Vec::new();
         let mut keywords = Vec::new();
+        let mut redirects = Vec::new();
         let mut progress = ParserProgress::default();
 
         loop {
@@ -44,6 +45,10 @@ impl Parser<'_> {
                     break;
                 }
                 TokenKind::Vbar => break,
+                TokenKind::RightShift | TokenKind::Greater | TokenKind::Less => {
+                    let result = self.parse_redirection(closing);
+                    redirects.push(result);
+                }
                 TokenKind::Amper if self.peek() == closing => {
                     keywords.push(ast::Keyword {
                         arg: Some(self.to_identifier("bg")),
@@ -55,6 +60,21 @@ impl Parser<'_> {
                     break;
                 }
                 _ => cmds.push(self.parse_proc_arg(&mut progress, closing)),
+            }
+        }
+
+        if let Some(first) = redirects.first() {
+            if let Some(last) = redirects.last() {
+                let range = TextRange::new(first.range().start(), last.range().end());
+                let expr = Expr::from(ExprDict {
+                    range,
+                    items: redirects,
+                });
+                keywords.push(ast::Keyword {
+                    arg: Some(self.to_identifier("redirects")),
+                    value: expr,
+                    range: self.node_range(start),
+                });
             }
         }
 
@@ -107,6 +127,14 @@ impl Parser<'_> {
         }
 
         self.to_string_literal(TextRange::new(start, offset))
+    }
+    fn parse_redirection(&mut self, closing: TokenKind) -> DictItem {
+        let range = self.current_token_range();
+        self.bump_any();
+        let key = Some(self.to_string_literal(range));
+        let value = self.parse_proc_single(closing);
+
+        DictItem { key, value }
     }
     pub(super) fn parse_decorator_or_interpolation(&mut self) -> Expr {
         self.bump_any(); // skip the `@`

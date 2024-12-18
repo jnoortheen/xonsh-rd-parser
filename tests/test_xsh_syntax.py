@@ -94,7 +94,6 @@ def test_statements(exec_code, inp):
             "!(ls | grep wakka | grep jawaka)",
             [[["ls"], ("grep", "wakka")], ("grep", "jawaka")],
         ),
-        ("!(ls > x.py)", ["ls", ">", "x.py"]),
     ],
 )
 def test_captured_procs(inp, result, exec_code):

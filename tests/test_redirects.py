@@ -1,22 +1,10 @@
 import pytest
 
 
-@pytest.mark.parametrize("case", ["", "o", "out", "1"])
+@pytest.mark.parametrize(
+    "case", ["", "o", "out", "1", "e", "err", "2", "a", "all", "&"]
+)
 def test_redirect_output(case, exec_code):
-    assert exec_code(f'$[echo "test" {case}> test.txt]')
-    assert exec_code(f'$[< input.txt echo "test" {case}> test.txt]')
-    assert exec_code(f'$[echo "test" {case}> test.txt < input.txt]')
-
-
-@pytest.mark.parametrize("case", ["e", "err", "2"])
-def test_redirect_error(case, exec_code):
-    assert exec_code(f'$[echo "test" {case}> test.txt]')
-    assert exec_code(f'$[< input.txt echo "test" {case}> test.txt]')
-    assert exec_code(f'$[echo "test" {case}> test.txt < input.txt]')
-
-
-@pytest.mark.parametrize("case", ["a", "all", "&"])
-def test_redirect_all(case, exec_code):
     assert exec_code(f'$[echo "test" {case}> test.txt]')
     assert exec_code(f'$[< input.txt echo "test" {case}> test.txt]')
     assert exec_code(f'$[echo "test" {case}> test.txt < input.txt]')
