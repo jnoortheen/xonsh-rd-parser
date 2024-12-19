@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.1.0...v1.2.0) (2024-12-19)
+
+
+### Features
+
+* update pypi description ([7f847c2](https://github.com/jnoortheen/xonsh-rd-parser/commit/7f847c255933387e46b5d64e82bcfa4ab35c4499))
+
 ## [1.1.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.0.0...v1.1.0) (2024-12-18)
 
 
