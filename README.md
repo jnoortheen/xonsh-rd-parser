@@ -1,6 +1,6 @@
 # Xonsh Recursive Descent Parser
 
-A Rust based, Python recursive descent parser for [Xonsh](https://xon.sh).
+A Rust based, recursive descent parser for [Xonsh](https://xon.sh).
 
 # Usage
 
