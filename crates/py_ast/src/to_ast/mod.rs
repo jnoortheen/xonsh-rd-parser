@@ -3,7 +3,7 @@ mod r#match;
 mod stmt;
 
 use crate::ast_module::AstModule;
-use pyo3::{IntoPyObjectExt, PyObject};
+use pyo3::{IntoPyObject, IntoPyObjectExt, PyObject};
 
 type PyResult = pyo3::PyResult<PyObject>;
 
@@ -44,6 +44,11 @@ impl<T: ToAst> ToAst for [T] {
         to_ast_sequence(self, module)
     }
 }
+impl ToAst for u32 {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        self.into_py_any(module.py)
+    }
+}
 
 #[macro_export]
 macro_rules! impl_to_ast {
@@ -52,6 +57,13 @@ macro_rules! impl_to_ast {
         impl ToAst for $type {
             fn to_ast(&self, $module: &AstModule) -> PyResult {
                 $module.to_const(self.range(), $value)
+            }
+        }
+    };
+    ($type:ty, call $attr:literal) => {
+        impl ToAst for $type {
+            fn to_ast(&self, module: &AstModule) -> PyResult {
+                module.attr($attr)?.callk(module.location(self.range))
             }
         }
     };
@@ -64,6 +76,21 @@ macro_rules! impl_to_ast {
                     [
                         $(
                             (stringify!($field), self.$field.to_ast(module)?),
+                        )+
+                    ],
+                )
+            }
+        }
+    };
+    // Variant for structs with explicitly named fields (name-value mapping)
+    ($type:ty, call $attr:literal with |$self:ident, $module: ident| {$($field_name:literal => $field_expr:expr),+ $(,)?}) => {
+        impl ToAst for $type {
+            fn to_ast(&$self, $module: &AstModule) -> PyResult {
+                $module.attr($attr)?.call(
+                    $self.range,
+                    [
+                        $(
+                            ($field_name, $field_expr),
                         )+
                     ],
                 )
