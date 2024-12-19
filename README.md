@@ -10,9 +10,10 @@ A Rust based, recursive descent parser for [Xonsh](https://xon.sh).
 pip install xonsh-rd-parser
 ```
 
+- Use it to parse Xonsh CFG 
 ```py
-from xonsh_rd_parser import parse_string
-parse_string("print($HOME)")
+from xonsh_rd_parser import Parse
+Parse("print($HOME)").parse()
 ```
 
 # Credits
