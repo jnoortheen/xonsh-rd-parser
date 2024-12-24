@@ -49,11 +49,13 @@ def yaml_line_items(*names: str):
             data = yaml.load(file)
         for case, lines in data.items():
             for idx, item in enumerate(lines):
-                kwargs = dict(id=f"{path.stem}-{case}-{idx}")
+                kwargs = dict()
                 if case.startswith("_"):
                     kwargs["marks"] = pytest.mark.xfail
                 exp = LineItem(path, item.get("exp", ""), case, idx)
-                yield pytest.param(item["inp"], exp, **kwargs)
+                yield pytest.param(
+                    item["inp"], exp, id=f"{path.stem}-{case}-{idx}", **kwargs
+                )
 
 
 def pytest_addoption(parser):

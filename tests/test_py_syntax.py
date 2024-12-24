@@ -29,15 +29,19 @@ def unparse_diff(**trees: ast.AST):
     )
 
 
+def dump(tree: ast.AST):
+    return ast.dump(
+        tree,
+        indent="  ",
+        # include_attributes=True # todo: uncomment when we fix the coloffset in ruff parser
+    )
+
+
 def dump_diff(**trees: ast.AST):
-    kwargs = {
-        # "include_attributes": True, # todo: uncomment when we fix the coloffset in ruff parser
-        "indent": "  "
-    }
     orig_name, pp_name = trees.keys()
     original, pp_ast = trees.values()
-    o = ast.dump(original, **kwargs)
-    p = ast.dump(pp_ast, **kwargs)
+    o = dump(original)
+    p = dump(pp_ast)
     return "\n".join(
         difflib.unified_diff(o.split("\n"), p.split("\n"), orig_name, pp_name)
     )
