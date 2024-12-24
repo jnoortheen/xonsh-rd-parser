@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.2.0...v1.2.1) (2024-12-24)
+
+
+### Bug Fixes
+
+* parse 0 starting numbers without validation ([8d1164a](https://github.com/jnoortheen/xonsh-rd-parser/commit/8d1164a5ed85bf1adf8113f425fad0848e15816b)), closes [#11](https://github.com/jnoortheen/xonsh-rd-parser/issues/11)
+
 ## [1.2.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.1.0...v1.2.0) (2024-12-19)
 
 
