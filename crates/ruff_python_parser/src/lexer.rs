@@ -1145,20 +1145,7 @@ impl<'src> Lexer<'src> {
                 TokenKind::Complex
             } else {
                 let value = match Int::from_str(number.as_str()) {
-                    Ok(value) => {
-                        if start_is_zero && value.as_u8() != Some(0) {
-                            // Leading zeros in decimal integer literals are not permitted.
-                            return self.push_error(LexicalError::new(
-                                LexicalErrorType::OtherError(
-                                    "Invalid decimal integer literal"
-                                        .to_string()
-                                        .into_boxed_str(),
-                                ),
-                                self.token_range(),
-                            ));
-                        }
-                        value
-                    }
+                    Ok(value) => value,
                     Err(err) => {
                         return self.push_error(LexicalError::new(
                             LexicalErrorType::OtherError(format!("{err:?}").into_boxed_str()),
