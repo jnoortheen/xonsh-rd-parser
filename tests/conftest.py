@@ -111,6 +111,7 @@ def xsh():
     obj.cmd = Cmd()
     obj.list_of_strs_or_callables = MagicMock(wraps=list_of_strs_or_callables)
     obj.call_macro = MagicMock()
+    obj.enter_macro = MagicMock()
     return obj
 
 
@@ -125,8 +126,8 @@ def exec_code(xsh, parse_string):
         mode="exec",
         **locs,
     ):
-        obs = parse_string(inp)
-        bytecode = compile(obs, "<test-xonsh-ast>", mode)
+        xsh.obs = parse_string(inp)
+        bytecode = compile(xsh.obs, "<test-xonsh-ast>", mode)
         xsh.env = xenv or {}
         locs["__xonsh__"] = xsh
         exec(bytecode, {}, locs)

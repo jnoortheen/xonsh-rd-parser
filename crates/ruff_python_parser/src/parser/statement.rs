@@ -1871,11 +1871,21 @@ impl<'src> Parser<'src> {
     /// See: <https://docs.python.org/3/reference/compound_stmts.html#the-with-statement>
     fn parse_with_statement(&mut self, start: TextSize) -> ast::StmtWith {
         self.bump(TokenKind::With);
-
+        let is_macro = if self.at(TokenKind::Exclamation) {
+            self.bump_any();
+            true
+        } else {
+            false
+        };
         let items = self.parse_with_items();
+
         self.expect(TokenKind::Colon);
 
-        let body = self.parse_body(Clause::With);
+        let body = if is_macro {
+            return self.parse_with_macro(items, start);
+        } else {
+            self.parse_body(Clause::With)
+        };
 
         ast::StmtWith {
             items,

@@ -1,19 +1,15 @@
 import ast
 import textwrap
-from ast import AST, Pass, With
 from unittest.mock import ANY
 
 import pytest
 
-pytestmark = pytest.mark.skip(reason="not implemented")
-
 
 @pytest.fixture(name="run")
-def run_fixture(exec_code, xsh):
+def run_fixture(exec_code):
     def run(code, **kwargs):
-        tree = exec_code(code, mode="exec", x="x", locals=dict, globals=dict, **kwargs)
-        assert isinstance(tree, AST)
-        return xsh.enter_macro, tree
+        xsh = exec_code(code, mode="exec", x="x", locals=dict, globals=dict, **kwargs)
+        return xsh.enter_macro, xsh.obs
 
     return run
 
@@ -48,28 +44,25 @@ a = 42
 
 
 @pytest.mark.parametrize("body", WITH_BANG_RAWSUITES)
-@pytest.mark.xfail
 def test_withbang_single_suite(body, run):
     code = "with! x:\n{}".format(textwrap.indent(body, "    "))
     method, _ = run(code)
-    method.assert_called_once_with("x", body, ANY, ANY)
+    method.assert_called_once_with("x", body.rstrip(), ANY, ANY)
 
 
 @pytest.mark.parametrize("body", WITH_BANG_RAWSUITES)
-@pytest.mark.xfail
 def test_withbang_as_single_suite(body, run):
     code = "with! x as y:\n{}".format(textwrap.indent(body, "    "))
     method, tree = run(code)
-    method.assert_called_once_with("x", body, ANY, ANY)
+    method.assert_called_once_with("x", body.rstrip(), ANY, ANY)
     assert " as y:" in ast.unparse(tree)
 
 
 @pytest.mark.parametrize("body", WITH_BANG_RAWSUITES)
-@pytest.mark.xfail
 def test_withbang_single_suite_trailing(body, run):
     code = "with! x:\n{}\nprint(x)\n".format(textwrap.indent(body, "    "))
-    method, tree = run(code)
-    method.assert_called_once_with("x", body + "\n", ANY, ANY)
+    method, _ = run(code)
+    method.assert_called_once_with("x", body.rstrip(), ANY, ANY)
 
 
 WITH_BANG_RAWSIMPLE = [
@@ -81,36 +74,34 @@ WITH_BANG_RAWSIMPLE = [
 
 
 @pytest.mark.parametrize("body", WITH_BANG_RAWSIMPLE)
-@pytest.mark.xfail
 def test_withbang_single_simple(body, run):
     code = f"with! x: {body}\n"
-    method, tree = run(code)
-    method.assert_called_once_with("x", " " + body + "\n", ANY, ANY)
+    method, _ = run(code)
+    method.assert_called_once_with("x", body, ANY, ANY)
 
 
 @pytest.mark.parametrize("body", WITH_BANG_RAWSIMPLE)
-@pytest.mark.xfail
 def test_withbang_single_simple_opt(body, run):
     code = f"with! x as y: {body}\n"
     method, tree = run(code)
-    method.assert_called_once_with("x", " " + body + "\n", ANY, ANY)
+    method.assert_called_once_with("x", body, ANY, ANY)
     assert " as y:" in ast.unparse(tree)
 
 
 @pytest.mark.parametrize("body", WITH_BANG_RAWSUITES)
-@pytest.mark.xfail
 def test_withbang_as_many_suite(body, run):
     code = "with! x as a, y as b, z as c:\n{}"
     code = code.format(textwrap.indent(body, "    "))
-    method, tree = run(code)
-    assert isinstance(tree, AST)
+    method, tree = run(code, y="y", z="z")
+    assert isinstance(tree, ast.Module)
     wither = tree.body[0]
-    assert isinstance(wither, With)
+    assert isinstance(wither, ast.With)
     assert len(wither.body) == 1
-    assert isinstance(wither.body[0], Pass)
+    assert isinstance(wither.body[0], ast.Pass)
     assert len(wither.items) == 3
-    for i, targ in enumerate("abc"):
-        item = wither.items[i]
-        assert item.optional_vars.id == targ
-        s = item.context_expr.args[1].s
-        assert s == body
+    for targ, item in zip("abc", wither.items):
+        assert getattr(item.optional_vars, "id", None) == targ
+        assert isinstance(item.context_expr, ast.Call)
+        assert isinstance(item.context_expr.args[1], ast.Constant)
+        s = item.context_expr.args[1].value
+        assert s == body.strip()

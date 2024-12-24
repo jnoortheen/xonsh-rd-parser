@@ -214,3 +214,13 @@ call_macros:
     exp: __xonsh__.call_macro(f, ('x',), globals(), locals())
   - inp: "f!(x, y)"
     exp: __xonsh__.call_macro(f, ('x', 'y'), globals(), locals())
+
+with_macros:
+  - inp: |
+      with! x:
+          some more
+    exp: "with __xonsh__.enter_macro(x, 'some more', globals(), locals()):\n    pass"
+  - inp: |
+      with! x as y:
+          pass
+    exp: "with __xonsh__.enter_macro(x, 'pass', globals(), locals()) as y:\n    pass"
