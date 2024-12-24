@@ -5,7 +5,7 @@ test:
 .PHONY: test
 
 bench:
-	pytest --benchmark-autosave tests/bench.py
+	pytest --codspeed tests/bench.py
 	# pytest tests/test_simple.py --memray
 	python tests/bench_mem.py --empty
 	python tests/bench_mem.py
