@@ -19,6 +19,7 @@ runs:
         enable-cache: true
     - name: install project dependencies
       run: uv sync --frozen --no-install-project
+      shell: bash
     - uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.dist-name }}
