@@ -163,24 +163,36 @@ jobs:
           - "3.12"
           - "3.13"
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: ./.github/actions/pkg-install
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
-        with:
-          enable-cache: true
-      - name: install project dependencies
-        run: uv sync --frozen --no-install-project
-      - uses: actions/download-artifact@v4
-        with:
-          name: wheels-linux-x86_64
-          path: dist
-      - name: install project wheel
-        run: ls dist && uv pip install xonsh_rd_parser --find-links dist
+          dist-name: wheels-linux-x86_64
       - name: test with pytest
         run: uv run --no-sync pytest
+
+  benchmark:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - uses: ./.github/actions/pkg-install
+        with:
+          python-version: "3.13"
+          dist-name: wheels-linux-x86_64
+      - name: Download previous benchmark data
+        uses: actions/cache@v4
+        with:
+          path: ./cache/benchmark
+          key: ${{ runner.os }}-benchmark
+      - name: run benchmarks with pytest on latest Python version
+        run: uv run --no-sync pytest tests/bench.py --benchmark-json output.json
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: "pytest"
+          output-file-path: output.json
+          external-data-json-path: ./cache/benchmark/data.json
+          fail-on-alert: true
+          summary-always: true
 
   release:
     name: Release

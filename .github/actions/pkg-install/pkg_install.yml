@@ -1,0 +1,28 @@
+name: "Setup environment"
+description: "A reusable set of steps for building and testing"
+inputs:
+  python-version:
+    description: "Python version to use"
+    required: true
+  dist-name:
+    description: "Name of the distribution to install"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+      with:
+        enable-cache: true
+    - name: install project dependencies
+      run: uv sync --frozen --no-install-project
+    - uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.dist-name }}
+        path: dist
+    - name: install project wheel
+      run: uv pip install xonsh_rd_parser --find-links dist
