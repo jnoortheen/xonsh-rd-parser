@@ -1074,7 +1074,6 @@ impl<'src> Lexer<'src> {
     fn lex_decimal_number(&mut self, first_digit_or_dot: char) -> TokenKind {
         #[cfg(debug_assertions)]
         debug_assert!(self.cursor.previous().is_ascii_digit() || self.cursor.previous() == '.');
-        let start_is_zero = first_digit_or_dot == '0';
 
         let mut number = LexedText::new(self.token_start(), self.source);
         if first_digit_or_dot != '.' {

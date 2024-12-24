@@ -3,7 +3,7 @@ mod r#match;
 mod stmt;
 
 use crate::ast_module::AstModule;
-use pyo3::{IntoPyObject, IntoPyObjectExt, PyObject};
+use pyo3::{IntoPyObjectExt, PyObject};
 
 type PyResult = pyo3::PyResult<PyObject>;
 
