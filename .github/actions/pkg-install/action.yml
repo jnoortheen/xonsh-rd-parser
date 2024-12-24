@@ -25,3 +25,4 @@ runs:
         path: dist
     - name: install project wheel
       run: uv pip install xonsh_rd_parser --find-links dist
+      shell: bash
