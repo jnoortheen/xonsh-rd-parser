@@ -170,31 +170,12 @@ jobs:
           dist-name: wheels-linux-x86_64
       - name: test with pytest
         run: uv run --no-sync pytest
-
-  benchmark:
-    runs-on: ubuntu-latest
-    needs: [test]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/pkg-install
+      - uses: CodSpeedHQ/action@v3
+        if: matrix.python-version == '3.13'
         with:
-          python-version: "3.13"
-          dist-name: wheels-linux-x86_64
-      - name: Download previous benchmark data
-        uses: actions/cache@v4
-        with:
-          path: ./cache/benchmark
-          key: ${{ runner.os }}-benchmark
-      - name: run benchmarks with pytest on latest Python version
-        run: uv run --no-sync pytest tests/bench.py --benchmark-json output.json
-      - name: Store benchmark result
-        uses: benchmark-action/github-action-benchmark@v1
-        with:
-          tool: "pytest"
-          output-file-path: output.json
-          external-data-json-path: ./cache/benchmark/data.json
-          fail-on-alert: true
-          summary-always: true
+          run: uv run --no-sync pytest tests/bench.py --codspeed
+          token: ${{ secrets.CODSPEED_TOKEN }}
+        name: run benchmark
 
   release:
     name: Release
