@@ -110,6 +110,7 @@ def xsh():
     # using instance to store the result
     obj.cmd = Cmd()
     obj.list_of_strs_or_callables = MagicMock(wraps=list_of_strs_or_callables)
+    obj.call_macro = MagicMock()
     return obj
 
 

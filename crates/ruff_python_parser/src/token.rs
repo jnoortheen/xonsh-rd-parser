@@ -432,6 +432,17 @@ impl TokenKind {
             Lpar | AtLParen | BangLParen | DollarLParen | AtDollarLParen
         )
     }
+    pub const fn get_closer(&self) -> Option<Self> {
+        if self.is_open_paren() {
+            Some(TokenKind::Rpar)
+        } else if self.is_open_square() {
+            Some(TokenKind::Rsqb)
+        } else if matches!(self, TokenKind::Lbrace | TokenKind::DollarLBrace) {
+            Some(TokenKind::Rbrace)
+        } else {
+            None
+        }
+    }
     pub const fn is_open_square(&self) -> bool {
         use TokenKind::{BangLSqb, DollarLSqb, Lsqb};
         matches!(self, Lsqb | BangLSqb | DollarLSqb)

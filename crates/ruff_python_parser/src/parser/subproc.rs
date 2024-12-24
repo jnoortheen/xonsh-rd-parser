@@ -194,7 +194,7 @@ impl Parser<'_> {
         let end = if self.at(closing) {
             start
         } else {
-            self.take_while(|t| !t.is_macro_end(), closing)
+            self.take_while(|t, _| !t.is_macro_end(), closing)
         };
 
         let range = TextRange::new(start, end);
@@ -202,7 +202,12 @@ impl Parser<'_> {
         self.to_string_literal(range)
     }
 
-    fn take_while(&mut self, mut f: impl FnMut(TokenKind) -> bool, closing: TokenKind) -> TextSize {
+    #[inline]
+    fn take_while(
+        &mut self,
+        mut f: impl FnMut(TokenKind, i32) -> bool,
+        closing: TokenKind,
+    ) -> TextSize {
         let mut nesting = 0;
         let mut range = self.current_token_range();
         let is_opening = match closing {
@@ -211,7 +216,7 @@ impl Parser<'_> {
             _ => unreachable!(),
         };
 
-        while f(self.current_token_kind()) {
+        while f(self.current_token_kind(), nesting) {
             if is_opening(&self.current_token_kind()) {
                 nesting += 1;
             }
@@ -384,9 +389,30 @@ impl Parser<'_> {
         self.bump(closing);
         self.xonsh_attr("call_macro").call0(args, range)
     }
+    #[inline]
     fn parse_call_macro_arg(&mut self, closing: TokenKind) -> Expr {
         let start = self.node_start();
-        let end = self.take_while(|t| t != TokenKind::Comma, closing);
+        let end = {
+            let mut nesting = vec![];
+            let mut end = self.current_token_range().end();
+
+            while !nesting.is_empty() || self.current_token_kind() != closing {
+                let tk = self.current_token_kind();
+                if let Some(inner) = tk.get_closer() {
+                    nesting.push(inner);
+                } else if let Some(last) = nesting.last() {
+                    if last == &tk {
+                        nesting.pop();
+                    }
+                } else if tk == closing || tk == TokenKind::Comma {
+                    break;
+                }
+
+                end = self.current_token_range().end();
+                self.bump_any();
+            }
+            end
+        };
         if self.at(TokenKind::Comma) {
             self.bump(TokenKind::Comma);
         }
