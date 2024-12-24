@@ -370,7 +370,7 @@ def test_regex_globs():
 @pytest.mark.skip
 def test_lexer_split(s, exp):
     lexer = lex_input(s)
-    obs = lexer.split(s)
+    obs = lexer.split(s)  # type: ignore
     assert exp == obs
 
 
