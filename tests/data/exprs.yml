@@ -206,3 +206,11 @@ proc_macros:
 _bare_proc:
   - inp: "python manage.py migrate app 007"
     exp: __xonsh__.cmd('python', 'manage.py', 'migrate', 'app', '007').hide()
+
+call_macros:
+  - inp: "f!()"
+    exp: __xonsh__.call_macro(f, (), globals(), locals())
+  - inp: "f!(x)"
+    exp: __xonsh__.call_macro(f, ('x',), globals(), locals())
+  - inp: "f!(x, y)"
+    exp: __xonsh__.call_macro(f, ('x', 'y'), globals(), locals())

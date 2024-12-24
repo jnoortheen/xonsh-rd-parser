@@ -1,8 +1,8 @@
 use ruff_python_ast::name::Name;
-use ruff_python_ast::{self as ast, DictItem, Expr, ExprContext, ExprDict};
+use ruff_python_ast::{self as ast, DictItem, Expr, ExprContext, ExprDict, ExprTuple};
 use ruff_text_size::{Ranged, TextRange, TextSize};
 
-use crate::ParseErrorType;
+use crate::{ParseErrorType, Token};
 
 use crate::parser::expression::ExpressionContext;
 use crate::{
@@ -358,5 +358,39 @@ impl Parser<'_> {
         };
         let args = vec![lhs];
         self.xonsh_attr(method).call0(args, range)
+    }
+    pub(super) fn parse_call_macro(&mut self, lhs: Expr, start: TextSize) -> Expr {
+        self.bump(TokenKind::BangLParen);
+        let closing = TokenKind::Rpar;
+        let mut progress = ParserProgress::default();
+
+        let mut inner_args = vec![];
+        while !self.at(closing) {
+            inner_args.push(self.parse_call_macro_arg(closing));
+            progress.assert_progressing(self);
+        }
+        let range = self.node_range(start);
+        let args = vec![
+            lhs,
+            Expr::from(ExprTuple {
+                elts: inner_args,
+                ctx: ExprContext::Load,
+                range,
+                parenthesized: false,
+            }),
+            self.expr_name("globals").call_empty(range),
+            self.expr_name("locals").call_empty(range),
+        ];
+        self.bump(closing);
+        self.xonsh_attr("call_macro").call0(args, range)
+    }
+    fn parse_call_macro_arg(&mut self, closing: TokenKind) -> Expr {
+        let start = self.node_start();
+        let end = self.take_while(|t| t != TokenKind::Comma, closing);
+        if self.at(TokenKind::Comma) {
+            self.bump(TokenKind::Comma);
+        }
+        let range = TextRange::new(start, end);
+        self.to_string_literal(range)
     }
 }

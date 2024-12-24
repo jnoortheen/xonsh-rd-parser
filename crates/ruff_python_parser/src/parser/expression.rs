@@ -641,6 +641,7 @@ impl<'src> Parser<'src> {
                 TokenKind::Lsqb => Expr::Subscript(self.parse_subscript_expression(lhs, start)),
                 TokenKind::Dot => Expr::Attribute(self.parse_attribute_expression(lhs, start)),
                 TokenKind::Question => self.parse_help_expr(lhs, start),
+                TokenKind::BangLParen => self.parse_call_macro(lhs, start),
                 _ => break lhs,
             };
         }

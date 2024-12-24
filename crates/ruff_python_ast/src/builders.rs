@@ -17,6 +17,7 @@ impl Expr {
             range,
         })
     }
+    /// turn expr -> expr(..)
     pub fn call0(self, args: Vec<Expr>, range: TextRange) -> Self {
         let arguments = ast::Arguments {
             range,
@@ -25,6 +26,7 @@ impl Expr {
         };
         self.call(arguments, range)
     }
+    /// turn to a starred expression
     pub fn star(self, range: TextRange) -> Self {
         Expr::from(ast::ExprStarred {
             value: Box::new(self),
