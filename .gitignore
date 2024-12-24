@@ -85,3 +85,4 @@ pdm.lock
 rustc-ice-*.txt
 
 .env
+.codspeed/
