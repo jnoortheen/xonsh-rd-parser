@@ -6,6 +6,7 @@ pub use int::*;
 pub use node::{AnyNode, AnyNodeRef, AstNode, NodeKind};
 pub use nodes::*;
 
+mod builders;
 pub mod comparable;
 pub mod docstrings;
 mod expression;

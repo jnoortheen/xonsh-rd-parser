@@ -31,6 +31,8 @@ impl From<ast::BoolOp> for ComparableBoolOp {
         match op {
             ast::BoolOp::And => Self::And,
             ast::BoolOp::Or => Self::Or,
+            ast::BoolOp::And2 => Self::And,
+            ast::BoolOp::Or2 => Self::Or,
         }
     }
 }
