@@ -54,31 +54,19 @@ anyhow = { version = "1.0.80" }
 bitflags = { version = "2.5.0" }
 bstr = { version = "1.9.1" }
 compact_str = "0.8.0"
-filetime = { version = "0.2.23" }
-glob = { version = "0.3.1" }
-globset = { version = "0.4.14" }
 insta = { version = "1.35.1" }
 is-macro = { version = "0.3.5" }
 itertools = { version = "0.13.0" }
 memchr = { version = "2.7.1" }
-once_cell = { version = "1.19.0" }
-proc-macro2 = { version = "1.0.79" }
 pyo3 = { version = "0.23.*", features = [
     "abi3-py310",
     "experimental-inspect",
     "num-complex",
 ] }
-quote = { version = "1.0.23" }
-regex = { version = "1.10.2" }
 rustc-hash = { version = "2.0.0" }
 schemars = { version = "0.8.16" }
-seahash = { version = "4.1.0" }
 serde = { version = "1.0.197", features = ["derive"] }
-serde_test = { version = "1.0.152" }
 static_assertions = "1.1.0"
-strum = { version = "0.26.0", features = ["strum_macros"] }
-strum_macros = { version = "0.26.0" }
-syn = { version = "2.0.55" }
 unicode-ident = { version = "1.0.12" }
 unicode_names2 = { version = "1.2.2" }
 unicode-normalization = { version = "0.1.23" }
