@@ -86,3 +86,4 @@ rustc-ice-*.txt
 
 .env
 .codspeed/
+*.patch
