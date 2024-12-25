@@ -71,12 +71,18 @@ impl PyParser {
         PyParser::new(src, Some(path))?.parse(py)
     }
 
-    fn tokens(&self, py: Python<'_>) -> PyResult<Vec<Token>> {
+    #[pyo3(signature = (tolerant=false))]
+    fn tokens(&self, py: Python<'_>, tolerant: Option<bool>) -> PyResult<Vec<Token>> {
         let src = self.src(py)?;
+        let tolerant = tolerant.unwrap_or(false);
         let line_index = LineIndex::from_source_text(src);
         let source_code = SourceCode::new(src, &line_index);
-        let tokens = ruff_python_parser::lex_module(src)
-            .map_err(|err| PyParseError::to_err(err, self.file.as_str(), src))?;
+        let (tokens, err) = ruff_python_parser::lex_module(src);
+        if let Some(err) = err {
+            if !tolerant {
+                return Err(PyParseError::to_err(err, self.file.as_str(), src));
+            }
+        }
 
         let tokens = tokens
             .iter()
@@ -106,7 +112,7 @@ impl PyParser {
         let mincol = mincol.unwrap_or(-1);
         let returnline = returnline.unwrap_or(false);
         let greedy = greedy.unwrap_or(false);
-        let tokens = self.tokens(py).ok().unwrap_or_default();
+        let tokens = self.tokens(py, None).ok().unwrap_or_default();
         let result = if let Some(range) = tokens.find_subproc_line(mincol, maxcol, greedy) {
             let line = format!("![{}]", &src[range]);
 
@@ -129,7 +135,7 @@ impl PyParser {
     /// Splits a string into a list of strings which are whitespace-separated tokens in proc mode.
     fn split(&self, py: Python<'_>) -> PyResult<Vec<String>> {
         let src = self.src(py)?;
-        let result = self.tokens(py)?.split_ws(src);
+        let result = self.tokens(py, Some(true))?.split_ws(src);
         Ok(result)
     }
 }

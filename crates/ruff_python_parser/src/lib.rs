@@ -116,7 +116,7 @@ pub fn parse_module(source: &str) -> Result<Parsed<ModModule>, ParseError> {
         .into_result()
 }
 
-pub fn lex_module(source: &str) -> Result<Vec<Token>, ParseError> {
+pub fn lex_module(source: &str) -> (Vec<Token>, Option<ParseError>) {
     let mut lexer = TokenSource::from_source(source, Mode::Module, TextSize::default());
     loop {
         let kind = lexer.current_kind();
@@ -127,11 +127,11 @@ pub fn lex_module(source: &str) -> Result<Vec<Token>, ParseError> {
     }
     let (tokens, mut errors) = lexer.finish();
     if errors.is_empty() {
-        Ok(tokens)
+        (tokens, None)
     } else {
         let err = errors.pop().unwrap();
         let err = ParseError::from(err);
-        Err(err)
+        (tokens, Some(err))
     }
 }
 

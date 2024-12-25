@@ -8,10 +8,10 @@ from inline_snapshot import snapshot
 LEXER_ARGS = {"lextab": "lexer_test_table", "debug": 0}
 
 
-def lex_input(inp: str):
+def lex_input(inp: str, tolerant=False):
     return [
         (t.kind, f"{t.start}..{t.end}", inp[t.start : t.end])
-        for t in Parser(inp).tokens()
+        for t in Parser(inp).tokens(tolerant=tolerant)
     ][:-1]
 
 
@@ -387,12 +387,8 @@ def test_lexer_split(s, exp):
         '"""',
     ],
 )
-@pytest.mark.skip
 def test_tolerant_lexer(s):
-    tokens = lex_input(
-        s,
-        #   tolerant=True
-    )
+    tokens = lex_input(s, tolerant=True)
 
     error_tokens = list(tok for tok in tokens if tok[0] == "ERRORTOKEN")
     assert all(tok[-1] in s for tok in error_tokens)  # no error messages
