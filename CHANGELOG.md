@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.3.0...v1.4.0) (2024-12-25)
+
+
+### Features
+
+* implement lexer.split ([2947d4c](https://github.com/jnoortheen/xonsh-rd-parser/commit/2947d4c089dc1abbdb2d45272b47a6d2a544ebea))
+* pull changes from ruff-main ([04a8351](https://github.com/jnoortheen/xonsh-rd-parser/commit/04a8351084ab4b9a1f6812b102cb51b86cf70de1))
+* support tolerant lexing ([9654263](https://github.com/jnoortheen/xonsh-rd-parser/commit/965426318b7dec576a6c4b9bb494aaefada26b47))
+
 ## [1.3.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.2.1...v1.3.0) (2024-12-25)
 
 
