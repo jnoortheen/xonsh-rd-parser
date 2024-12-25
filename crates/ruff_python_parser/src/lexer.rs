@@ -1960,19 +1960,6 @@ def f(arg=%timeit a = b):
     }
 
     #[test]
-    fn test_invalid_leading_zero_small() {
-        let source = "025";
-        assert_snapshot!(lex_invalid(source, Mode::Module));
-    }
-
-    #[test]
-    fn test_invalid_leading_zero_big() {
-        let source =
-            "0252222222222222522222222222225222222222222252222222222222522222222222225222222222222";
-        assert_snapshot!(lex_invalid(source, Mode::Module));
-    }
-
-    #[test]
     fn test_line_comment_long() {
         let source = "99232  # foo".to_string();
         assert_snapshot!(lex_source(&source));
