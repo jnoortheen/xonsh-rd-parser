@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.2.1...v1.3.0) (2024-12-25)
+
+
+### Features
+
+* implement call-macros ([10f8b79](https://github.com/jnoortheen/xonsh-rd-parser/commit/10f8b79a5a2ff434614f59c1deb1ef045b6d05e3))
+* implement with macros ([09b7b31](https://github.com/jnoortheen/xonsh-rd-parser/commit/09b7b31159455e866bc0ef16ab6a2659a67b9f2d))
+
+
+### Bug Fixes
+
+* linter errors ([af3344d](https://github.com/jnoortheen/xonsh-rd-parser/commit/af3344dde98c7029d74a53aaf7103a247c0d7cca))
+
 ## [1.2.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.2.0...v1.2.1) (2024-12-24)
 
 
