@@ -593,19 +593,20 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 [[package]]
 name = "ruff_cache"
 version = "0.0.0"
+source = "git+https://github.com/astral-sh/ruff.git#5bc9d6d3aa694ab13f38dd5cf91b713fd3844380"
 dependencies = [
  "filetime",
  "glob",
  "globset",
  "itertools",
  "regex",
- "ruff_macros",
  "seahash",
 ]
 
 [[package]]
 name = "ruff_macros"
 version = "0.0.0"
+source = "git+https://github.com/astral-sh/ruff.git#5bc9d6d3aa694ab13f38dd5cf91b713fd3844380"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -661,6 +662,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_trivia"
 version = "0.0.0"
+source = "git+https://github.com/astral-sh/ruff.git#5bc9d6d3aa694ab13f38dd5cf91b713fd3844380"
 dependencies = [
  "itertools",
  "ruff_source_file",
@@ -671,21 +673,18 @@ dependencies = [
 [[package]]
 name = "ruff_source_file"
 version = "0.0.0"
+source = "git+https://github.com/astral-sh/ruff.git#5bc9d6d3aa694ab13f38dd5cf91b713fd3844380"
 dependencies = [
  "memchr",
- "once_cell",
  "ruff_text_size",
- "serde",
 ]
 
 [[package]]
 name = "ruff_text_size"
 version = "0.0.0"
+source = "git+https://github.com/astral-sh/ruff.git#5bc9d6d3aa694ab13f38dd5cf91b713fd3844380"
 dependencies = [
- "schemars",
  "serde",
- "serde_test",
- "static_assertions",
 ]
 
 [[package]]
@@ -785,15 +784,6 @@ dependencies = [
  "itoa",
  "memchr",
  "ryu",
- "serde",
-]
-
-[[package]]
-name = "serde_test"
-version = "1.0.177"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f901ee573cab6b3060453d2d5f0bae4e6d628c23c0a962ff9b5f1d7c8d4f1ed"
-dependencies = [
  "serde",
 ]
 
