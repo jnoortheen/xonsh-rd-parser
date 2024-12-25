@@ -20,13 +20,7 @@ pub enum StringLiteralPrefix {
 
     /// A "raw" string, that has an `r` or `R` prefix,
     /// e.g. `r"foo\."` or `R'bar\d'`.
-    Raw {
-        uppercase: bool,
-    },
-
-    Regex,
-    Glob,
-    Path,
+    Raw { uppercase: bool },
 }
 
 impl StringLiteralPrefix {
@@ -37,9 +31,6 @@ impl StringLiteralPrefix {
             Self::Unicode => "u",
             Self::Raw { uppercase: true } => "R",
             Self::Raw { uppercase: false } => "r",
-            Self::Regex => "re",
-            Self::Glob => "g",
-            Self::Path => "p",
         }
     }
 }

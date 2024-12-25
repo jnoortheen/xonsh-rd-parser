@@ -1,5 +1,6 @@
 #![allow(clippy::derive_partial_eq_without_eq)]
 
+use std::borrow::Cow;
 use std::fmt;
 use std::fmt::Debug;
 use std::iter::FusedIterator;
@@ -9,7 +10,7 @@ use std::sync::OnceLock;
 
 use bitflags::bitflags;
 use itertools::Itertools;
-use pyo3::pyclass;
+
 use ruff_text_size::{Ranged, TextLen, TextRange, TextSize};
 
 use crate::name::Name;
@@ -28,7 +29,6 @@ pub enum Mod {
 }
 
 /// See also [Module](https://docs.python.org/3/library/ast.html#ast.Module)
-#[pyclass]
 #[derive(Clone, Debug, PartialEq)]
 pub struct ModModule {
     pub range: TextRange,
@@ -111,7 +111,7 @@ pub enum Stmt {
     IpyEscapeCommand(StmtIpyEscapeCommand),
 }
 
-/// An AST node used to represent a `IPython` escape command at the statement level.
+/// An AST node used to represent a IPython escape command at the statement level.
 ///
 /// For example,
 /// ```python
@@ -120,7 +120,7 @@ pub enum Stmt {
 ///
 /// ## Terminology
 ///
-/// Escape commands are special `IPython` syntax which starts with a token to identify
+/// Escape commands are special IPython syntax which starts with a token to identify
 /// the escape kind followed by the command value itself. [Escape kind] are the kind
 /// of escape commands that are recognized by the token: `%`, `%%`, `!`, `!!`,
 /// `?`, `??`, `/`, `;`, and `,`.
@@ -664,7 +664,7 @@ impl Expr {
     }
 }
 
-/// An AST node used to represent a `IPython` escape command at the expression level.
+/// An AST node used to represent a IPython escape command at the expression level.
 ///
 /// For example,
 /// ```python
@@ -857,6 +857,27 @@ impl ExprDict {
     pub fn value(&self, n: usize) -> &Expr {
         self.items[n].value()
     }
+
+    pub fn iter(&self) -> std::slice::Iter<'_, DictItem> {
+        self.items.iter()
+    }
+
+    pub fn len(&self) -> usize {
+        self.items.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.items.is_empty()
+    }
+}
+
+impl<'a> IntoIterator for &'a ExprDict {
+    type IntoIter = std::slice::Iter<'a, DictItem>;
+    type Item = &'a DictItem;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
 }
 
 impl From<ExprDict> for Expr {
@@ -954,6 +975,29 @@ impl ExactSizeIterator for DictValueIterator<'_> {}
 pub struct ExprSet {
     pub range: TextRange,
     pub elts: Vec<Expr>,
+}
+
+impl ExprSet {
+    pub fn iter(&self) -> std::slice::Iter<'_, Expr> {
+        self.elts.iter()
+    }
+
+    pub fn len(&self) -> usize {
+        self.elts.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.elts.is_empty()
+    }
+}
+
+impl<'a> IntoIterator for &'a ExprSet {
+    type IntoIter = std::slice::Iter<'a, Expr>;
+    type Item = &'a Expr;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
 }
 
 impl From<ExprSet> for Expr {
@@ -1229,6 +1273,15 @@ impl FStringValue {
         matches!(self.inner, FStringValueInner::Concatenated(_))
     }
 
+    /// Returns the single [`FString`] if the f-string isn't implicitly concatenated, [`None`]
+    /// otherwise.
+    pub fn as_single(&self) -> Option<&FString> {
+        match &self.inner {
+            FStringValueInner::Single(FStringPart::FString(fstring)) => Some(fstring),
+            _ => None,
+        }
+    }
+
     /// Returns a slice of all the [`FStringPart`]s contained in this value.
     pub fn as_slice(&self) -> &[FStringPart] {
         match &self.inner {
@@ -1252,7 +1305,7 @@ impl FStringValue {
 
     /// Returns an iterator over all the [`FStringPart`]s contained in this value
     /// that allows modification.
-    pub(crate) fn iter_mut(&mut self) -> IterMut<FStringPart> {
+    pub fn iter_mut(&mut self) -> IterMut<FStringPart> {
         self.as_mut_slice().iter_mut()
     }
 
@@ -1679,24 +1732,7 @@ impl StringLiteralValue {
     pub fn is_unicode(&self) -> bool {
         self.iter()
             .next()
-            .is_some_and(|part| part.flags.prefix().is_unicode())
-    }
-
-    /// Returns `true` if the string literal is a path string.
-    pub fn is_path(&self) -> bool {
-        self.iter()
-            .next()
-            .is_some_and(|part| part.flags.prefix().is_path())
-    }
-    pub fn is_glob(&self) -> bool {
-        self.iter()
-            .next()
-            .is_some_and(|part| part.flags.prefix().is_glob())
-    }
-    pub fn is_regex(&self) -> bool {
-        self.iter()
-            .next()
-            .is_some_and(|part| part.flags.prefix().is_regex())
+            .map_or(false, |part| part.flags.prefix().is_unicode())
     }
 
     /// Returns a slice of all the [`StringLiteral`] parts contained in this value.
@@ -1722,7 +1758,7 @@ impl StringLiteralValue {
 
     /// Returns an iterator over all the [`StringLiteral`] parts contained in this value
     /// that allows modification.
-    pub(crate) fn iter_mut(&mut self) -> IterMut<StringLiteral> {
+    pub fn iter_mut(&mut self) -> IterMut<StringLiteral> {
         self.as_mut_slice().iter_mut()
     }
 
@@ -1805,7 +1841,7 @@ impl Default for StringLiteralValueInner {
 
 bitflags! {
     #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, Hash)]
-    struct StringLiteralFlagsInner: u16 {
+    struct StringLiteralFlagsInner: u8 {
         /// The string uses double quotes (e.g. `"foo"`).
         /// If this flag is not set, the string uses single quotes (`'foo'`).
         const DOUBLE = 1 << 0;
@@ -1835,10 +1871,6 @@ bitflags! {
 
         /// The string was deemed invalid by the parser.
         const INVALID = 1 << 5;
-
-        const REGEX = 1 << 6;
-        const GLOB = 1 << 7;
-        const PATH = 1 << 8;
     }
 }
 
@@ -1869,9 +1901,6 @@ impl StringLiteralFlags {
                 flags
                     - StringLiteralFlagsInner::R_PREFIX_LOWER
                     - StringLiteralFlagsInner::R_PREFIX_UPPER
-                    - StringLiteralFlagsInner::REGEX
-                    - StringLiteralFlagsInner::GLOB
-                    - StringLiteralFlagsInner::PATH
                     - StringLiteralFlagsInner::U_PREFIX,
             ),
             StringLiteralPrefix::Raw { uppercase: false } => Self(
@@ -1889,9 +1918,6 @@ impl StringLiteralFlags {
                     - StringLiteralFlagsInner::R_PREFIX_LOWER
                     - StringLiteralFlagsInner::R_PREFIX_UPPER,
             ),
-            StringLiteralPrefix::Regex => Self(flags | StringLiteralFlagsInner::REGEX),
-            StringLiteralPrefix::Glob => Self(flags | StringLiteralFlagsInner::GLOB),
-            StringLiteralPrefix::Path => Self(flags | StringLiteralFlagsInner::PATH),
         }
     }
 
@@ -1908,12 +1934,6 @@ impl StringLiteralFlags {
                     .union(StringLiteralFlagsInner::R_PREFIX_UPPER)
             ));
             StringLiteralPrefix::Unicode
-        } else if self.0.contains(StringLiteralFlagsInner::PATH) {
-            StringLiteralPrefix::Path
-        } else if self.0.contains(StringLiteralFlagsInner::GLOB) {
-            StringLiteralPrefix::Glob
-        } else if self.0.contains(StringLiteralFlagsInner::REGEX) {
-            StringLiteralPrefix::Regex
         } else if self.0.contains(StringLiteralFlagsInner::R_PREFIX_LOWER) {
             debug_assert!(!self.0.contains(StringLiteralFlagsInner::R_PREFIX_UPPER));
             StringLiteralPrefix::Raw { uppercase: false }
@@ -2037,7 +2057,7 @@ impl PartialEq for ConcatenatedStringLiteral {
         // The `zip` here is safe because we have checked the length of both parts.
         self.strings
             .iter()
-            .zip(other.strings.iter())
+            .zip(&other.strings)
             .all(|(s1, s2)| s1 == s2)
     }
 }
@@ -2127,7 +2147,7 @@ impl BytesLiteralValue {
 
     /// Returns an iterator over all the [`BytesLiteral`] parts contained in this value
     /// that allows modification.
-    pub(crate) fn iter_mut(&mut self) -> IterMut<BytesLiteral> {
+    pub fn iter_mut(&mut self) -> IterMut<BytesLiteral> {
         self.as_mut_slice().iter_mut()
     }
 
@@ -2173,6 +2193,22 @@ impl PartialEq<[u8]> for BytesLiteralValue {
         self.bytes()
             .zip(other.iter().copied())
             .all(|(b1, b2)| b1 == b2)
+    }
+}
+
+impl<'a> From<&'a BytesLiteralValue> for Cow<'a, [u8]> {
+    fn from(value: &'a BytesLiteralValue) -> Self {
+        match &value.inner {
+            BytesLiteralValueInner::Single(BytesLiteral {
+                value: bytes_value, ..
+            }) => Cow::from(bytes_value.as_ref()),
+            BytesLiteralValueInner::Concatenated(bytes_literal_vec) => Cow::Owned(
+                bytes_literal_vec
+                    .iter()
+                    .flat_map(|bytes_literal| bytes_literal.value.to_vec())
+                    .collect::<Vec<u8>>(),
+            ),
+        }
     }
 }
 
@@ -2366,7 +2402,7 @@ bitflags! {
     /// prefix flags is by calling the `as_flags()` method on the
     /// `StringPrefix` enum.
     #[derive(Default, Debug, Copy, Clone, PartialEq, Eq, Hash)]
-    struct AnyStringFlagsInner: u16 {
+    struct AnyStringFlagsInner: u8 {
         /// The string uses double quotes (`"`).
         /// If this flag is not set, the string uses single quotes (`'`).
         const DOUBLE = 1 << 0;
@@ -2404,13 +2440,6 @@ bitflags! {
         /// for why we track the casing of the `r` prefix,
         /// but not for any other prefix
         const R_PREFIX_UPPER = 1 << 6;
-
-        /// path strings
-        const PATH_PREFIX = 1 << 7;
-        /// glob strings
-        const GLOB_PREFIX = 1 << 8;
-        /// backticks
-        const RE_PREFIX = 1 << 9;
     }
 }
 
@@ -2430,9 +2459,6 @@ impl AnyStringFlags {
             AnyStringPrefix::Regular(StringLiteralPrefix::Raw { uppercase: true }) => {
                 AnyStringFlagsInner::R_PREFIX_UPPER
             }
-            AnyStringPrefix::Regular(StringLiteralPrefix::Regex) => AnyStringFlagsInner::RE_PREFIX,
-            AnyStringPrefix::Regular(StringLiteralPrefix::Glob) => AnyStringFlagsInner::GLOB_PREFIX,
-            AnyStringPrefix::Regular(StringLiteralPrefix::Path) => AnyStringFlagsInner::PATH_PREFIX,
 
             // bytestrings
             AnyStringPrefix::Bytes(ByteStringPrefix::Regular) => AnyStringFlagsInner::B_PREFIX,
@@ -2553,16 +2579,6 @@ impl StringFlags for AnyStringFlags {
         if flags.contains(AnyStringFlagsInner::U_PREFIX) {
             return AnyStringPrefix::Regular(StringLiteralPrefix::Unicode);
         }
-        if flags.contains(AnyStringFlagsInner::RE_PREFIX) {
-            return AnyStringPrefix::Regular(StringLiteralPrefix::Regex);
-        }
-        if flags.contains(AnyStringFlagsInner::PATH_PREFIX) {
-            return AnyStringPrefix::Regular(StringLiteralPrefix::Path);
-        }
-        if flags.contains(AnyStringFlagsInner::GLOB_PREFIX) {
-            return AnyStringPrefix::Regular(StringLiteralPrefix::Glob);
-        }
-
         AnyStringPrefix::Regular(StringLiteralPrefix::Empty)
     }
 }
@@ -2813,6 +2829,29 @@ pub struct ExprList {
     pub ctx: ExprContext,
 }
 
+impl ExprList {
+    pub fn iter(&self) -> std::slice::Iter<'_, Expr> {
+        self.elts.iter()
+    }
+
+    pub fn len(&self) -> usize {
+        self.elts.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.elts.is_empty()
+    }
+}
+
+impl<'a> IntoIterator for &'a ExprList {
+    type IntoIter = std::slice::Iter<'a, Expr>;
+    type Item = &'a Expr;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
 impl From<ExprList> for Expr {
     fn from(payload: ExprList) -> Self {
         Expr::List(payload)
@@ -2828,6 +2867,29 @@ pub struct ExprTuple {
 
     /// Whether the tuple is parenthesized in the source code.
     pub parenthesized: bool,
+}
+
+impl ExprTuple {
+    pub fn iter(&self) -> std::slice::Iter<'_, Expr> {
+        self.elts.iter()
+    }
+
+    pub fn len(&self) -> usize {
+        self.elts.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.elts.is_empty()
+    }
+}
+
+impl<'a> IntoIterator for &'a ExprTuple {
+    type IntoIter = std::slice::Iter<'a, Expr>;
+    type Item = &'a Expr;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
 }
 
 impl From<ExprTuple> for Expr {
@@ -2865,17 +2927,13 @@ pub enum ExprContext {
 pub enum BoolOp {
     And,
     Or,
-    And2,
-    Or2,
 }
 
 impl BoolOp {
     pub const fn as_str(&self) -> &'static str {
         match self {
             BoolOp::And => "and",
-            BoolOp::And2 => "&&",
             BoolOp::Or => "or",
-            BoolOp::Or2 => "||",
         }
     }
 }
@@ -2920,6 +2978,63 @@ impl Operator {
             Operator::BitXor => "^",
             Operator::BitAnd => "&",
             Operator::FloorDiv => "//",
+        }
+    }
+
+    /// Returns the dunder method name for the operator.
+    pub const fn dunder(self) -> &'static str {
+        match self {
+            Operator::Add => "__add__",
+            Operator::Sub => "__sub__",
+            Operator::Mult => "__mul__",
+            Operator::MatMult => "__matmul__",
+            Operator::Div => "__truediv__",
+            Operator::Mod => "__mod__",
+            Operator::Pow => "__pow__",
+            Operator::LShift => "__lshift__",
+            Operator::RShift => "__rshift__",
+            Operator::BitOr => "__or__",
+            Operator::BitXor => "__xor__",
+            Operator::BitAnd => "__and__",
+            Operator::FloorDiv => "__floordiv__",
+        }
+    }
+
+    /// Returns the in-place dunder method name for the operator.
+    pub const fn in_place_dunder(self) -> &'static str {
+        match self {
+            Operator::Add => "__iadd__",
+            Operator::Sub => "__isub__",
+            Operator::Mult => "__imul__",
+            Operator::MatMult => "__imatmul__",
+            Operator::Div => "__itruediv__",
+            Operator::Mod => "__imod__",
+            Operator::Pow => "__ipow__",
+            Operator::LShift => "__ilshift__",
+            Operator::RShift => "__irshift__",
+            Operator::BitOr => "__ior__",
+            Operator::BitXor => "__ixor__",
+            Operator::BitAnd => "__iand__",
+            Operator::FloorDiv => "__ifloordiv__",
+        }
+    }
+
+    /// Returns the reflected dunder method name for the operator.
+    pub const fn reflected_dunder(self) -> &'static str {
+        match self {
+            Operator::Add => "__radd__",
+            Operator::Sub => "__rsub__",
+            Operator::Mult => "__rmul__",
+            Operator::MatMult => "__rmatmul__",
+            Operator::Div => "__rtruediv__",
+            Operator::Mod => "__rmod__",
+            Operator::Pow => "__rpow__",
+            Operator::LShift => "__rlshift__",
+            Operator::RShift => "__rrshift__",
+            Operator::BitOr => "__ror__",
+            Operator::BitXor => "__rxor__",
+            Operator::BitAnd => "__rand__",
+            Operator::FloorDiv => "__rfloordiv__",
         }
     }
 }
@@ -2984,6 +3099,22 @@ impl CmpOp {
             CmpOp::IsNot => "is not",
             CmpOp::In => "in",
             CmpOp::NotIn => "not in",
+        }
+    }
+
+    #[must_use]
+    pub const fn negate(&self) -> Self {
+        match self {
+            CmpOp::Eq => CmpOp::NotEq,
+            CmpOp::NotEq => CmpOp::Eq,
+            CmpOp::Lt => CmpOp::GtE,
+            CmpOp::LtE => CmpOp::Gt,
+            CmpOp::Gt => CmpOp::LtE,
+            CmpOp::GtE => CmpOp::Lt,
+            CmpOp::Is => CmpOp::IsNot,
+            CmpOp::IsNot => CmpOp::Is,
+            CmpOp::In => CmpOp::NotIn,
+            CmpOp::NotIn => CmpOp::In,
         }
     }
 }
@@ -3088,6 +3219,29 @@ impl Pattern {
             Pattern::MatchAs(PatternMatchAs { pattern: None, .. }) => true,
             Pattern::MatchOr(PatternMatchOr { patterns, .. }) => {
                 patterns.iter().any(Pattern::is_irrefutable)
+            }
+            _ => false,
+        }
+    }
+
+    /// Checks if the [`Pattern`] is a [wildcard pattern].
+    ///
+    /// The following are wildcard patterns:
+    /// ```python
+    /// match subject:
+    ///     case _ as x: ...
+    ///     case _ | _: ...
+    ///     case _: ...
+    /// ```
+    ///
+    /// [wildcard pattern]: https://docs.python.org/3/reference/compound_stmts.html#wildcard-patterns
+    pub fn is_wildcard(&self) -> bool {
+        match self {
+            Pattern::MatchAs(PatternMatchAs { pattern, .. }) => {
+                pattern.as_deref().map_or(true, Pattern::is_wildcard)
+            }
+            Pattern::MatchOr(PatternMatchOr { patterns, .. }) => {
+                patterns.iter().all(Pattern::is_wildcard)
             }
             _ => false,
         }
@@ -3230,6 +3384,24 @@ pub enum TypeParam {
     TypeVar(TypeParamTypeVar),
     ParamSpec(TypeParamParamSpec),
     TypeVarTuple(TypeParamTypeVarTuple),
+}
+
+impl TypeParam {
+    pub const fn name(&self) -> &Identifier {
+        match self {
+            Self::TypeVar(x) => &x.name,
+            Self::ParamSpec(x) => &x.name,
+            Self::TypeVarTuple(x) => &x.name,
+        }
+    }
+
+    pub fn default(&self) -> Option<&Expr> {
+        match self {
+            Self::TypeVar(x) => x.default.as_deref(),
+            Self::ParamSpec(x) => x.default.as_deref(),
+            Self::TypeVarTuple(x) => x.default.as_deref(),
+        }
+    }
 }
 
 /// See also [TypeVar](https://docs.python.org/3/library/ast.html#ast.TypeVar)
@@ -3552,6 +3724,14 @@ impl<'a> IntoIterator for &'a Parameters {
     }
 }
 
+impl<'a> IntoIterator for &'a Box<Parameters> {
+    type IntoIter = ParametersIterator<'a>;
+    type Item = AnyParameterRef<'a>;
+    fn into_iter(self) -> Self::IntoIter {
+        (&**self).into_iter()
+    }
+}
+
 /// An alternative type of AST `arg`. This is used for each function argument that might have a default value.
 /// Used by `Arguments` original type.
 ///
@@ -3726,7 +3906,7 @@ impl Deref for TypeParams {
 /// See: <https://docs.python.org/3/reference/compound_stmts.html#grammar-token-python-grammar-suite>
 pub type Suite = Vec<Stmt>;
 
-/// The kind of escape command as defined in [IPython Syntax] in the `IPython` codebase.
+/// The kind of escape command as defined in [IPython Syntax] in the IPython codebase.
 ///
 /// [IPython Syntax]: https://github.com/ipython/ipython/blob/635815e8f1ded5b764d66cacc80bbe25e9e2587f/IPython/core/inputtransformer2.py#L335-L343
 #[derive(PartialEq, Eq, Debug, Clone, Hash, Copy)]
@@ -3899,7 +4079,7 @@ impl Ranged for Identifier {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Singleton {
     None,
     True,
