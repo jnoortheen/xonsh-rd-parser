@@ -3,7 +3,7 @@ use ruff_source_file::{LineIndex, OneIndexed, SourceCode, SourceLocation};
 use ruff_text_size::TextRange;
 use std::fmt::Formatter;
 
-use crate::location::HasLocation;
+use crate::location::HasSrcLocation;
 use annotate_snippets::display_list::{DisplayList, FormatOptions};
 use annotate_snippets::snippet::{AnnotationType, Slice, Snippet, SourceAnnotation};
 use pyo3::exceptions::PySyntaxError;
@@ -31,7 +31,7 @@ pub(crate) struct CodeFrame<'a> {
     error: &'a ParseErrorType,
     source: &'a SourceCode<'a, 'a>,
 }
-impl HasLocation for CodeFrame<'_> {
+impl HasSrcLocation for CodeFrame<'_> {
     fn start(&self) -> SourceLocation {
         self.source.source_location(self.range.start())
     }

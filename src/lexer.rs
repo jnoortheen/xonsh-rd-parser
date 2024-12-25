@@ -1,4 +1,4 @@
-use crate::location::{HasKind, HasLocation};
+use crate::location::{HasKind, HasSrcLocation, PrefixSuffixChecks};
 use bon::bon;
 use pyo3::prelude::*;
 use pyo3::types::PyString;
@@ -58,7 +58,7 @@ impl HasKind for Token {
     }
 }
 
-impl HasLocation for Token {
+impl HasSrcLocation for Token {
     fn start(&self) -> SourceLocation {
         self.location.start.clone()
     }
@@ -114,7 +114,8 @@ impl Ranged for Token {
 }
 
 pub trait LexerExt {
-    fn find_subproc_line(&mut self, mincol: i64, maxcol: usize, greedy: bool) -> Option<TextRange>;
+    fn find_subproc_line(&self, mincol: i64, maxcol: usize, greedy: bool) -> Option<TextRange>;
+    fn split_ws(&self, src: &str) -> Vec<String>;
 }
 
 struct SmallToken {
@@ -126,110 +127,14 @@ impl Ranged for SmallToken {
         self.range
     }
 }
-impl SmallToken {
-    fn has_suffix(&self, suffix: Option<&Self>) -> bool {
-        if let Some(next) = suffix {
-            return next.start() == self.end();
-        }
-        false
-    }
-    fn has_prefix(&self, prefix: Option<&Self>) -> bool {
-        if let Some(prefix) = prefix {
-            return prefix.end() == self.start();
-        }
-        false
-    }
-}
+
 impl LexerExt for Vec<Token> {
     /// Encapsulates tokens in a source code line in an uncaptured
     // subprocess ![] starting at a minimum column. If there are no tokens
     // (ie in a comment line) this returns None. If greedy is True, it will encapsulate
     // normal parentheses. Greedy is False by default.
-    fn find_subproc_line(&mut self, mincol: i64, maxcol: usize, greedy: bool) -> Option<TextRange> {
-        let mut toks: Vec<SmallToken> = Vec::new();
-        let mut lparens = Vec::new();
-        let mut saw_macro = false;
-
-        let mut iterator = self.iter().peekable();
-        while let Some(token) = iterator.next() {
-            let tok = token.kind;
-            let pos = token.get_start();
-
-            if pos >= maxcol && !tok.is_proc_end() {
-                break;
-            }
-
-            if tok == TokenKind::Comment {
-                break;
-            }
-
-            if !saw_macro && tok.is_macro() {
-                saw_macro = true;
-            }
-
-            if saw_macro && !tok.is_macro_end() {
-                let start = token.range.start();
-                let end = handle_macro_tokens(&mut iterator, token.range.end());
-
-                let range = TextRange::new(start, end);
-                let new_token = SmallToken {
-                    kind: TokenKind::String,
-                    range,
-                };
-                toks.push(new_token);
-                continue;
-            }
-
-            if tok.is_open_paren() {
-                lparens.push(tok);
-            }
-
-            if greedy && !lparens.is_empty() && lparens.contains(&TokenKind::Lpar) {
-                toks.push(token.small());
-                if tok.is_rparen() {
-                    lparens.pop();
-                }
-                continue;
-            }
-
-            if let Some(last) = toks.last() {
-                if last.kind.is_proc_end() {
-                    if last.is_combinator() && last.has_suffix(Some(&token.small())) {
-                        // pass
-                    } else if is_not_lparen_and_rparen(&lparens, &last.kind) {
-                        lparens.pop();
-                    } else if pos < maxcol && !tok.is_macro_end() {
-                        if !greedy {
-                            toks.clear();
-                        }
-                        if tok.is_beg_skip() {
-                            continue;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-            } else if tok.is_beg_skip() {
-                continue;
-            }
-
-            if (pos as i64) < mincol {
-                continue;
-            }
-
-            toks.push(token.small());
-
-            // if tok.type_ == "WS" && tok.value == "\\" {
-            //     continue;
-            // }
-            if matches!(tok, TokenKind::Newline | TokenKind::Dedent) {
-                break;
-            }
-            // if matches!(tok, TokenKind::Dedent) {
-            //     tok = handle_dedent_token(&mut toks, tok); //Needs Mutability fix
-            //     break;
-            // }
-        }
+    fn find_subproc_line(&self, mincol: i64, maxcol: usize, greedy: bool) -> Option<TextRange> {
+        let (mut toks, lparens) = split_tokens(self, mincol, maxcol, greedy);
 
         if let Some(last) = toks.last() {
             if last.kind.is_any_newline() {
@@ -255,6 +160,32 @@ impl LexerExt for Vec<Token> {
         }
 
         None
+    }
+    fn split_ws(&self, src: &str) -> Vec<String> {
+        let mut spans = vec![];
+        let mut iterator = self.iter().skip_while(|t| t.kind.is_any_newline());
+        if let Some(head) = iterator.next() {
+            let mut previous = head.range();
+            for current in iterator {
+                if current.kind.is_any_newline() {
+                    continue;
+                }
+                if previous.has_suffix(Some(&current.range())) {
+                    previous = TextRange::new(previous.start(), current.range().end());
+                } else {
+                    spans.push(previous);
+                    previous = current.range();
+                }
+            }
+            spans.push(previous);
+        }
+        spans
+            .iter()
+            .map(|t| {
+                let value = &src[t.range()];
+                value.to_string()
+            })
+            .collect()
     }
 }
 
@@ -288,4 +219,97 @@ fn handle_macro_tokens<'a, I: Iterator<Item = &'a Token>>(
         }
     }
     end
+}
+
+fn split_tokens(
+    tokens: &[Token],
+    mincol: i64,
+    maxcol: usize,
+    greedy: bool,
+) -> (Vec<SmallToken>, Vec<TokenKind>) {
+    let mut toks: Vec<SmallToken> = Vec::new();
+    let mut lparens = Vec::new();
+    let mut saw_macro = false;
+
+    let mut iterator = tokens.iter().peekable();
+    while let Some(token) = iterator.next() {
+        let tok = token.kind;
+        let pos = token.get_start();
+
+        if pos >= maxcol && !tok.is_proc_end() {
+            break;
+        }
+
+        if tok == TokenKind::Comment {
+            break;
+        }
+
+        if !saw_macro && tok.is_macro() {
+            saw_macro = true;
+        }
+
+        if saw_macro && !tok.is_macro_end() {
+            let start = token.range.start();
+            let end = handle_macro_tokens(&mut iterator, token.range.end());
+
+            let range = TextRange::new(start, end);
+            let new_token = SmallToken {
+                kind: TokenKind::String,
+                range,
+            };
+            toks.push(new_token);
+            continue;
+        }
+
+        if tok.is_open_paren() {
+            lparens.push(tok);
+        }
+
+        if greedy && !lparens.is_empty() && lparens.contains(&TokenKind::Lpar) {
+            toks.push(token.small());
+            if tok.is_rparen() {
+                lparens.pop();
+            }
+            continue;
+        }
+
+        if let Some(last) = toks.last() {
+            if last.kind.is_proc_end() {
+                if last.is_combinator() && last.has_suffix(Some(&token.small())) {
+                    // pass
+                } else if is_not_lparen_and_rparen(&lparens, &last.kind) {
+                    lparens.pop();
+                } else if pos < maxcol && !tok.is_macro_end() {
+                    if !greedy {
+                        toks.clear();
+                    }
+                    if tok.is_beg_skip() {
+                        continue;
+                    }
+                } else {
+                    break;
+                }
+            }
+        } else if tok.is_beg_skip() {
+            continue;
+        }
+
+        if (pos as i64) < mincol {
+            continue;
+        }
+
+        toks.push(token.small());
+
+        // if tok.type_ == "WS" && tok.value == "\\" {
+        //     continue;
+        // }
+        if matches!(tok, TokenKind::Newline | TokenKind::Dedent) {
+            break;
+        }
+        // if matches!(tok, TokenKind::Dedent) {
+        //     tok = handle_dedent_token(&mut toks, tok); //Needs Mutability fix
+        //     break;
+        // }
+    }
+    (toks, lparens)
 }

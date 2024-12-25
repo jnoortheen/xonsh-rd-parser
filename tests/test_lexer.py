@@ -367,10 +367,8 @@ def test_regex_globs():
         ("echo --go=$HOME", ["echo", "--go=$HOME"]),
     ],
 )
-@pytest.mark.skip
 def test_lexer_split(s, exp):
-    lexer = lex_input(s)
-    obs = lexer.split(s)  # type: ignore
+    obs = Parser(s).split()
     assert exp == obs
 
 

@@ -1,7 +1,8 @@
 use ruff_python_parser::TokenKind;
 use ruff_source_file::SourceLocation;
+use ruff_text_size::Ranged;
 
-pub(crate) trait HasLocation {
+pub(crate) trait HasSrcLocation {
     fn start(&self) -> SourceLocation;
     fn end(&self) -> SourceLocation;
     fn lineno(&self) -> usize {
@@ -54,3 +55,20 @@ pub(crate) trait HasKind {
         matches!(self.kind(), TokenKind::And | TokenKind::Or)
     }
 }
+
+pub(crate) trait PrefixSuffixChecks: Ranged {
+    fn has_suffix(&self, suffix: Option<&Self>) -> bool {
+        if let Some(next) = suffix {
+            return next.start() == self.end();
+        }
+        false
+    }
+    fn has_prefix(&self, prefix: Option<&Self>) -> bool {
+        if let Some(prefix) = prefix {
+            return prefix.end() == self.start();
+        }
+        false
+    }
+}
+
+impl<T: Ranged> PrefixSuffixChecks for T {}
