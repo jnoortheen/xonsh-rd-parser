@@ -224,3 +224,6 @@ with_macros:
       with! x as y:
           pass
     exp: "with __xonsh__.enter_macro(x, 'pass', globals(), locals()) as y:\n    pass"
+_subshell:
+  - exp: "__xonsh__.subproc_captured_hiddenobject(['xonsh', '-c', 'cd path; ls; cd\\n'])"
+    inp: "!(cd path; ls; cd)"
