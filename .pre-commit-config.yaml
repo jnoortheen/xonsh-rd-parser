@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.7.0"
+    rev: "v0.8.4"
     hooks:
       - id: ruff
         args: [., --fix, --exit-non-zero-on-fix]
@@ -8,13 +8,6 @@ repos:
       - id: ruff-format
         args: [.]
         pass_filenames: false
-
-  # - repo: https://github.com/pre-commit/mirrors-mypy
-  #   rev: "v1.12.1" # Use the sha / tag you want to point at
-  #   hooks:
-  #     - id: mypy
-  #       pass_filenames: false
-  #       args: ["--config-file=pyproject.toml"]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: "v5.0.0"
@@ -28,7 +21,7 @@ repos:
       - id: check-added-large-files
 
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: "v3.6.0"
+    rev: "v4.0.0"
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
