@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.4.0...v1.4.1) (2024-12-29)
+
+
+### Bug Fixes
+
+* clippy warnings ([c7297de](https://github.com/jnoortheen/xonsh-rd-parser/commit/c7297de8b1c9a86b5b7c89afdd39da0f4976e993))
+
 ## [1.4.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.3.0...v1.4.0) (2024-12-25)
 
 
