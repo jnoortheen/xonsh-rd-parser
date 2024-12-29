@@ -111,7 +111,7 @@ pub enum Stmt {
     IpyEscapeCommand(StmtIpyEscapeCommand),
 }
 
-/// An AST node used to represent a IPython escape command at the statement level.
+/// An AST node used to represent a `IPython` escape command at the statement level.
 ///
 /// For example,
 /// ```python
@@ -120,7 +120,7 @@ pub enum Stmt {
 ///
 /// ## Terminology
 ///
-/// Escape commands are special IPython syntax which starts with a token to identify
+/// Escape commands are special `IPython` syntax which starts with a token to identify
 /// the escape kind followed by the command value itself. [Escape kind] are the kind
 /// of escape commands that are recognized by the token: `%`, `%%`, `!`, `!!`,
 /// `?`, `??`, `/`, `;`, and `,`.
@@ -664,7 +664,7 @@ impl Expr {
     }
 }
 
-/// An AST node used to represent a IPython escape command at the expression level.
+/// An AST node used to represent a `IPython` escape command at the expression level.
 ///
 /// For example,
 /// ```python
@@ -1732,24 +1732,24 @@ impl StringLiteralValue {
     pub fn is_unicode(&self) -> bool {
         self.iter()
             .next()
-            .map_or(false, |part| part.flags.prefix().is_unicode())
+            .is_some_and(|part| part.flags.prefix().is_unicode())
     }
 
     /// Returns `true` if the string literal is a path string.
     pub fn is_path(&self) -> bool {
         self.iter()
             .next()
-            .map_or(false, |part| part.flags.prefix().is_path())
+            .is_some_and(|part| part.flags.prefix().is_path())
     }
     pub fn is_glob(&self) -> bool {
         self.iter()
             .next()
-            .map_or(false, |part| part.flags.prefix().is_glob())
+            .is_some_and(|part| part.flags.prefix().is_glob())
     }
     pub fn is_regex(&self) -> bool {
         self.iter()
             .next()
-            .map_or(false, |part| part.flags.prefix().is_regex())
+            .is_some_and(|part| part.flags.prefix().is_regex())
     }
 
     /// Returns a slice of all the [`StringLiteral`] parts contained in this value.
@@ -3963,7 +3963,7 @@ impl Deref for TypeParams {
 /// See: <https://docs.python.org/3/reference/compound_stmts.html#grammar-token-python-grammar-suite>
 pub type Suite = Vec<Stmt>;
 
-/// The kind of escape command as defined in [IPython Syntax] in the IPython codebase.
+/// The kind of escape command as defined in [IPython Syntax] in the `IPython` codebase.
 ///
 /// [IPython Syntax]: https://github.com/ipython/ipython/blob/635815e8f1ded5b764d66cacc80bbe25e9e2587f/IPython/core/inputtransformer2.py#L335-L343
 #[derive(PartialEq, Eq, Debug, Clone, Hash, Copy)]
