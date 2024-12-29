@@ -227,37 +227,26 @@ fn split_tokens(
     maxcol: usize,
     greedy: bool,
 ) -> (Vec<SmallToken>, Vec<TokenKind>) {
-    let mut toks: Vec<SmallToken> = Vec::new();
+    let mut toks = Vec::new();
     let mut lparens = Vec::new();
-    let mut saw_macro = false;
-
     let mut iterator = tokens.iter().peekable();
+
     while let Some(token) = iterator.next() {
         let tok = token.kind;
         let pos = token.get_start();
 
-        if pos >= maxcol && !tok.is_proc_end() {
+        if pos >= maxcol && !tok.is_proc_end() || tok == TokenKind::Comment {
             break;
         }
 
-        if tok == TokenKind::Comment {
-            break;
-        }
-
-        if !saw_macro && tok.is_macro() {
-            saw_macro = true;
-        }
-
-        if saw_macro && !tok.is_macro_end() {
-            let start = token.range.start();
-            let end = handle_macro_tokens(&mut iterator, token.range.end());
-
-            let range = TextRange::new(start, end);
-            let new_token = SmallToken {
+        if tok.is_macro() {
+            toks.push(SmallToken {
                 kind: TokenKind::String,
-                range,
-            };
-            toks.push(new_token);
+                range: TextRange::new(
+                    token.range.start(),
+                    handle_macro_tokens(&mut iterator, token.range.end()),
+                ),
+            });
             continue;
         }
 
@@ -265,7 +254,7 @@ fn split_tokens(
             lparens.push(tok);
         }
 
-        if greedy && !lparens.is_empty() && lparens.contains(&TokenKind::Lpar) {
+        if greedy && lparens.contains(&TokenKind::Lpar) {
             toks.push(token.small());
             if tok.is_rparen() {
                 lparens.pop();
@@ -300,16 +289,10 @@ fn split_tokens(
 
         toks.push(token.small());
 
-        // if tok.type_ == "WS" && tok.value == "\\" {
-        //     continue;
-        // }
         if matches!(tok, TokenKind::Newline | TokenKind::Dedent) {
             break;
         }
-        // if matches!(tok, TokenKind::Dedent) {
-        //     tok = handle_dedent_token(&mut toks, tok); //Needs Mutability fix
-        //     break;
-        // }
     }
+
     (toks, lparens)
 }
