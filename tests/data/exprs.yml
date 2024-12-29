@@ -225,5 +225,18 @@ with_macros:
           pass
     exp: "with __xonsh__.enter_macro(x, 'pass', globals(), locals()) as y:\n    pass"
 _subshell:
-  - exp: "__xonsh__.subproc_captured_hiddenobject(['xonsh', '-c', 'cd path; ls; cd\\n'])"
-    inp: "!(cd path; ls; cd)"
+  - inp: "![(cat)]"
+    exp: "__xonsh__.cmd(['xonsh', '-c', 'cat\\n']).hide()"
+  - inp: "![(cat;)]"
+    exp: "__xonsh__.cmd(['xonsh', '-c', 'cat;\\n']).hide()"
+  - inp: "!(cd path; ls; cd)"
+    exp: "__xonsh__.cmd(['xonsh', '-c', 'cd path; ls; cd\\n']).hide()"
+  - inp: >
+      ![(echo "abc"; sleep 1; echo "def")]
+    exp: __xonsh__.cmd(['xonsh', '-c', 'echo "abc"; sleep 1; echo "def"\n']).hide()
+  - inp: >
+      ![(echo "abc"; sleep 1; echo "def") | grep abc]
+    exp: __xonsh__.cmd(['xonsh', '-c', 'echo "abc"; sleep 1; echo "def" | grep abc\n']).hide()
+  - inp: >
+      ![(if True:\n   ls\nelse:\n   echo not true)]
+    exp: __xonsh__.cmd(['xonsh', '-c', 'if True:\n   ls\nelse:\n   echo not true\n']).hide()

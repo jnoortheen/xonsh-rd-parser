@@ -138,19 +138,3 @@ def test_bang_procs(expr, exec_code):
 @pytest.mark.xfail
 def test_backtick(p, f, glob_type, exec_code):
     exec_code(f"print({p}{f}{glob_type}`.*`)")
-
-
-@pytest.mark.parametrize(
-    "case",
-    [
-        "![(cat)]",
-        "![(cat;)]",
-        "![(cd path; ls; cd)]",
-        '![(echo "abc"; sleep 1; echo "def")]',
-        '![(echo "abc"; sleep 1; echo "def") | grep abc]',
-        "![(if True:\n   ls\nelse:\n   echo not true)]",
-    ],
-)
-@pytest.mark.xfail
-def test_use_subshell(case, exec_code):
-    exec_code(case)
