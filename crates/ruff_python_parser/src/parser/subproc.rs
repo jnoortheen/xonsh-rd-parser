@@ -105,15 +105,14 @@ impl Parser<'_> {
         let kind = self.current_token_kind();
 
         match kind {
-            TokenKind::At => self
-                .parse_decorator_or_interpolation()
-                .star(self.node_range(self.node_start())),
+            TokenKind::At => self.parse_decorator_or_interpolation(),
             tk if tk.is_macro() => self.parse_proc_macro(closing),
-            tk if tk.is_proc_atom()
-                || matches!(tk, TokenKind::String | TokenKind::FStringStart) =>
-            {
-                self.parse_atom().expr
-            }
+            TokenKind::String
+            | TokenKind::FStringStart
+            | TokenKind::Lpar
+            | TokenKind::Dollar
+            | TokenKind::DollarLParen
+            | TokenKind::AtDollarLParen => self.parse_atom().expr,
             tk if tk.is_proc_op() => {
                 let range = self.current_token_range();
                 self.bump_any();
@@ -165,21 +164,25 @@ impl Parser<'_> {
     }
     pub(super) fn parse_decorator_or_interpolation(&mut self) -> Expr {
         self.bump_any(); // skip the `@`
-        let pattern = self.xonsh_attr("Pattern");
-        if !self.at(TokenKind::Name) || self.peek() != TokenKind::String {
-            unreachable!("Expected to parse a name and a string");
+        match self.current_token_kind() {
+            TokenKind::Lpar => self.parse_proc_pyexpr(),
+            TokenKind::Name if self.peek() == TokenKind::String => {
+                let pattern = self.xonsh_attr("Pattern");
+                let start = self.node_start();
+                let name = Expr::from(self.parse_name());
+                let string = self.parse_strings();
+                let range = self.node_range(start);
+                pattern
+                    .call0(vec![string], range)
+                    .attr("invoke", range)
+                    .call0(vec![name], range)
+                    .star(self.node_range(self.node_start()))
+            }
+            _ => unreachable!("Expected to parse a name and a string"),
         }
-        let start = self.node_start();
-        let name = Expr::from(self.parse_name());
-        let string = self.parse_strings();
-        let range = self.node_range(start);
-        pattern
-            .call0(vec![string], range)
-            .attr("invoke", range)
-            .call0(vec![name], range)
     }
-    pub(super) fn parse_proc_pyexpr(&mut self) -> Expr {
-        self.bump_any();
+    fn parse_proc_pyexpr(&mut self) -> Expr {
+        self.bump(TokenKind::Lpar);
 
         let start = self.node_start();
         let name = self.xonsh_attr("list_of_strs_or_callables");

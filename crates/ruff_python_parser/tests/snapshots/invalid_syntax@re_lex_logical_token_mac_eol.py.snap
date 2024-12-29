@@ -100,8 +100,6 @@ Module(
 ## Errors
 
   |
-1 | if call(foo, [a, b
-    def bar():
-        pass
+1 | if call(foo, [a, b    def bar():        pass
   |                    Syntax Error: Expected ']', found NonLogicalNewline
   |

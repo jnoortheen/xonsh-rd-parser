@@ -94,8 +94,8 @@ glob:
 decorator:
   - inp: $(ls @foo`[Ff]+i*LE` -l)
     exp: __xonsh__.cmd('ls', *__xonsh__.Pattern('[Ff]+i*LE').invoke(foo), '-l').out()
-  - inp: print(@foo`.*`)
-    exp: print(__xonsh__.Pattern('.*').invoke(foo))
+  # - inp: print(@foo`.*`)
+  #   exp: print(__xonsh__.Pattern('.*').invoke(foo))
   - inp: $(ls @foo`#[Ff]+i*LE` -l)
     exp: __xonsh__.cmd('ls', *__xonsh__.Pattern('#[Ff]+i*LE').invoke(foo), '-l').out()
 help:

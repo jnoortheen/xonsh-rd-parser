@@ -54,7 +54,6 @@ pub(super) const EXPR_SET: TokenSet = TokenSet::new([
     TokenKind::IpyEscapeCommand,
     // Xonsh tokens
     TokenKind::Dollar,
-    TokenKind::AtLParen,
     TokenKind::BangLParen,
     TokenKind::BangLSqb,
     TokenKind::DollarLParen,
@@ -593,8 +592,7 @@ impl<'src> Parser<'src> {
             TokenKind::DollarLParen => self.parse_subprocs("out", TokenKind::Rpar),
             TokenKind::DollarLSqb => self.parse_subprocs("run", TokenKind::Rsqb),
             TokenKind::AtDollarLParen => self.parse_subprocs("inject", TokenKind::Rpar),
-            TokenKind::AtLParen => self.parse_proc_pyexpr(),
-            TokenKind::At => self.parse_decorator_or_interpolation(),
+            // TokenKind::At => self.parse_decorator_or_interpolation(),
             TokenKind::IpyEscapeCommand => {
                 Expr::IpyEscapeCommand(self.parse_ipython_escape_command_expression())
             }

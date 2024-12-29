@@ -250,7 +250,15 @@ fn split_tokens(
             continue;
         }
 
-        if tok.is_open_paren() {
+        if tok == TokenKind::Lpar
+            && toks
+                .last()
+                .map(|t| t.kind == TokenKind::At)
+                .unwrap_or(false)
+        {
+            // put a value other than `TokenKind::Lpar` in the stack
+            lparens.push(TokenKind::DollarLParen); // `@(` is a single token
+        } else if tok.is_open_paren() {
             lparens.push(tok);
         }
 

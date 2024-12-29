@@ -240,7 +240,6 @@ pub enum TokenKind {
     Dollar,         // "$"
     DoublePipe,     // "||"
     DoubleAmp,      // "&&"
-    AtLParen,       // "@("
     BangLParen,     // "!("
     BangLSqb,       // "!["
     DollarLParen,   // "$("
@@ -412,13 +411,6 @@ impl TokenKind {
             | TokenKind::RightShift)
     }
 
-    pub fn is_proc_atom(&self) -> bool {
-        matches!(self, |TokenKind::Lpar| TokenKind::Dollar
-            | TokenKind::DollarLParen
-            | TokenKind::AtDollarLParen
-            | TokenKind::AtLParen)
-    }
-
     pub const fn is_macro(&self) -> bool {
         matches!(self, TokenKind::Exclamation)
     }
@@ -426,11 +418,8 @@ impl TokenKind {
         matches!(self, TokenKind::Newline | TokenKind::Dedent)
     }
     pub const fn is_open_paren(&self) -> bool {
-        use TokenKind::{AtDollarLParen, AtLParen, BangLParen, DollarLParen, Lpar};
-        matches!(
-            self,
-            Lpar | AtLParen | BangLParen | DollarLParen | AtDollarLParen
-        )
+        use TokenKind::{AtDollarLParen, BangLParen, DollarLParen, Lpar};
+        matches!(self, Lpar | BangLParen | DollarLParen | AtDollarLParen)
     }
     pub const fn get_closer(&self) -> Option<Self> {
         if self.is_open_paren() {
@@ -756,7 +745,6 @@ impl fmt::Display for TokenKind {
             TokenKind::Dollar => "'$'",
             TokenKind::DoublePipe => "'||'",
             TokenKind::DoubleAmp => "'&&'",
-            TokenKind::AtLParen => "'@('",
             TokenKind::BangLParen => "'!('",
             TokenKind::BangLSqb => "'!['",
             TokenKind::DollarLParen => "'$('",

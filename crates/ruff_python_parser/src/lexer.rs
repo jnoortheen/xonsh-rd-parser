@@ -487,9 +487,6 @@ impl<'src> Lexer<'src> {
             '@' => {
                 if self.cursor.eat_char('=') {
                     TokenKind::AtEqual
-                } else if self.cursor.eat_char('(') {
-                    self.nesting += 1;
-                    TokenKind::AtLParen
                 } else if self.cursor.eat_char('$') && self.cursor.eat_char('(') {
                     self.nesting += 1;
                     TokenKind::AtDollarLParen
