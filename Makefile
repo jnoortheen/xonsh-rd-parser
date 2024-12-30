@@ -1,5 +1,5 @@
 test:
-	pytest
+	uv run pytest
 	cargo clippy
 	cargo nextest run --workspace --all-features
 .PHONY: test
