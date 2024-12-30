@@ -85,42 +85,107 @@ Module(
             ),
             Expr(
                 StmtExpr {
-                    range: 120..121,
-                    value: Name(
-                        ExprName {
-                            range: 120..121,
-                            id: Name("x"),
-                            ctx: Load,
-                        },
-                    ),
-                },
-            ),
-            Expr(
-                StmtExpr {
-                    range: 122..128,
-                    value: UnaryOp(
-                        ExprUnaryOp {
-                            range: 122..128,
-                            op: Not,
-                            operand: Name(
-                                ExprName {
-                                    range: 126..128,
-                                    id: Name("is"),
+                    range: 122..130,
+                    value: Call(
+                        ExprCall {
+                            range: 122..130,
+                            func: Attribute(
+                                ExprAttribute {
+                                    range: 122..130,
+                                    value: Call(
+                                        ExprCall {
+                                            range: 122..130,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    range: 122..125,
+                                                    value: Name(
+                                                        ExprName {
+                                                            range: 122..125,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 122..125,
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 122..130,
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            range: 122..125,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 122..125,
+                                                                        value: "not",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            range: 126..128,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 126..128,
+                                                                        value: "is",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            range: 129..130,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 129..130,
+                                                                        value: "y",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 122..130,
+                                    },
                                     ctx: Load,
                                 },
                             ),
-                        },
-                    ),
-                },
-            ),
-            Expr(
-                StmtExpr {
-                    range: 129..130,
-                    value: Name(
-                        ExprName {
-                            range: 129..130,
-                            id: Name("y"),
-                            ctx: Load,
+                            arguments: Arguments {
+                                range: 122..130,
+                                args: [],
+                                keywords: [],
+                            },
                         },
                     ),
                 },
@@ -145,25 +210,4 @@ Module(
   |    ^ Syntax Error: Expected an expression
 5 | 
 6 | # Same here as well, `not` without `in` is considered to be a unary operator
-  |
-
-
-  |
-6 | # Same here as well, `not` without `in` is considered to be a unary operator
-7 | x not is y
-  |   ^^^ Syntax Error: Simple statements must be separated by newlines or semicolons
-  |
-
-
-  |
-6 | # Same here as well, `not` without `in` is considered to be a unary operator
-7 | x not is y
-  |       ^^ Syntax Error: Expected an identifier, but found a keyword 'is' that cannot be used here
-  |
-
-
-  |
-6 | # Same here as well, `not` without `in` is considered to be a unary operator
-7 | x not is y
-  |          ^ Syntax Error: Simple statements must be separated by newlines or semicolons
   |

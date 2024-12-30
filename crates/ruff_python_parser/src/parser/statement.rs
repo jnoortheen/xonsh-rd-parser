@@ -159,14 +159,15 @@ impl<'src> Parser<'src> {
 
         if !has_eaten_newline {
             if !has_eaten_semicolon && self.at_simple_stmt() {
-                // test_err simple_stmts_on_same_line
-                // a b
-                // a + b c + d
-                // break; continue pass; continue break
-                self.add_error(
-                    ParseErrorType::SimpleStatementsOnSameLine,
-                    self.current_token_range(),
-                );
+                return self.parse_bare_proc();
+                // // test_err simple_stmts_on_same_line
+                // // a b
+                // // a + b c + d
+                // // break; continue pass; continue break
+                // self.add_error(
+                //     ParseErrorType::SimpleStatementsOnSameLine,
+                //     self.current_token_range(),
+                // );
             } else if self.at_compound_stmt() {
                 // test_err simple_and_compound_stmt_on_same_line
                 // a; if b: pass; b
@@ -275,7 +276,14 @@ impl<'src> Parser<'src> {
             TokenKind::IpyEscapeCommand => {
                 Stmt::IpyEscapeCommand(self.parse_ipython_escape_command_statement())
             }
-            TokenKind::Name if (self.peek() == TokenKind::Name) => self.parse_bare_proc(),
+            TokenKind::Name
+                if matches!(
+                    self.peek(),
+                    TokenKind::Name | TokenKind::DoublePipe | TokenKind::DoubleAmp
+                ) =>
+            {
+                self.parse_bare_proc()
+            }
             token => {
                 if token == TokenKind::Type {
                     // Type is considered a soft keyword, so we will treat it as an identifier if

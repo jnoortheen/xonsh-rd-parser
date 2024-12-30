@@ -44,44 +44,71 @@ Module(
             ),
             Expr(
                 StmtExpr {
-                    range: 11..19,
-                    value: Name(
-                        ExprName {
-                            range: 11..19,
-                            id: Name("multiple"),
-                            ctx: Load,
-                        },
-                    ),
-                },
-            ),
-            Expr(
-                StmtExpr {
                     range: 19..27,
-                    value: Attribute(
-                        ExprAttribute {
+                    value: Call(
+                        ExprCall {
                             range: 19..27,
-                            value: EllipsisLiteral(
-                                ExprEllipsisLiteral {
-                                    range: 19..22,
+                            func: Attribute(
+                                ExprAttribute {
+                                    range: 19..27,
+                                    value: Call(
+                                        ExprCall {
+                                            range: 19..27,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    range: 19..22,
+                                                    value: Name(
+                                                        ExprName {
+                                                            range: 19..22,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 19..22,
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 19..27,
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            range: 19..27,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 19..27,
+                                                                        value: "....dots",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 19..27,
+                                    },
+                                    ctx: Load,
                                 },
                             ),
-                            attr: Identifier {
-                                id: Name("dots"),
-                                range: 23..27,
+                            arguments: Arguments {
+                                range: 19..27,
+                                args: [],
+                                keywords: [],
                             },
-                            ctx: Load,
-                        },
-                    ),
-                },
-            ),
-            Expr(
-                StmtExpr {
-                    range: 28..36,
-                    value: Name(
-                        ExprName {
-                            range: 28..36,
-                            id: Name("multiple"),
-                            ctx: Load,
                         },
                     ),
                 },
@@ -89,29 +116,70 @@ Module(
             Expr(
                 StmtExpr {
                     range: 36..45,
-                    value: Attribute(
-                        ExprAttribute {
+                    value: Call(
+                        ExprCall {
                             range: 36..45,
-                            value: Attribute(
+                            func: Attribute(
                                 ExprAttribute {
-                                    range: 36..40,
-                                    value: EllipsisLiteral(
-                                        ExprEllipsisLiteral {
-                                            range: 36..39,
+                                    range: 36..45,
+                                    value: Call(
+                                        ExprCall {
+                                            range: 36..45,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    range: 36..39,
+                                                    value: Name(
+                                                        ExprName {
+                                                            range: 36..39,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 36..39,
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 36..45,
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            range: 36..45,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 36..45,
+                                                                        value: ".....dots",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
                                         },
                                     ),
                                     attr: Identifier {
-                                        id: Name(""),
-                                        range: 40..40,
+                                        id: Name("hide"),
+                                        range: 36..45,
                                     },
                                     ctx: Load,
                                 },
                             ),
-                            attr: Identifier {
-                                id: Name("dots"),
-                                range: 41..45,
+                            arguments: Arguments {
+                                range: 36..45,
+                                args: [],
+                                keywords: [],
                             },
-                            ctx: Load,
                         },
                     ),
                 },
@@ -127,28 +195,4 @@ Module(
   |       ^ Syntax Error: Expected an identifier
 2 | multiple....dots
 3 | multiple.....dots
-  |
-
-
-  |
-1 | extra..dot
-2 | multiple....dots
-  |         ^^^ Syntax Error: Simple statements must be separated by newlines or semicolons
-3 | multiple.....dots
-  |
-
-
-  |
-1 | extra..dot
-2 | multiple....dots
-3 | multiple.....dots
-  |         ^^^ Syntax Error: Simple statements must be separated by newlines or semicolons
-  |
-
-
-  |
-1 | extra..dot
-2 | multiple....dots
-3 | multiple.....dots
-  |             ^ Syntax Error: Expected an identifier
   |
