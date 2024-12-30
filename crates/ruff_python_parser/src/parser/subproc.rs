@@ -166,11 +166,9 @@ impl Parser<'_> {
         self.bump_any(); // skip the `@`
         match self.current_token_kind() {
             TokenKind::Lpar => {
-                let start = self.node_start();
-                let expr = self.parse_atom();
-                let range = self.node_range(start);
+                let expr = self.parse_atom().expr;
                 self.xonsh_attr("list_of_strs_or_callables")
-                    .call0(vec![expr.expr], range)
+                    .call0(vec![expr], expr.range())
             }
             TokenKind::Name if self.peek() == TokenKind::String => {
                 let start = self.node_start();
