@@ -1,8 +1,9 @@
-use std::cmp::Ordering;
-use std::ops::Deref;
-
 use bitflags::bitflags;
 use rustc_hash::{FxBuildHasher, FxHashSet};
+use std::cmp::Ordering;
+use std::collections::HashMap;
+use std::ops::Deref;
+use std::sync::LazyLock;
 
 use ruff_python_ast::name::Name;
 use ruff_python_ast::{
@@ -115,6 +116,17 @@ pub(super) const END_EXPR_SET: TokenSet = TokenSet::new([
 
 /// Tokens that can appear at the end of a sequence.
 const END_SEQUENCE_SET: TokenSet = END_EXPR_SET.remove(TokenKind::Comma);
+
+static SUBPROC_TOKENS: LazyLock<HashMap<TokenKind, (&'static str, TokenKind)>> =
+    LazyLock::new(|| {
+        let mut m = HashMap::new();
+        m.insert(TokenKind::BangLSqb, ("hide", TokenKind::Rsqb));
+        m.insert(TokenKind::DollarLSqb, ("run", TokenKind::Rsqb));
+        m.insert(TokenKind::AtDollarLParen, ("inject", TokenKind::Rpar));
+        m.insert(TokenKind::DollarLParen, ("out", TokenKind::Rpar));
+        m.insert(TokenKind::BangLParen, ("obj", TokenKind::Rpar));
+        m
+    });
 
 impl<'src> Parser<'src> {
     /// Returns `true` if the parser is at a name or keyword (including soft keyword) token.
@@ -587,12 +599,6 @@ impl<'src> Parser<'src> {
             TokenKind::Name => Expr::Name(self.parse_name()),
             TokenKind::Dollar => self.parse_env_name(),
             TokenKind::DollarLBrace => self.parse_env_expr(),
-            TokenKind::BangLParen => self.parse_subprocs("obj", TokenKind::Rpar),
-            TokenKind::BangLSqb => self.parse_subprocs("hide", TokenKind::Rsqb),
-            TokenKind::DollarLParen => self.parse_subprocs("out", TokenKind::Rpar),
-            TokenKind::DollarLSqb => self.parse_subprocs("run", TokenKind::Rsqb),
-            TokenKind::AtDollarLParen => self.parse_subprocs("inject", TokenKind::Rpar),
-            // TokenKind::At => self.parse_decorator_or_interpolation(),
             TokenKind::IpyEscapeCommand => {
                 Expr::IpyEscapeCommand(self.parse_ipython_escape_command_expression())
             }
@@ -607,7 +613,10 @@ impl<'src> Parser<'src> {
             TokenKind::Lbrace => self.parse_set_or_dict_like_expression(),
 
             kind => {
-                if kind.is_keyword() {
+                if let Some((method, closing)) = SUBPROC_TOKENS.get(&kind) {
+                    self.bump_any(); // skip the `$(`
+                    self.parse_subprocs((*method).to_string(), *closing)
+                } else if kind.is_keyword() {
                     Expr::Name(self.parse_name())
                 } else {
                     self.add_error(

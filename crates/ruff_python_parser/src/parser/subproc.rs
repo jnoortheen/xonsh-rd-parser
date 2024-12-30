@@ -16,7 +16,6 @@ impl Parser<'_> {
     /// This includes various forms of subprocess capture like `$(...)`, `$[...]`, `!(...)`, and `![...]`.
     pub(super) fn parse_subprocs(&mut self, method: impl Into<Name>, closing: TokenKind) -> Expr {
         let start = self.node_start();
-        self.bump_any(); // skip the `$(`
 
         let mut cmd = self
             .xonsh_attr("cmd")

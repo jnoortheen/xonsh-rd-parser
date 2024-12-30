@@ -9,13 +9,13 @@ snapshot_kind: text
             range: 0..19,
             value: Call(
                 ExprCall {
-                    range: 0..19,
+                    range: 2..19,
                     func: Attribute(
                         ExprAttribute {
-                            range: 0..19,
+                            range: 2..19,
                             value: Call(
                                 ExprCall {
-                                    range: 0..19,
+                                    range: 2..19,
                                     func: Attribute(
                                         ExprAttribute {
                                             range: 2..6,
@@ -97,13 +97,13 @@ snapshot_kind: text
                             ),
                             attr: Identifier {
                                 id: Name("out"),
-                                range: 0..19,
+                                range: 2..19,
                             },
                             ctx: Load,
                         },
                     ),
                     arguments: Arguments {
-                        range: 0..19,
+                        range: 2..19,
                         args: [],
                         keywords: [],
                     },
