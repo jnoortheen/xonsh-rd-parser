@@ -108,7 +108,7 @@ def xsh():
             return [x]
         if callable(x):
             return [x(obj.cmd.args)]
-        return x
+        return list(x)
 
     # using instance to store the result
     obj.cmd = Cmd()
@@ -132,8 +132,8 @@ def exec_code(xsh, parse_string):
         xsh.obs = parse_string(inp)
         bytecode = compile(xsh.obs, "<test-xonsh-ast>", mode)
         xsh.env = xenv or {}
-        locs["__xonsh__"] = xsh
         globs = {"__xonsh__": xsh}
+        locs.update(globs)
         exec(bytecode, globs, locs)
         return xsh
 

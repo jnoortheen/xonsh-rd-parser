@@ -165,14 +165,19 @@ impl Parser<'_> {
     pub(super) fn parse_decorator_or_interpolation(&mut self) -> Expr {
         self.bump_any(); // skip the `@`
         match self.current_token_kind() {
-            TokenKind::Lpar => self.parse_proc_pyexpr(),
+            TokenKind::Lpar => {
+                let start = self.node_start();
+                let expr = self.parse_atom();
+                let range = self.node_range(start);
+                self.xonsh_attr("list_of_strs_or_callables")
+                    .call0(vec![expr.expr], range)
+            }
             TokenKind::Name if self.peek() == TokenKind::String => {
-                let pattern = self.xonsh_attr("Pattern");
                 let start = self.node_start();
                 let name = Expr::from(self.parse_name());
                 let string = self.parse_strings();
                 let range = self.node_range(start);
-                pattern
+                self.xonsh_attr("Pattern")
                     .call0(vec![string], range)
                     .attr("invoke", range)
                     .call0(vec![name], range)
@@ -180,17 +185,6 @@ impl Parser<'_> {
             }
             _ => unreachable!("Expected to parse a name and a string"),
         }
-    }
-    fn parse_proc_pyexpr(&mut self) -> Expr {
-        self.bump(TokenKind::Lpar);
-
-        let start = self.node_start();
-        let name = self.xonsh_attr("list_of_strs_or_callables");
-        let expr = self.parse_expression_list(ExpressionContext::default());
-        let range = self.node_range(start);
-        let expr = name.call0(vec![expr.expr], range);
-        self.bump(TokenKind::Rpar);
-        expr
     }
     /// consume any tokens until the closing token or `is_macro_end` and strip whitespace
     pub(super) fn parse_proc_macro(&mut self, closing: TokenKind) -> Expr {
