@@ -86,6 +86,8 @@ _prefix-regex:
     exp: __xonsh__.cmd('ls', __xonsh__.Pattern('[Ff]+i*LE').regex(), '-l').out()
   - inp: $(ls f`{mypattern[0]}+` -l)
     exp: __xonsh__.cmd('ls', __xonsh__.Pattern('[Ff]+i*LE').regex(), '-l').out()
+  - inp: print(@foo`.*`)
+    exp: print(__xonsh__.Pattern('.*').invoke(foo))
 glob:
   - inp: $(ls g`[Ff]+i*LE` -l)
     exp: __xonsh__.cmd('ls', __xonsh__.Pattern('[Ff]+i*LE').glob(), '-l').out()
@@ -94,8 +96,6 @@ glob:
 decorator:
   - inp: $(ls @foo`[Ff]+i*LE` -l)
     exp: __xonsh__.cmd('ls', *__xonsh__.Pattern('[Ff]+i*LE').invoke(foo), '-l').out()
-  # - inp: print(@foo`.*`)
-  #   exp: print(__xonsh__.Pattern('.*').invoke(foo))
   - inp: $(ls @foo`#[Ff]+i*LE` -l)
     exp: __xonsh__.cmd('ls', *__xonsh__.Pattern('#[Ff]+i*LE').invoke(foo), '-l').out()
 help:
@@ -203,7 +203,7 @@ proc_macros:
     exp: __xonsh__.cmd('echo', '-n', 'x').hide()
   - inp: "![echo  -n ! x ]"
     exp: __xonsh__.cmd('echo', '-n', 'x').hide()
-_bare_proc:
+bare_proc:
   - inp: "python manage.py migrate app 007"
     exp: __xonsh__.cmd('python', 'manage.py', 'migrate', 'app', '007').hide()
 

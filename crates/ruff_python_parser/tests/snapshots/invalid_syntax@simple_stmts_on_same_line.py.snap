@@ -12,24 +12,89 @@ Module(
         body: [
             Expr(
                 StmtExpr {
-                    range: 0..1,
-                    value: Name(
-                        ExprName {
-                            range: 0..1,
-                            id: Name("a"),
-                            ctx: Load,
-                        },
-                    ),
-                },
-            ),
-            Expr(
-                StmtExpr {
-                    range: 2..3,
-                    value: Name(
-                        ExprName {
-                            range: 2..3,
-                            id: Name("b"),
-                            ctx: Load,
+                    range: 0..3,
+                    value: Call(
+                        ExprCall {
+                            range: 0..3,
+                            func: Attribute(
+                                ExprAttribute {
+                                    range: 0..3,
+                                    value: Call(
+                                        ExprCall {
+                                            range: 0..3,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    range: 0..1,
+                                                    value: Name(
+                                                        ExprName {
+                                                            range: 0..1,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 0..1,
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 0..3,
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            range: 0..1,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 0..1,
+                                                                        value: "a",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            range: 2..3,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 2..3,
+                                                                        value: "b",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 0..3,
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 0..3,
+                                args: [],
+                                keywords: [],
+                            },
                         },
                     ),
                 },
@@ -117,8 +182,8 @@ Module(
 
   |
 1 | a b
-  |   ^ Syntax Error: Simple statements must be separated by newlines or semicolons
 2 | a + b c + d
+  | ^ Syntax Error: Simple statements must be separated by newlines or semicolons
 3 | break; continue pass; continue break
   |
 

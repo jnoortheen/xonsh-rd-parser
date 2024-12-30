@@ -82,24 +82,89 @@ Module(
             ),
             Expr(
                 StmtExpr {
-                    range: 192..198,
-                    value: Name(
-                        ExprName {
-                            range: 192..198,
-                            id: Name("format"),
-                            ctx: Load,
-                        },
-                    ),
-                },
-            ),
-            Expr(
-                StmtExpr {
-                    range: 199..203,
-                    value: Name(
-                        ExprName {
-                            range: 199..203,
-                            id: Name("spec"),
-                            ctx: Load,
+                    range: 192..205,
+                    value: Call(
+                        ExprCall {
+                            range: 192..205,
+                            func: Attribute(
+                                ExprAttribute {
+                                    range: 192..205,
+                                    value: Call(
+                                        ExprCall {
+                                            range: 192..205,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    range: 192..198,
+                                                    value: Name(
+                                                        ExprName {
+                                                            range: 192..198,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 192..198,
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 192..205,
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            range: 192..198,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 192..198,
+                                                                        value: "format",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            range: 199..205,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 199..205,
+                                                                        value: "spec'}",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 192..205,
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 192..205,
+                                args: [],
+                                keywords: [],
+                            },
                         },
                     ),
                 },
@@ -269,24 +334,89 @@ Module(
             ),
             Expr(
                 StmtExpr {
-                    range: 285..291,
-                    value: Name(
-                        ExprName {
-                            range: 285..291,
-                            id: Name("format"),
-                            ctx: Load,
-                        },
-                    ),
-                },
-            ),
-            Expr(
-                StmtExpr {
-                    range: 292..296,
-                    value: Name(
-                        ExprName {
-                            range: 292..296,
-                            id: Name("spec"),
-                            ctx: Load,
+                    range: 285..298,
+                    value: Call(
+                        ExprCall {
+                            range: 285..298,
+                            func: Attribute(
+                                ExprAttribute {
+                                    range: 285..298,
+                                    value: Call(
+                                        ExprCall {
+                                            range: 285..298,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    range: 285..291,
+                                                    value: Name(
+                                                        ExprName {
+                                                            range: 285..291,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 285..291,
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 285..298,
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            range: 285..291,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 285..291,
+                                                                        value: "format",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            range: 292..298,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 292..298,
+                                                                        value: "spec'}",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 285..298,
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 285..298,
+                                args: [],
+                                keywords: [],
+                            },
                         },
                     ),
                 },
@@ -318,15 +448,6 @@ Module(
   |
 5 | f'middle {'string':\
 6 |         'format spec'}
-  |                 ^^^^ Syntax Error: Simple statements must be separated by newlines or semicolons
-7 | 
-8 | f'middle {'string':\\
-  |
-
-
-  |
-5 | f'middle {'string':\
-6 |         'format spec'}
   |                     ^^ Syntax Error: missing closing quote in string literal
 7 | 
 8 | f'middle {'string':\\
@@ -334,11 +455,10 @@ Module(
 
 
   |
-5 | f'middle {'string':\
 6 |         'format spec'}
-  |                       ^ Syntax Error: Expected a statement
 7 | 
 8 | f'middle {'string':\\
+  | ^^ Syntax Error: Simple statements must be separated by newlines or semicolons
 9 |         'format spec'}
   |
 
@@ -406,19 +526,5 @@ Module(
    |
 11 | f'middle {'string':\\\
 12 |         'format spec'}
-   |                 ^^^^ Syntax Error: Simple statements must be separated by newlines or semicolons
-   |
-
-
-   |
-11 | f'middle {'string':\\\
-12 |         'format spec'}
    |                     ^^ Syntax Error: Got unexpected string
-   |
-
-
-   |
-11 | f'middle {'string':\\\
-12 |         'format spec'}
-   |                        Syntax Error: Expected a statement
    |

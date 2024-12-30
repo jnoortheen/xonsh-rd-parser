@@ -275,6 +275,7 @@ impl<'src> Parser<'src> {
             TokenKind::IpyEscapeCommand => {
                 Stmt::IpyEscapeCommand(self.parse_ipython_escape_command_statement())
             }
+            TokenKind::Name if (self.peek() == TokenKind::Name) => self.parse_bare_proc(),
             token => {
                 if token == TokenKind::Type {
                     // Type is considered a soft keyword, so we will treat it as an identifier if

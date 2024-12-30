@@ -31,6 +31,16 @@ impl Parser<'_> {
             .call_empty(self.node_range(start))
     }
 
+    /// Parses a subprocess expression like `ls tmp-dir` with ![]
+    pub(super) fn parse_bare_proc(&mut self) -> ast::Stmt {
+        let start = self.node_start();
+        let expr = self.parse_subprocs("hide", TokenKind::Newline);
+        ast::Stmt::Expr(ast::StmtExpr {
+            range: self.node_range(start),
+            value: Box::new(expr),
+        })
+    }
+
     fn parse_cmd_group(&mut self, closing: TokenKind) -> ast::Arguments {
         const REDIR_NAMES: &[&str] = &["o", "out", "e", "err", "a", "all"];
         let start = self.node_start();
@@ -207,9 +217,8 @@ impl Parser<'_> {
         let mut nesting = 0;
         let mut range = self.current_token_range();
         let is_opening = match closing {
-            TokenKind::Rpar => TokenKind::is_open_paren,
             TokenKind::Rsqb => TokenKind::is_open_square,
-            _ => unreachable!(),
+            _ => TokenKind::is_open_paren,
         };
 
         while f(self.current_token_kind(), nesting) {
