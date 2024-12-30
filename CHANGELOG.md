@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.4.1...v1.5.0) (2024-12-30)
+
+
+### Features
+
+* parse bare subprocs ([d325d7b](https://github.com/jnoortheen/xonsh-rd-parser/commit/d325d7b59e4127d8bbdc6de8e02c036b799f3402))
+
+
+### Bug Fixes
+
+* compilation error ([71eca2e](https://github.com/jnoortheen/xonsh-rd-parser/commit/71eca2e60ae49e5713f367f9b9a031ef680ed74e))
+* handle generator inside @(...) ([4e3bfd6](https://github.com/jnoortheen/xonsh-rd-parser/commit/4e3bfd635ec7e2acbcff18bb254a0d6a465952fc))
+* parsing @(...) expressions ([aada809](https://github.com/jnoortheen/xonsh-rd-parser/commit/aada80994479450182fec35e19a0018a79fd74be))
+
 ## [1.4.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.4.0...v1.4.1) (2024-12-29)
 
 
