@@ -402,13 +402,17 @@ impl TokenKind {
     }
 
     pub fn is_proc_op(&self) -> bool {
-        matches!(self, |TokenKind::DoublePipe| TokenKind::DoubleAmp
-            | TokenKind::Semi
-            | TokenKind::Less
-            | TokenKind::Greater
-            | TokenKind::Amper
-            | TokenKind::Exclamation
-            | TokenKind::RightShift)
+        matches!(
+            self,
+            TokenKind::DoublePipe
+                | TokenKind::DoubleAmp
+                | TokenKind::Semi
+                | TokenKind::Less
+                | TokenKind::Greater
+                | TokenKind::Amper
+                | TokenKind::Exclamation
+                | TokenKind::RightShift
+        )
     }
 
     pub const fn is_macro(&self) -> bool {
