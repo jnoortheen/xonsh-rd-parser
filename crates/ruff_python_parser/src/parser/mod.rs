@@ -426,7 +426,7 @@ impl<'src> Parser<'src> {
         }
 
         inner(&mut self.errors, error, ranged.range());
-        // debug_assert!(self.errors.len() == 0);
+        // debug_assert!(self.errors.is_empty());
     }
 
     /// Returns `true` if the current token is of the given kind.

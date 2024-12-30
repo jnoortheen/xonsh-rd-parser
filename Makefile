@@ -1,7 +1,7 @@
 test:
-	uv run pytest
 	cargo clippy
 	cargo nextest run --workspace --all-features
+	uv run pytest
 .PHONY: test
 
 bench:
