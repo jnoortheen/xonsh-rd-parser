@@ -6,7 +6,6 @@ use ruff_text_size::{Ranged, TextRange, TextSize};
 
 use crate::ParseErrorType;
 
-use crate::parser::expression::ExpressionContext;
 use crate::{
     parser::{Parser, ParserProgress},
     token::TokenKind,
@@ -167,8 +166,9 @@ impl Parser<'_> {
         match self.current_token_kind() {
             TokenKind::Lpar => {
                 let expr = self.parse_atom().expr;
+                let range = expr.range();
                 self.xonsh_attr("list_of_strs_or_callables")
-                    .call0(vec![expr], expr.range())
+                    .call0(vec![expr], range)
             }
             TokenKind::Name if self.peek() == TokenKind::String => {
                 let start = self.node_start();
