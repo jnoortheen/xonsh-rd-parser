@@ -186,7 +186,7 @@ impl Parser<'_> {
 
         let start = self.node_start();
         let name = self.xonsh_attr("list_of_strs_or_callables");
-        let expr = self.parse_conditional_expression_or_higher_impl(ExpressionContext::default());
+        let expr = self.parse_expression_list(ExpressionContext::default());
         let range = self.node_range(start);
         let expr = name.call0(vec![expr.expr], range);
         self.bump(TokenKind::Rpar);

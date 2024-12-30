@@ -75,11 +75,10 @@ def test_statements(exec_code, inp):
             ],
             marks=pytest.mark.xfail,
         ),
-        pytest.param("$(echo @('a', 7))", ["echo", "a", 7], marks=pytest.mark.xfail),
-        pytest.param(
-            "$(@$(which echo) ls | @(lambda a, s=None: $(@(s.strip()) @(a[1]))) foo -la baz)",
-            "",
-            marks=pytest.mark.xfail,
+        ("$(echo @('a', 7))", ["echo", ("a", 7)]),
+        (
+            "$(@$(which echo) ls | @(lambda a, s='stdin': $(@(s.strip()) @(a[1]))) foo -la baz)",
+            [[["stdin"], ["ls"]], ([[["stdin"], ["ls"]]], "foo", "-la", "baz")],
         ),
         ("$(ls $(ls))", ["ls", ["ls"]]),
         ("$(ls $(ls) -l)", ["ls", ["ls"], "-l"]),

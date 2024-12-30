@@ -93,6 +93,9 @@ def xsh():
         def obj(self):
             return self._call("obj")
 
+        def inject(self):
+            return self._call("inject")
+
         def pipe(self, *args):
             self.args = [self.args, args]
             return self
@@ -104,7 +107,7 @@ def xsh():
         if isinstance(x, str | bytes):
             return [x]
         if callable(x):
-            return [x([])]
+            return [x(obj.cmd.args)]
         return x
 
     # using instance to store the result
@@ -130,7 +133,8 @@ def exec_code(xsh, parse_string):
         bytecode = compile(xsh.obs, "<test-xonsh-ast>", mode)
         xsh.env = xenv or {}
         locs["__xonsh__"] = xsh
-        exec(bytecode, {}, locs)
+        globs = {"__xonsh__": xsh}
+        exec(bytecode, globs, locs)
         return xsh
 
     return factory
