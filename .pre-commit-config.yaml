@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.8.4"
+    rev: "v0.11.13"
     hooks:
       - id: ruff
         args: [., --fix, --exit-non-zero-on-fix]
@@ -21,7 +21,7 @@ repos:
       - id: check-added-large-files
 
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: "v4.0.0"
+    rev: "v4.2.0"
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
