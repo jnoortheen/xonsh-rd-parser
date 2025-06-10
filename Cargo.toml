@@ -37,14 +37,14 @@ bon = { workspace = true }
 # insta = { workspace = true }
 
 [workspace.dependencies]
-ruff_cache = { git = "https://github.com/astral-sh/ruff.git" }
-ruff_macros = { git = "https://github.com/astral-sh/ruff.git" }
+ruff_cache = { git = "https://github.com/astral-sh/ruff.git", tag = "0.8.5"}
+ruff_macros = { git = "https://github.com/astral-sh/ruff.git", tag = "0.8.5"}
 ruff_python_ast = { path = "crates/ruff_python_ast" }
 py_ast = { path = "crates/py_ast" }
 ruff_python_parser = { path = "crates/ruff_python_parser" }
-ruff_python_trivia = { git = "https://github.com/astral-sh/ruff.git" }
-ruff_source_file = { git = "https://github.com/astral-sh/ruff.git" }
-ruff_text_size = { git = "https://github.com/astral-sh/ruff.git" }
+ruff_python_trivia = { git = "https://github.com/astral-sh/ruff.git", tag = "0.8.5"}
+ruff_source_file = { git = "https://github.com/astral-sh/ruff.git", tag = "0.8.5"}
+ruff_text_size = { git = "https://github.com/astral-sh/ruff.git", tag = "0.8.5"}
 
 bon = { version = "*" }
 num-complex = { version = "*" }
