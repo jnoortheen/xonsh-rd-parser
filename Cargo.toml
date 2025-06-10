@@ -58,7 +58,7 @@ insta = { version = "1.35.1" }
 is-macro = { version = "0.3.5" }
 itertools = { version = "0.13.0" }
 memchr = { version = "2.7.1" }
-pyo3 = { version = "0.23.*", features = [
+pyo3 = { version = "0.*", features = [
     "abi3-py310",
     "experimental-inspect",
     "num-complex",
