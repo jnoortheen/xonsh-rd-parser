@@ -1930,7 +1930,7 @@ impl<'src> Parser<'src> {
             self.expect(TokenKind::For);
         } else {
             self.bump(TokenKind::For);
-        };
+        }
 
         let mut target =
             self.parse_expression_list(ExpressionContext::starred_conditional().with_in_excluded());

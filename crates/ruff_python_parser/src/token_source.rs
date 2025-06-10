@@ -67,12 +67,13 @@ impl<'src> TokenSource<'src> {
     pub(crate) fn re_lex_logical_token(&mut self) {
         let mut non_logical_newline_start = None;
         for token in self.tokens.iter().rev() {
-            match token.kind() {
-                TokenKind::NonLogicalNewline => {
-                    non_logical_newline_start = Some(token.start());
-                }
-                TokenKind::Comment => continue,
-                _ => break,
+            if token.kind() == TokenKind::Comment {
+                continue;
+            }
+            if token.kind() == TokenKind::NonLogicalNewline {
+                non_logical_newline_start = Some(token.start());
+            } else {
+                break;
             }
         }
 

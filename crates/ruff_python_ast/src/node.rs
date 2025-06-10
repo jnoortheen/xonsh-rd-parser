@@ -1490,10 +1490,10 @@ impl AstNode for ast::StmtRaise {
 
         if let Some(expr) = exc {
             visitor.visit_expr(expr);
-        };
+        }
         if let Some(expr) = cause {
             visitor.visit_expr(expr);
-        };
+        }
     }
 }
 impl AstNode for ast::StmtTry {

@@ -1416,7 +1416,7 @@ pub fn pep_604_union(elts: &[Expr]) -> Expr {
         [rest @ .., elt] => Expr::BinOp(ast::ExprBinOp {
             left: Box::new(pep_604_union(rest)),
             op: Operator::BitOr,
-            right: Box::new(pep_604_union(&[elt.clone()])),
+            right: Box::new(pep_604_union(std::slice::from_ref(elt))),
             range: TextRange::default(),
         }),
     }

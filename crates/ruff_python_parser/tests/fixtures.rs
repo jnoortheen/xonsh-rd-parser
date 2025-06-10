@@ -124,7 +124,7 @@ fn test_invalid_syntax(input_path: &Path) {
 // Test that is intentionally ignored by default.
 // Use it for quickly debugging a parser issue.
 #[test]
-#[ignore]
+#[ignore="test"]
 #[allow(clippy::print_stdout)]
 fn parser_quick_test() {
     let source = "\
