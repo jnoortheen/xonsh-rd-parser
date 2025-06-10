@@ -1,15 +1,15 @@
 use ruff_python_parser::TokenKind;
-use ruff_source_file::SourceLocation;
+use ruff_source_file::LineColumn;
 use ruff_text_size::Ranged;
 
 pub(crate) trait HasSrcLocation {
-    fn start(&self) -> SourceLocation;
-    fn end(&self) -> SourceLocation;
+    fn start(&self) -> LineColumn;
+    fn end(&self) -> LineColumn;
     fn lineno(&self) -> usize {
-        self.start().row.get()
+        self.start().line.get()
     }
     fn end_lineno(&self) -> usize {
-        self.end().row.get()
+        self.end().line.get()
     }
     fn col_offset(&self) -> usize {
         self.start().column.get()

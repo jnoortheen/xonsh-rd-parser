@@ -36,13 +36,13 @@ impl<'py> AstModule<'py> {
         Ok(self.obj.bind(self.py).call((), Some(&dict))?.into())
     }
     pub(crate) fn location(&self, range: TextRange) -> [(&'static str, usize); 4] {
-        let start = self.source_code.source_location(range.start());
-        let end = self.source_code.source_location(range.end());
+        let start = self.source_code.line_column(range.start());
+        let end = self.source_code.line_column(range.end());
 
         [
-            ("lineno", start.row.get()),
+            ("lineno", start.line.get()),
             ("col_offset", start.column.get()),
-            ("end_lineno", end.row.get()),
+            ("end_lineno", end.line.get()),
             ("end_col_offset", end.column.get()),
         ]
     }

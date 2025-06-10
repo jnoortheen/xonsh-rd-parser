@@ -1,5 +1,5 @@
 use ruff_python_parser::{ParseError, ParseErrorType};
-use ruff_source_file::{LineIndex, OneIndexed, SourceCode, SourceLocation};
+use ruff_source_file::{LineColumn, LineIndex, OneIndexed, SourceCode};
 use ruff_text_size::TextRange;
 use std::fmt::Formatter;
 
@@ -32,11 +32,11 @@ pub(crate) struct CodeFrame<'a> {
     source: &'a SourceCode<'a, 'a>,
 }
 impl HasSrcLocation for CodeFrame<'_> {
-    fn start(&self) -> SourceLocation {
-        self.source.source_location(self.range.start())
+    fn start(&self) -> LineColumn {
+        self.source.line_column(self.range.start())
     }
-    fn end(&self) -> SourceLocation {
-        self.source.source_location(self.range.end())
+    fn end(&self) -> LineColumn {
+        self.source.line_column(self.range.end())
     }
 }
 impl<'a> CodeFrame<'a> {

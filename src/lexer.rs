@@ -4,7 +4,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyString;
 use pyo3::{pyclass, PyResult};
 use ruff_python_parser::TokenKind;
-use ruff_source_file::{SourceCode, SourceLocation};
+use ruff_source_file::{SourceCode, LineColumn};
 use ruff_text_size::{Ranged, TextRange, TextSize};
 use std::iter::Peekable;
 use std::ops::Range;
@@ -14,7 +14,7 @@ use std::ops::Range;
 pub(crate) struct Token {
     kind: TokenKind,
     range: TextRange,
-    location: Range<SourceLocation>,
+    location: Range<LineColumn>,
     src: Option<Py<PyString>>,
 }
 
@@ -28,8 +28,8 @@ impl Token {
         src: Option<Py<PyString>>,
     ) -> Self {
         let location = {
-            let start = source.source_location(range.start());
-            let end = source.source_location(range.end());
+            let start = source.line_column(range.start());
+            let end = source.line_column(range.end());
             start..end
         };
         Self {
@@ -59,12 +59,12 @@ impl HasKind for Token {
 }
 
 impl HasSrcLocation for Token {
-    fn start(&self) -> SourceLocation {
-        self.location.start.clone()
+    fn start(&self) -> LineColumn {
+        self.location.start
     }
 
-    fn end(&self) -> SourceLocation {
-        self.location.end.clone()
+    fn end(&self) -> LineColumn {
+        self.location.end
     }
 }
 
