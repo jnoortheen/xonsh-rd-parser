@@ -203,7 +203,7 @@ proc_macros:
     exp: __xonsh__.cmd('echo', '-n', 'x').hide()
   - inp: "![echo  -n ! x ]"
     exp: __xonsh__.cmd('echo', '-n', 'x').hide()
-bare_proc:
+_bare_proc:
   - inp: "python manage.py migrate app 007"
     exp: __xonsh__.cmd('python', 'manage.py', 'migrate', 'app', '007').hide()
 
