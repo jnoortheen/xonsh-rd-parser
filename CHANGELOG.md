@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.6.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.5.0...v1.6.0) (2025-06-11)
+
+
+### Features
+
+* parse glob strings ([1ff414b](https://github.com/jnoortheen/xonsh-rd-parser/commit/1ff414bd8daf7ffd7cd9096ce20b149d9ecd4c9e))
+* pull latest changes from ruff repo ([7e2e669](https://github.com/jnoortheen/xonsh-rd-parser/commit/7e2e669d43e04bdda4065679339a45ed25b3ec43))
+
+
+### Bug Fixes
+
+* failing && || ([0dbc54f](https://github.com/jnoortheen/xonsh-rd-parser/commit/0dbc54fff3a7ed1df73c184e6cf1f8f88ed38b7f))
+* parsing f/t-string ([46b57d7](https://github.com/jnoortheen/xonsh-rd-parser/commit/46b57d770d88f0c1de275db88a5bb54636b63909))
+* some clippy warnings ([e4207b6](https://github.com/jnoortheen/xonsh-rd-parser/commit/e4207b67c1901a8e0ee12d7e2060d33b21bbd73c))
+
 ## [1.5.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.4.1...v1.5.0) (2024-12-30)
 
 
