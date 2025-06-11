@@ -108,7 +108,7 @@ help:
 paths:
   - inp: p"/foo"
     exp: __xonsh__.path_literal('/foo')
-_rpaths:
+rpaths:
   - inp: pr"/foo"
     exp: __xonsh__.path_literal('/foo')
   - inp: rp"/foo"
@@ -117,7 +117,7 @@ _rpaths:
     exp: __xonsh__.path_literal('/foo')
   - inp: Rp"/foo"
     exp: __xonsh__.path_literal('/foo')
-_fpaths:
+fpaths:
   - inp: pf"/foo"
     exp: __xonsh__.path_literal(f'/foo')
   - inp: fp"/foo"

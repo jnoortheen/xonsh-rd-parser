@@ -328,7 +328,6 @@ impl Parser<'_> {
         start: TextSize,
         flags: TokenFlags,
     ) -> Expr {
-        let range: std::ops::Range<usize> = self.node_range(start).into();
         if flags.intersects(TokenFlags::PATH_STRING) {
             return self
                 .xonsh_attr("path_literal")
