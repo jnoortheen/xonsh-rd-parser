@@ -15,10 +15,9 @@ use ruff_text_size::{Ranged, TextLen, TextRange, TextSize};
 
 use crate::name::Name;
 use crate::{
-    int,
+    LiteralExpressionRef, int,
     str::Quote,
     str_prefix::{AnyStringPrefix, ByteStringPrefix, FStringPrefix, StringLiteralPrefix},
-    LiteralExpressionRef,
 };
 
 /// See also [mod](https://docs.python.org/3/library/ast.html#ast.mod)
@@ -1956,10 +1955,12 @@ impl StringLiteralFlags {
 
     pub const fn prefix(self) -> StringLiteralPrefix {
         if self.0.contains(StringLiteralFlagsInner::U_PREFIX) {
-            debug_assert!(!self.0.intersects(
-                StringLiteralFlagsInner::R_PREFIX_LOWER
-                    .union(StringLiteralFlagsInner::R_PREFIX_UPPER)
-            ));
+            debug_assert!(
+                !self.0.intersects(
+                    StringLiteralFlagsInner::R_PREFIX_LOWER
+                        .union(StringLiteralFlagsInner::R_PREFIX_UPPER)
+                )
+            );
             StringLiteralPrefix::Unicode
         } else if self.0.contains(StringLiteralFlagsInner::PATH) {
             StringLiteralPrefix::Path
@@ -3295,7 +3296,7 @@ impl Pattern {
     pub fn is_wildcard(&self) -> bool {
         match self {
             Pattern::MatchAs(PatternMatchAs { pattern, .. }) => {
-                pattern.as_deref().map_or(true, Pattern::is_wildcard)
+                pattern.as_deref().is_none_or(Pattern::is_wildcard)
             }
             Pattern::MatchOr(PatternMatchOr { patterns, .. }) => {
                 patterns.iter().all(Pattern::is_wildcard)

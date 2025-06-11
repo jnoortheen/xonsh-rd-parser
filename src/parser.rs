@@ -78,10 +78,10 @@ impl PyParser {
         let line_index = LineIndex::from_source_text(src);
         let source_code = SourceCode::new(src, &line_index);
         let (tokens, err) = ruff_python_parser::lex_module(src);
-        if let Some(err) = err {
-            if !tolerant {
-                return Err(PyParseError::to_err(err, self.file.as_str(), src));
-            }
+        if let Some(err) = err
+            && !tolerant
+        {
+            return Err(PyParseError::to_err(err, self.file.as_str(), src));
         }
 
         let tokens = tokens

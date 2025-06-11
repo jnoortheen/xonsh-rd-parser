@@ -4,8 +4,8 @@ use ruff_python_ast::name::Name;
 use ruff_python_ast::{self as ast, DictItem, Expr, ExprContext, ExprDict, ExprTuple};
 use ruff_text_size::{Ranged, TextRange, TextSize};
 
-use crate::builders::ExprWrap;
 use crate::ParseErrorType;
+use crate::builders::ExprWrap;
 
 use crate::{
     parser::{Parser, ParserProgress},
@@ -320,6 +320,8 @@ impl Parser<'_> {
         Expr::Subscript(ast)
     }
     pub(super) fn parse_special_strings(&mut self, expr: Expr, start: TextSize) -> Expr {
+        let range: std::ops::Range<usize> = self.node_range(start).into();
+        println!("{range:?}");
         // if let Expr::StringLiteral(s) = &expr {
         //     if s.value.is_path() {
         //         return self
