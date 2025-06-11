@@ -53,7 +53,7 @@ impl ToAst for u32 {
 #[macro_export]
 macro_rules! impl_to_ast {
     // Basic variant for direct value conversion
-    ($type:ty, |$module:ident| $value:expr) => {
+    ($type:ty, |$module:ident| $value:expr_2021) => {
         impl ToAst for $type {
             fn to_ast(&self, $module: &AstModule) -> PyResult {
                 $module.to_const(self.range(), $value)
@@ -83,7 +83,7 @@ macro_rules! impl_to_ast {
         }
     };
     // Variant for structs with explicitly named fields (name-value mapping)
-    ($type:ty, call $attr:literal with |$self:ident, $module: ident| {$($field_name:literal => $field_expr:expr),+ $(,)?}) => {
+    ($type:ty, call $attr:literal with |$self:ident, $module: ident| {$($field_name:literal => $field_expr:expr_2021),+ $(,)?}) => {
         impl ToAst for $type {
             fn to_ast(&$self, $module: &AstModule) -> PyResult {
                 $module.attr($attr)?.call(

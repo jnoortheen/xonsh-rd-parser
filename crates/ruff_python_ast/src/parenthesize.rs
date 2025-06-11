@@ -16,7 +16,7 @@ pub fn parentheses_iterator<'a>(
     parent: Option<AnyNodeRef>,
     comment_ranges: &'a CommentRanges,
     source: &'a str,
-) -> impl Iterator<Item = TextRange> + 'a {
+) -> impl Iterator<Item = TextRange> + 'a + use<'a> {
     let right_tokenizer = if let Some(parent) = parent {
         // If the parent is a node that brings its own parentheses, exclude the closing parenthesis
         // from our search range. Otherwise, we risk matching on calls, like `func(x)`, for which

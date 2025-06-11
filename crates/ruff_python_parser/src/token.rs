@@ -152,7 +152,7 @@ pub enum TokenKind {
     TStringMiddle,
     /// Token kind for the end of a t-string. This includes the closing quote.
     TStringEnd,
-    /// Token kind for a IPython escape command.
+    /// Token kind for a `IPython` escape command.
     IpyEscapeCommand,
     /// Token kind for a comment. These are filtered out of the token stream prior to parsing.
     Comment,
@@ -884,12 +884,10 @@ impl StringFlags for TokenFlags {
             AnyStringPrefix::Regular(StringLiteralPrefix::Raw { uppercase: true })
         } else if self.intersects(TokenFlags::UNICODE_STRING) {
             AnyStringPrefix::Regular(StringLiteralPrefix::Unicode)
-        } else if self.intersects(TokenFlags::PATH_STRING) {
-            AnyStringPrefix::Regular(StringLiteralPrefix::Path)
-        } else if self.intersects(TokenFlags::GLOB_STRING) {
-            AnyStringPrefix::Regular(StringLiteralPrefix::Glob)
-        } else if self.intersects(TokenFlags::BACKTICK_STRING) {
-            AnyStringPrefix::Regular(StringLiteralPrefix::Regex)
+        } else if self.intersects(
+            TokenFlags::PATH_STRING | TokenFlags::GLOB_STRING | TokenFlags::BACKTICK_STRING,
+        ) {
+            AnyStringPrefix::Bytes(ByteStringPrefix::Raw { uppercase_r: true })
         } else {
             AnyStringPrefix::Regular(StringLiteralPrefix::Empty)
         }
@@ -948,7 +946,7 @@ pub(crate) enum TokenValue {
     /// Token value that includes the portion of text inside the f-string that's not
     /// part of the expression part and isn't an opening or closing brace.
     InterpolatedStringMiddle(Box<str>),
-    /// Token value for IPython escape commands. These are recognized by the lexer
+    /// Token value for `IPython` escape commands. These are recognized by the lexer
     /// only when the mode is [`Mode::Ipython`].
     IpyEscapeCommand {
         /// The magic command value.

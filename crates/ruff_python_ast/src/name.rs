@@ -190,14 +190,14 @@ impl schemars::JsonSchema for Name {
         String::schema_id()
     }
 
-    fn json_schema(gen: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
-        String::json_schema(gen)
+    fn json_schema(r#gen: &mut schemars::r#gen::SchemaGenerator) -> schemars::schema::Schema {
+        String::json_schema(r#gen)
     }
 
     fn _schemars_private_non_optional_json_schema(
-        gen: &mut schemars::gen::SchemaGenerator,
+        r#gen: &mut schemars::r#gen::SchemaGenerator,
     ) -> schemars::schema::Schema {
-        String::_schemars_private_non_optional_json_schema(gen)
+        String::_schemars_private_non_optional_json_schema(r#gen)
     }
 
     fn _schemars_private_is_option() -> bool {

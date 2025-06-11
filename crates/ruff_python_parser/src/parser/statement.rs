@@ -2113,7 +2113,7 @@ impl<'src> Parser<'src> {
         let open_paren_range = self.current_token_range();
 
         if self.at(TokenKind::Lpar) {
-            if let Some(items) = self.try_parse_parenthesized_with_items() {
+            match self.try_parse_parenthesized_with_items() { Some(items) => {
                 // test_ok tuple_context_manager_py38
                 // # parse_options: {"target-version": "3.8"}
                 // with (
@@ -2155,7 +2155,7 @@ impl<'src> Parser<'src> {
 
                 self.expect(TokenKind::Rpar);
                 items
-            } else {
+            } _ => {
                 // test_ok ambiguous_lpar_with_items_if_expr
                 // with (x) if True else y: ...
                 // with (x for x in iter) if True else y: ...
@@ -2177,7 +2177,7 @@ impl<'src> Parser<'src> {
                     RecoveryContextKind::WithItems(WithItemKind::ParenthesizedExpression),
                     |p| p.parse_with_item(WithItemParsingState::Regular).item,
                 )
-            }
+            }}
         } else {
             self.parse_comma_separated_list_into_vec(
                 RecoveryContextKind::WithItems(WithItemKind::Unparenthesized),
