@@ -8,7 +8,7 @@ use ruff_text_size::{Ranged, TextRange, TextSize};
 use crate::error::UnsupportedSyntaxError;
 use crate::parser::expression::ExpressionContext;
 use crate::parser::progress::{ParserProgress, TokenId};
-use crate::token::TokenValue;
+use crate::token::{TokenFlags, TokenValue};
 use crate::token_set::TokenSet;
 use crate::token_source::{TokenSource, TokenSourceCheckpoint};
 use crate::{Mode, ParseError, ParseErrorType, TokenKind, UnsupportedSyntaxErrorKind};
@@ -330,6 +330,11 @@ impl<'src> Parser<'src> {
     #[inline]
     fn current_token_range(&self) -> TextRange {
         self.tokens.current_range()
+    }
+
+    #[inline]
+    fn current_token_flags(&self) -> TokenFlags {
+        self.tokens.current_flags()
     }
 
     /// Returns the current token ID.

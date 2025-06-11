@@ -613,8 +613,9 @@ impl<'src> Parser<'src> {
                 Expr::IpyEscapeCommand(self.parse_ipython_escape_command_expression())
             }
             TokenKind::String | TokenKind::FStringStart | TokenKind::TStringStart => {
+                let flags = self.current_token_flags();
                 let expr = self.parse_strings();
-                self.parse_special_strings(expr, start)
+                self.parse_special_strings(expr, start, flags)
             }
             TokenKind::Lpar => {
                 return self.parse_parenthesized_expression();

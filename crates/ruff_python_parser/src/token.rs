@@ -884,10 +884,6 @@ impl StringFlags for TokenFlags {
             AnyStringPrefix::Regular(StringLiteralPrefix::Raw { uppercase: true })
         } else if self.intersects(TokenFlags::UNICODE_STRING) {
             AnyStringPrefix::Regular(StringLiteralPrefix::Unicode)
-        } else if self.intersects(
-            TokenFlags::PATH_STRING | TokenFlags::GLOB_STRING | TokenFlags::BACKTICK_STRING,
-        ) {
-            AnyStringPrefix::Bytes(ByteStringPrefix::Raw { uppercase_r: true })
         } else {
             AnyStringPrefix::Regular(StringLiteralPrefix::Empty)
         }

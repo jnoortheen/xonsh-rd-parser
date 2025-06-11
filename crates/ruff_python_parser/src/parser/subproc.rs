@@ -6,6 +6,7 @@ use ruff_text_size::{Ranged, TextRange, TextSize};
 
 use crate::ParseErrorType;
 use crate::builders::ExprWrap;
+use crate::token::TokenFlags;
 
 use crate::{
     parser::{Parser, ParserProgress},
@@ -119,6 +120,7 @@ impl Parser<'_> {
             tk if tk.is_macro() => self.parse_proc_macro(closing),
             TokenKind::String
             | TokenKind::FStringStart
+            | TokenKind::TStringStart
             | TokenKind::Lpar
             | TokenKind::Dollar
             | TokenKind::DollarLParen
@@ -132,6 +134,7 @@ impl Parser<'_> {
         }
     }
     fn parse_proc_single(&mut self, closing: TokenKind) -> Expr {
+        dbg!(&self.current_token_kind(), &self.current_token_range());
         let start = self.node_start();
         let mut offset = self.node_end();
         let mut nesting = 0;
@@ -319,31 +322,34 @@ impl Parser<'_> {
         };
         Expr::Subscript(ast)
     }
-    pub(super) fn parse_special_strings(&mut self, expr: Expr, start: TextSize) -> Expr {
+    pub(super) fn parse_special_strings(
+        &mut self,
+        expr: Expr,
+        start: TextSize,
+        flags: TokenFlags,
+    ) -> Expr {
         let range: std::ops::Range<usize> = self.node_range(start).into();
-        println!("{range:?}");
-        // if let Expr::StringLiteral(s) = &expr {
-        //     if s.value.is_path() {
-        //         return self
-        //             .xonsh_attr("path_literal")
-        //             .call0(vec![expr], self.node_range(start))
-        //             .into();
-        //     } else if s.value.is_regex() {
-        //         return self
-        //             .xonsh_attr("Pattern")
-        //             .call0(vec![expr], self.node_range(start))
-        //             .attr("regex", self.node_range(start))
-        //             .call_empty(self.node_range(start))
-        //             .into();
-        //     } else if s.value.is_glob() {
-        //         return self
-        //             .xonsh_attr("Pattern")
-        //             .call0(vec![expr], self.node_range(start))
-        //             .attr("glob", self.node_range(start))
-        //             .call_empty(self.node_range(start))
-        //             .into();
-        //     }
-        // }
+        if flags.intersects(TokenFlags::PATH_STRING) {
+            return self
+                .xonsh_attr("path_literal")
+                .call0(vec![expr], self.node_range(start))
+                .into();
+        } else if flags.intersects(TokenFlags::GLOB_STRING) {
+            return self
+                .xonsh_attr("Pattern")
+                .call0(vec![expr], self.node_range(start))
+                .attr("glob", self.node_range(start))
+                .call_empty(self.node_range(start))
+                .into();
+        } else if flags.intersects(TokenFlags::BACKTICK_STRING) {
+            return self
+                .xonsh_attr("Pattern")
+                .call0(vec![expr], self.node_range(start))
+                .attr("regex", self.node_range(start))
+                .call_empty(self.node_range(start))
+                .into();
+        }
+
         expr
     }
 
