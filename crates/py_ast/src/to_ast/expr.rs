@@ -139,46 +139,41 @@ impl ToAst for ConversionFlag {
         flag.into_py_any(module.py)
     }
 }
-impl ToAst for InterpolatedStringElement {
-    fn to_ast(&self, _module: &AstModule) -> PyResult {
-        todo!()
+impl ToAst for InterpolatedStringFormatSpec {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        let mut values = vec![];
+        for value in &self.elements {
+            values.push(value.to_ast(module)?);
+        }
+        module
+            .attr("JoinedStr")?
+            .call(self.range(), [("values", values.into_py_any(module.py)?)])
     }
 }
-// impl ToAst for FStringFormatSpec {
-//     fn to_ast(&self, module: &AstModule) -> PyResult {
-//         let mut values = vec![];
-//         for value in &self.elements {
-//             values.push(value.to_ast(module)?);
-//         }
-//         module
-//             .attr("JoinedStr")?
-//             .call(self.range(), [("values", values.into_py_any(module.py)?)])
-//     }
-// }
-// impl ToAst for FStringExpressionElement {
-//     fn to_ast(&self, module: &AstModule) -> PyResult {
-//         module.attr("FormattedValue")?.call(
-//             self.range,
-//             [
-//                 ("value", self.expression.to_ast(module)?),
-//                 ("conversion", self.conversion.to_ast(module)?),
-//                 ("format_spec", self.format_spec.to_ast(module)?),
-//             ],
-//         )
-//     }
-// }
-// impl ToAst for FStringElement {
-//     fn to_ast(&self, module: &AstModule) -> PyResult {
-//         let obj = match self {
-//             FStringElement::Literal(literal) => module.to_const(
-//                 self.range(),
-//                 literal.value.to_string().into_py_any(module.py)?,
-//             )?,
-//             FStringElement::Expression(expr) => expr.to_ast(module)?,
-//         };
-//         Ok(obj)
-//     }
-// }
+impl ToAst for InterpolatedElement {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.attr("FormattedValue")?.call(
+            self.range,
+            [
+                ("value", self.expression.to_ast(module)?),
+                ("conversion", self.conversion.to_ast(module)?),
+                ("format_spec", self.format_spec.to_ast(module)?),
+            ],
+        )
+    }
+}
+impl ToAst for InterpolatedStringElement {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        let obj = match self {
+            Self::Literal(literal) => module.to_const(
+                self.range(),
+                literal.value.to_string().into_py_any(module.py)?,
+            )?,
+            Self::Interpolation(expr) => expr.to_ast(module)?,
+        };
+        Ok(obj)
+    }
+}
 impl ToAst for CmpOp {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let obj = match self {
