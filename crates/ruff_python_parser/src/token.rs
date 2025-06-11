@@ -10,9 +10,9 @@ use std::fmt;
 use bitflags::bitflags;
 
 use ruff_python_ast::name::Name;
-use ruff_python_ast::str::Quote;
+use ruff_python_ast::str::{Quote, TripleQuotes};
 use ruff_python_ast::str_prefix::{
-    AnyStringPrefix, ByteStringPrefix, FStringPrefix, StringLiteralPrefix,
+    AnyStringPrefix, ByteStringPrefix, FStringPrefix, StringLiteralPrefix, TStringPrefix,
 };
 use ruff_python_ast::{AnyStringFlags, BoolOp, Int, IpyEscapeKind, Operator, StringFlags, UnaryOp};
 use ruff_text_size::{Ranged, TextRange};
@@ -48,23 +48,41 @@ impl Token {
     ///
     /// # Panics
     ///
-    /// If it isn't a string or any f-string tokens.
+    /// If it isn't a string or any f/t-string tokens.
     pub fn is_triple_quoted_string(self) -> bool {
-        assert!(self.is_any_string());
-        self.flags.is_triple_quoted()
+        self.unwrap_string_flags().is_triple_quoted()
     }
 
     /// Returns the [`Quote`] style for the current string token of any kind.
     ///
     /// # Panics
     ///
-    /// If it isn't a string or any f-string tokens.
+    /// If it isn't a string or any f/t-string tokens.
     pub fn string_quote_style(self) -> Quote {
-        assert!(self.is_any_string());
-        self.flags.quote_style()
+        self.unwrap_string_flags().quote_style()
     }
 
-    /// Returns `true` if this is any kind of string token.
+    /// Returns the [`AnyStringFlags`] style for the current string token of any kind.
+    ///
+    /// # Panics
+    ///
+    /// If it isn't a string or any f/t-string tokens.
+    pub fn unwrap_string_flags(self) -> AnyStringFlags {
+        self.string_flags()
+            .unwrap_or_else(|| panic!("token to be a string"))
+    }
+
+    /// Returns true if the current token is a string and it is raw.
+    pub fn string_flags(self) -> Option<AnyStringFlags> {
+        if self.is_any_string() {
+            Some(self.flags.as_any_string_flags())
+        } else {
+            None
+        }
+    }
+
+    /// Returns `true` if this is any kind of string token - including
+    /// tokens in t-strings (which do not have type `str`).
     const fn is_any_string(self) -> bool {
         matches!(
             self.kind,
@@ -72,6 +90,9 @@ impl Token {
                 | TokenKind::FStringStart
                 | TokenKind::FStringMiddle
                 | TokenKind::FStringEnd
+                | TokenKind::TStringStart
+                | TokenKind::TStringMiddle
+                | TokenKind::TStringEnd
         )
     }
 }
@@ -123,7 +144,15 @@ pub enum TokenKind {
     FStringMiddle,
     /// Token kind for the end of an f-string. This includes the closing quote.
     FStringEnd,
-    /// Token kind for a `IPython` escape command.
+    /// Token kind for the start of a t-string. This includes the `t`/`T`/`tr` prefix
+    /// and the opening quote(s).
+    TStringStart,
+    /// Token kind that includes the portion of text inside the t-string that's not
+    /// part of the interpolation part and isn't an opening or closing brace.
+    TStringMiddle,
+    /// Token kind for the end of a t-string. This includes the closing quote.
+    TStringEnd,
+    /// Token kind for a IPython escape command.
     IpyEscapeCommand,
     /// Token kind for a comment. These are filtered out of the token stream prior to parsing.
     Comment,
@@ -464,6 +493,12 @@ impl TokenKind {
         matches!(self, TokenKind::Comment | TokenKind::NonLogicalNewline)
     }
 
+    /// Returns `true` if this is a comment token.
+    #[inline]
+    pub const fn is_comment(&self) -> bool {
+        matches!(self, TokenKind::Comment)
+    }
+
     #[inline]
     pub const fn is_arithmetic(self) -> bool {
         matches!(
@@ -500,6 +535,11 @@ impl TokenKind {
     #[inline]
     pub const fn is_unary_arithmetic_operator(self) -> bool {
         matches!(self, TokenKind::Plus | TokenKind::Minus)
+    }
+
+    #[inline]
+    pub const fn is_interpolated_string_end(self) -> bool {
+        matches!(self, TokenKind::FStringEnd | TokenKind::TStringEnd)
     }
 
     /// Returns the [`UnaryOp`] that corresponds to this token kind, if it is a unary arithmetic
@@ -541,8 +581,8 @@ impl TokenKind {
         Some(match self {
             TokenKind::And => BoolOp::And,
             TokenKind::Or => BoolOp::Or,
-            TokenKind::DoublePipe => BoolOp::Or2,
-            TokenKind::DoubleAmp => BoolOp::And2,
+            TokenKind::DoublePipe => BoolOp::Or,
+            TokenKind::DoubleAmp => BoolOp::And,
             _ => return None,
         })
     }
@@ -601,8 +641,6 @@ impl From<BoolOp> for TokenKind {
         match op {
             BoolOp::And => TokenKind::And,
             BoolOp::Or => TokenKind::Or,
-            BoolOp::And2 => TokenKind::DoubleAmp,
-            BoolOp::Or2 => TokenKind::DoublePipe,
         }
     }
 }
@@ -657,6 +695,9 @@ impl fmt::Display for TokenKind {
             TokenKind::FStringStart => "FStringStart",
             TokenKind::FStringMiddle => "FStringMiddle",
             TokenKind::FStringEnd => "FStringEnd",
+            TokenKind::TStringStart => "TStringStart",
+            TokenKind::TStringMiddle => "TStringMiddle",
+            TokenKind::TStringEnd => "TStringEnd",
             TokenKind::IpyEscapeCommand => "IPython escape command",
             TokenKind::Comment => "comment",
             TokenKind::Question => "'?'",
@@ -776,17 +817,19 @@ bitflags! {
         const BYTE_STRING = 1 << 3;
         /// The token is an f-string i.e., prefixed with `f` or `F`
         const F_STRING = 1 << 4;
+        /// The token is a t-string i.e., prefixed with `t` or `T`
+        const T_STRING = 1 << 5;
         /// The token is a raw string and the prefix character is in lowercase.
-        const RAW_STRING_LOWERCASE = 1 << 5;
+        const RAW_STRING_LOWERCASE = 1 << 6;
         /// The token is a raw string and the prefix character is in uppercase.
-        const RAW_STRING_UPPERCASE = 1 << 6;
+        const RAW_STRING_UPPERCASE = 1 << 7;
 
         /// string is a path string prefixed with `p` or `P`
-        const PATH_STRING = 1 << 7;
+        const PATH_STRING = 1 << 8;
         /// has backticks ``
-        const BACKTICK_STRING = 1 << 8;
+        const BACKTICK_STRING = 1 << 9;
         /// has g`` prefix
-        const GLOB_STRING = 1 << 9;
+        const GLOB_STRING = 1 << 10;
 
         /// The token is a raw string i.e., prefixed with `r` or `R`
         const RAW_STRING = Self::RAW_STRING_LOWERCASE.bits() | Self::RAW_STRING_UPPERCASE.bits();
@@ -802,8 +845,12 @@ impl StringFlags for TokenFlags {
         }
     }
 
-    fn is_triple_quoted(self) -> bool {
-        self.intersects(TokenFlags::TRIPLE_QUOTED_STRING)
+    fn triple_quotes(self) -> TripleQuotes {
+        if self.intersects(TokenFlags::TRIPLE_QUOTED_STRING) {
+            TripleQuotes::Yes
+        } else {
+            TripleQuotes::No
+        }
     }
 
     fn prefix(self) -> AnyStringPrefix {
@@ -814,6 +861,14 @@ impl StringFlags for TokenFlags {
                 AnyStringPrefix::Format(FStringPrefix::Raw { uppercase_r: true })
             } else {
                 AnyStringPrefix::Format(FStringPrefix::Regular)
+            }
+        } else if self.intersects(TokenFlags::T_STRING) {
+            if self.intersects(TokenFlags::RAW_STRING_LOWERCASE) {
+                AnyStringPrefix::Template(TStringPrefix::Raw { uppercase_r: false })
+            } else if self.intersects(TokenFlags::RAW_STRING_UPPERCASE) {
+                AnyStringPrefix::Template(TStringPrefix::Raw { uppercase_r: true })
+            } else {
+                AnyStringPrefix::Template(TStringPrefix::Regular)
             }
         } else if self.intersects(TokenFlags::BYTE_STRING) {
             if self.intersects(TokenFlags::RAW_STRING_LOWERCASE) {
@@ -847,19 +902,24 @@ impl TokenFlags {
         self.intersects(TokenFlags::F_STRING)
     }
 
-    /// Returns `true` if the token is a triple-quoted f-string.
-    pub(crate) fn is_triple_quoted_fstring(self) -> bool {
-        self.contains(TokenFlags::F_STRING | TokenFlags::TRIPLE_QUOTED_STRING)
+    /// Returns `true` if the token is a t-string.
+    pub(crate) const fn is_t_string(self) -> bool {
+        self.intersects(TokenFlags::T_STRING)
+    }
+
+    /// Returns `true` if the token is a t-string.
+    pub(crate) const fn is_interpolated_string(self) -> bool {
+        self.intersects(TokenFlags::T_STRING.union(TokenFlags::F_STRING))
+    }
+
+    /// Returns `true` if the token is a triple-quoted t-string.
+    pub(crate) fn is_triple_quoted_interpolated_string(self) -> bool {
+        self.intersects(TokenFlags::TRIPLE_QUOTED_STRING) && self.is_interpolated_string()
     }
 
     /// Returns `true` if the token is a raw string.
     pub(crate) const fn is_raw_string(self) -> bool {
         self.intersects(TokenFlags::RAW_STRING)
-    }
-
-    /// Converts this type to [`AnyStringFlags`], setting the equivalent flags.
-    pub(crate) fn as_any_string_flags(self) -> AnyStringFlags {
-        AnyStringFlags::new(self.prefix(), self.quote_style(), self.is_triple_quoted())
     }
 }
 
@@ -887,8 +947,8 @@ pub(crate) enum TokenValue {
     String(Box<str>),
     /// Token value that includes the portion of text inside the f-string that's not
     /// part of the expression part and isn't an opening or closing brace.
-    FStringMiddle(Box<str>),
-    /// Token value for `IPython` escape commands. These are recognized by the lexer
+    InterpolatedStringMiddle(Box<str>),
+    /// Token value for IPython escape commands. These are recognized by the lexer
     /// only when the mode is [`Mode::Ipython`].
     IpyEscapeCommand {
         /// The magic command value.

@@ -5,16 +5,20 @@ use bitflags::bitflags;
 use ruff_python_ast::{Mod, ModExpression, ModModule};
 use ruff_text_size::{Ranged, TextRange, TextSize};
 
+use crate::error::UnsupportedSyntaxError;
 use crate::parser::expression::ExpressionContext;
 use crate::parser::progress::{ParserProgress, TokenId};
 use crate::token::TokenValue;
 use crate::token_set::TokenSet;
 use crate::token_source::{TokenSource, TokenSourceCheckpoint};
-use crate::{Mode, ParseError, ParseErrorType, TokenKind};
+use crate::{Mode, ParseError, ParseErrorType, TokenKind, UnsupportedSyntaxErrorKind};
 use crate::{Parsed, Tokens};
+
+pub use crate::parser::options::ParseOptions;
 
 mod expression;
 mod helpers;
+mod options;
 mod pattern;
 mod progress;
 mod recovery;
@@ -34,8 +38,11 @@ pub(crate) struct Parser<'src> {
     /// Stores all the syntax errors found during the parsing.
     errors: Vec<ParseError>,
 
-    /// Specify the mode in which the code will be parsed.
-    mode: Mode,
+    /// Stores non-fatal syntax errors found during parsing, such as version-related errors.
+    unsupported_syntax_errors: Vec<UnsupportedSyntaxError>,
+
+    /// Options for how the code will be parsed.
+    options: ParseOptions,
 
     /// The ID of the current token. This is used to track the progress of the parser
     /// to avoid infinite loops when the parser is stuck.
@@ -53,18 +60,23 @@ pub(crate) struct Parser<'src> {
 
 impl<'src> Parser<'src> {
     /// Create a new parser for the given source code.
-    pub(crate) fn new(source: &'src str, mode: Mode) -> Self {
-        Parser::new_starts_at(source, mode, TextSize::new(0))
+    pub(crate) fn new(source: &'src str, options: ParseOptions) -> Self {
+        Parser::new_starts_at(source, TextSize::new(0), options)
     }
 
     /// Create a new parser for the given source code which starts parsing at the given offset.
-    pub(crate) fn new_starts_at(source: &'src str, mode: Mode, start_offset: TextSize) -> Self {
-        let tokens = TokenSource::from_source(source, mode, start_offset);
+    pub(crate) fn new_starts_at(
+        source: &'src str,
+        start_offset: TextSize,
+        options: ParseOptions,
+    ) -> Self {
+        let tokens = TokenSource::from_source(source, options.mode, start_offset);
 
         Parser {
-            mode,
+            options,
             source,
             errors: Vec::new(),
+            unsupported_syntax_errors: Vec::new(),
             tokens,
             recovery_context: RecoveryContext::empty(),
             prev_token_end: TextSize::new(0),
@@ -75,8 +87,10 @@ impl<'src> Parser<'src> {
 
     /// Consumes the [`Parser`] and returns the parsed [`Parsed`].
     pub(crate) fn parse(mut self) -> Parsed<Mod> {
-        let syntax = match self.mode {
-            Mode::Expression => Mod::Expression(self.parse_single_expression()),
+        let syntax = match self.options.mode {
+            Mode::Expression | Mode::ParenthesizedExpression => {
+                Mod::Expression(self.parse_single_expression())
+            }
             Mode::Module | Mode::Ipython => Mod::Module(self.parse_module()),
         };
 
@@ -159,6 +173,7 @@ impl<'src> Parser<'src> {
                 syntax,
                 tokens: Tokens::new(tokens),
                 errors: parse_errors,
+                unsupported_syntax_errors: self.unsupported_syntax_errors,
             };
         }
 
@@ -190,6 +205,7 @@ impl<'src> Parser<'src> {
             syntax,
             tokens: Tokens::new(tokens),
             errors: merged,
+            unsupported_syntax_errors: self.unsupported_syntax_errors,
         }
     }
 
@@ -429,6 +445,18 @@ impl<'src> Parser<'src> {
         // debug_assert!(self.errors.is_empty());
     }
 
+    /// Add an [`UnsupportedSyntaxError`] with the given [`UnsupportedSyntaxErrorKind`] and
+    /// [`TextRange`] if its minimum version is less than [`Parser::target_version`].
+    fn add_unsupported_syntax_error(&mut self, kind: UnsupportedSyntaxErrorKind, range: TextRange) {
+        if kind.is_unsupported(self.options.target_version) {
+            self.unsupported_syntax_errors.push(UnsupportedSyntaxError {
+                kind,
+                range,
+                target_version: self.options.target_version,
+            });
+        }
+    }
+
     /// Returns `true` if the current token is of the given kind.
     fn at(&self, kind: TokenKind) -> bool {
         self.current_token_kind() == kind
@@ -518,17 +546,19 @@ impl<'src> Parser<'src> {
     }
 
     /// Parses a comma separated list of elements where each element is parsed
-    /// sing the given `parse_element` function.
+    /// using the given `parse_element` function.
     ///
     /// The difference between this function and `parse_comma_separated_list_into_vec`
     /// is that this function does not return the parsed elements. Instead, it is the
     /// caller's responsibility to handle the parsed elements. This is the reason
     /// that the `parse_element` parameter is bound to [`FnMut`] instead of [`Fn`].
+    ///
+    /// Returns `true` if there is a trailing comma present.
     fn parse_comma_separated_list(
         &mut self,
         recovery_context_kind: RecoveryContextKind,
         mut parse_element: impl FnMut(&mut Parser<'src>),
-    ) {
+    ) -> bool {
         let mut progress = ParserProgress::default();
 
         let saved_context = self.recovery_context;
@@ -638,6 +668,8 @@ impl<'src> Parser<'src> {
         }
 
         self.recovery_context = saved_context;
+
+        trailing_comma_range.is_some()
     }
 
     #[cold]
@@ -656,6 +688,7 @@ impl<'src> Parser<'src> {
         ParserCheckpoint {
             tokens: self.tokens.checkpoint(),
             errors_position: self.errors.len(),
+            unsupported_syntax_errors_position: self.unsupported_syntax_errors.len(),
             current_token_id: self.current_token_id,
             prev_token_end: self.prev_token_end,
             recovery_context: self.recovery_context,
@@ -667,6 +700,7 @@ impl<'src> Parser<'src> {
         let ParserCheckpoint {
             tokens,
             errors_position,
+            unsupported_syntax_errors_position,
             current_token_id,
             prev_token_end,
             recovery_context,
@@ -674,6 +708,8 @@ impl<'src> Parser<'src> {
 
         self.tokens.rewind(tokens);
         self.errors.truncate(errors_position);
+        self.unsupported_syntax_errors
+            .truncate(unsupported_syntax_errors_position);
         self.current_token_id = current_token_id;
         self.prev_token_end = prev_token_end;
         self.recovery_context = recovery_context;
@@ -683,6 +719,7 @@ impl<'src> Parser<'src> {
 struct ParserCheckpoint {
     tokens: TokenSourceCheckpoint,
     errors_position: usize,
+    unsupported_syntax_errors_position: usize,
     current_token_id: TokenId,
     prev_token_end: TextSize,
     recovery_context: RecoveryContext,
@@ -768,7 +805,7 @@ impl WithItemKind {
 }
 
 #[derive(Debug, PartialEq, Copy, Clone)]
-enum FStringElementsKind {
+enum InterpolatedStringElementsKind {
     /// The regular f-string elements.
     ///
     /// For example, the `"hello "`, `x`, and `" world"` elements in:
@@ -786,14 +823,16 @@ enum FStringElementsKind {
     FormatSpec,
 }
 
-impl FStringElementsKind {
-    const fn list_terminator(self) -> TokenKind {
+impl InterpolatedStringElementsKind {
+    const fn list_terminators(self) -> TokenSet {
         match self {
-            FStringElementsKind::Regular => TokenKind::FStringEnd,
+            InterpolatedStringElementsKind::Regular => {
+                TokenSet::new([TokenKind::FStringEnd, TokenKind::TStringEnd])
+            }
             // test_ok fstring_format_spec_terminator
             // f"hello {x:} world"
             // f"hello {x:.3f} world"
-            FStringElementsKind::FormatSpec => TokenKind::Rbrace,
+            InterpolatedStringElementsKind::FormatSpec => TokenSet::new([TokenKind::Rbrace]),
         }
     }
 }
@@ -901,9 +940,8 @@ enum RecoveryContextKind {
     /// When parsing a list of items in a `with` statement
     WithItems(WithItemKind),
 
-    /// When parsing a list of f-string elements which are either literal elements
-    /// or expressions.
-    FStringElements(FStringElementsKind),
+    /// When parsing a list of f-string or t-string elements which are either literal elements, expressions, or interpolations.
+    InterpolatedStringElements(InterpolatedStringElementsKind),
 }
 
 impl RecoveryContextKind {
@@ -1034,10 +1072,10 @@ impl RecoveryContextKind {
                 None => {
                     // test_ok match_sequence_pattern_terminator
                     // match subject:
-                    //     case a: ...
                     //     case a if x: ...
                     //     case a, b: ...
                     //     case a, b if x: ...
+                    //     case a: ...
                     matches!(p.current_token_kind(), TokenKind::Colon | TokenKind::If)
                         .then_some(ListTerminatorKind::Regular)
                 }
@@ -1087,8 +1125,8 @@ impl RecoveryContextKind {
                     .at(TokenKind::Colon)
                     .then_some(ListTerminatorKind::Regular),
             },
-            RecoveryContextKind::FStringElements(kind) => {
-                if p.at(kind.list_terminator()) {
+            RecoveryContextKind::InterpolatedStringElements(kind) => {
+                if p.at_ts(kind.list_terminators()) {
                     Some(ListTerminatorKind::Regular)
                 } else {
                     // test_err unterminated_fstring_newline_recovery
@@ -1144,10 +1182,10 @@ impl RecoveryContextKind {
                 ) || p.at_name_or_soft_keyword()
             }
             RecoveryContextKind::WithItems(_) => p.at_expr(),
-            RecoveryContextKind::FStringElements(_) => matches!(
+            RecoveryContextKind::InterpolatedStringElements(_) => matches!(
                 p.current_token_kind(),
                 // Literal element
-                TokenKind::FStringMiddle
+                TokenKind::FStringMiddle | TokenKind::TStringMiddle
                 // Expression element
                 | TokenKind::Lbrace
             ),
@@ -1238,13 +1276,13 @@ impl RecoveryContextKind {
                     "Expected an expression or the end of the with item list".to_string(),
                 ),
             },
-            RecoveryContextKind::FStringElements(kind) => match kind {
-                FStringElementsKind::Regular => ParseErrorType::OtherError(
-                    "Expected an f-string element or the end of the f-string".to_string(),
+            RecoveryContextKind::InterpolatedStringElements(kind) => match kind {
+                InterpolatedStringElementsKind::Regular => ParseErrorType::OtherError(
+                    "Expected an f-string or t-string element or the end of the f-string or t-string".to_string(),
                 ),
-                FStringElementsKind::FormatSpec => {
-                    ParseErrorType::OtherError("Expected an f-string element or a '}'".to_string())
-                }
+                InterpolatedStringElementsKind::FormatSpec => ParseErrorType::OtherError(
+                    "Expected an f-string or t-string element or a '}'".to_string(),
+                ),
             },
         }
     }
@@ -1283,8 +1321,8 @@ bitflags! {
         const WITH_ITEMS_PARENTHESIZED = 1 << 25;
         const WITH_ITEMS_PARENTHESIZED_EXPRESSION = 1 << 26;
         const WITH_ITEMS_UNPARENTHESIZED = 1 << 28;
-        const F_STRING_ELEMENTS = 1 << 29;
-        const F_STRING_ELEMENTS_IN_FORMAT_SPEC = 1 << 30;
+        const FT_STRING_ELEMENTS = 1 << 29;
+        const FT_STRING_ELEMENTS_IN_FORMAT_SPEC = 1 << 30;
     }
 }
 
@@ -1337,10 +1375,10 @@ impl RecoveryContext {
                 }
                 WithItemKind::Unparenthesized => RecoveryContext::WITH_ITEMS_UNPARENTHESIZED,
             },
-            RecoveryContextKind::FStringElements(kind) => match kind {
-                FStringElementsKind::Regular => RecoveryContext::F_STRING_ELEMENTS,
-                FStringElementsKind::FormatSpec => {
-                    RecoveryContext::F_STRING_ELEMENTS_IN_FORMAT_SPEC
+            RecoveryContextKind::InterpolatedStringElements(kind) => match kind {
+                InterpolatedStringElementsKind::Regular => RecoveryContext::FT_STRING_ELEMENTS,
+                InterpolatedStringElementsKind::FormatSpec => {
+                    RecoveryContext::FT_STRING_ELEMENTS_IN_FORMAT_SPEC
                 }
             },
         }
@@ -1409,11 +1447,13 @@ impl RecoveryContext {
             RecoveryContext::WITH_ITEMS_UNPARENTHESIZED => {
                 RecoveryContextKind::WithItems(WithItemKind::Unparenthesized)
             }
-            RecoveryContext::F_STRING_ELEMENTS => {
-                RecoveryContextKind::FStringElements(FStringElementsKind::Regular)
-            }
-            RecoveryContext::F_STRING_ELEMENTS_IN_FORMAT_SPEC => {
-                RecoveryContextKind::FStringElements(FStringElementsKind::FormatSpec)
+            RecoveryContext::FT_STRING_ELEMENTS => RecoveryContextKind::InterpolatedStringElements(
+                InterpolatedStringElementsKind::Regular,
+            ),
+            RecoveryContext::FT_STRING_ELEMENTS_IN_FORMAT_SPEC => {
+                RecoveryContextKind::InterpolatedStringElements(
+                    InterpolatedStringElementsKind::FormatSpec,
+                )
             }
             _ => return None,
         })
