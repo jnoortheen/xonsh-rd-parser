@@ -17,6 +17,7 @@ use ruff_python_ast::{Int, IpyEscapeKind, StringFlags};
 use ruff_python_trivia::is_python_whitespace;
 use ruff_text_size::{TextLen, TextRange, TextSize};
 
+use crate::Mode;
 use crate::error::{InterpolatedStringErrorType, LexicalError, LexicalErrorType};
 use crate::lexer::cursor::{Cursor, EOF_CHAR};
 use crate::lexer::indentation::{Indentation, Indentations, IndentationsCheckpoint};
@@ -24,7 +25,6 @@ use crate::lexer::interpolated_string::{
     InterpolatedStringContext, InterpolatedStrings, InterpolatedStringsCheckpoint,
 };
 use crate::token::{TokenFlags, TokenKind, TokenValue};
-use crate::Mode;
 
 mod cursor;
 mod indentation;

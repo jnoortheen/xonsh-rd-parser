@@ -1,7 +1,7 @@
 use ruff_text_size::TextRange;
 
-use crate::visitor::transformer::{walk_expr, walk_keyword, Transformer};
-use crate::{nodes, Expr, Keyword};
+use crate::visitor::transformer::{Transformer, walk_expr, walk_keyword};
+use crate::{Expr, Keyword, nodes};
 
 /// Change an expression's location (recursively) to match a desired, fixed
 /// range.

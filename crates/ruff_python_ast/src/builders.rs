@@ -2,8 +2,8 @@
 
 use ruff_text_size::TextRange;
 
-use crate::name::Name;
 use crate::ExprContext;
+use crate::name::Name;
 use crate::{self as ast, Expr};
 
 impl Expr {

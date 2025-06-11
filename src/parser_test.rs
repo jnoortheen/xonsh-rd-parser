@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::annotate_src::CodeFrame;
-    use ruff_python_parser::{parse_unchecked, Mode, ParseOptions};
+    use ruff_python_parser::{Mode, ParseOptions, parse_unchecked};
     use ruff_source_file::{LineIndex, SourceCode};
     use ruff_text_size::{Ranged, TextLen};
     use std::fmt::Write;

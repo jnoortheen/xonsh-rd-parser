@@ -6,8 +6,8 @@ use std::fmt::Formatter;
 use crate::location::HasSrcLocation;
 use annotate_snippets::display_list::{DisplayList, FormatOptions};
 use annotate_snippets::snippet::{AnnotationType, Slice, Snippet, SourceAnnotation};
-use pyo3::exceptions::PySyntaxError;
 use pyo3::PyErr;
+use pyo3::exceptions::PySyntaxError;
 
 pub(crate) fn to_syntax_err(src: &str, filename: &str, err: &ParseError) -> PyErr {
     let line_index = LineIndex::from_source_text(src);

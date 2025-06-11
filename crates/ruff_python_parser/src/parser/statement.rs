@@ -9,17 +9,17 @@ use ruff_python_ast::{
 use ruff_text_size::{Ranged, TextRange, TextSize};
 
 use crate::error::StarTupleKind;
-use crate::parser::expression::{ParsedExpr, EXPR_SET};
+use crate::parser::expression::{EXPR_SET, ParsedExpr};
 use crate::parser::progress::ParserProgress;
 use crate::parser::{
-    helpers, FunctionKind, Parser, RecoveryContext, RecoveryContextKind, WithItemKind,
+    FunctionKind, Parser, RecoveryContext, RecoveryContextKind, WithItemKind, helpers,
 };
 use crate::token::{TokenKind, TokenValue};
 use crate::token_set::TokenSet;
 use crate::{Mode, ParseErrorType, UnsupportedSyntaxErrorKind};
 
-use super::expression::ExpressionContext;
 use super::Parenthesized;
+use super::expression::ExpressionContext;
 
 /// Tokens that represent compound statements.
 const COMPOUND_STMT_SET: TokenSet = TokenSet::new([
@@ -740,7 +740,8 @@ impl<'src> Parser<'src> {
     fn parse_dotted_name(&mut self) -> ast::Identifier {
         let start = self.node_start();
 
-        let mut dotted_name: CompactString = CompactString::from(self.parse_identifier().id.as_str());
+        let mut dotted_name: CompactString =
+            CompactString::from(self.parse_identifier().id.as_str());
         let mut progress = ParserProgress::default();
 
         while self.eat(TokenKind::Dot) {
@@ -2113,71 +2114,74 @@ impl<'src> Parser<'src> {
         let open_paren_range = self.current_token_range();
 
         if self.at(TokenKind::Lpar) {
-            match self.try_parse_parenthesized_with_items() { Some(items) => {
-                // test_ok tuple_context_manager_py38
-                // # parse_options: {"target-version": "3.8"}
-                // with (
-                //   foo,
-                //   bar,
-                //   baz,
-                // ) as tup: ...
+            match self.try_parse_parenthesized_with_items() {
+                Some(items) => {
+                    // test_ok tuple_context_manager_py38
+                    // # parse_options: {"target-version": "3.8"}
+                    // with (
+                    //   foo,
+                    //   bar,
+                    //   baz,
+                    // ) as tup: ...
 
-                // test_err tuple_context_manager_py38
-                // # parse_options: {"target-version": "3.8"}
-                // # these cases are _syntactically_ valid before Python 3.9 because the `with` item
-                // # is parsed as a tuple, but this will always cause a runtime error, so we flag it
-                // # anyway
-                // with (foo, bar): ...
-                // with (
-                //   open('foo.txt')) as foo: ...
-                // with (
-                //   foo,
-                //   bar,
-                //   baz,
-                // ): ...
-                // with (foo,): ...
+                    // test_err tuple_context_manager_py38
+                    // # parse_options: {"target-version": "3.8"}
+                    // # these cases are _syntactically_ valid before Python 3.9 because the `with` item
+                    // # is parsed as a tuple, but this will always cause a runtime error, so we flag it
+                    // # anyway
+                    // with (foo, bar): ...
+                    // with (
+                    //   open('foo.txt')) as foo: ...
+                    // with (
+                    //   foo,
+                    //   bar,
+                    //   baz,
+                    // ): ...
+                    // with (foo,): ...
 
-                // test_ok parenthesized_context_manager_py39
-                // # parse_options: {"target-version": "3.9"}
-                // with (foo as x, bar as y): ...
-                // with (foo, bar as y): ...
-                // with (foo as x, bar): ...
+                    // test_ok parenthesized_context_manager_py39
+                    // # parse_options: {"target-version": "3.9"}
+                    // with (foo as x, bar as y): ...
+                    // with (foo, bar as y): ...
+                    // with (foo as x, bar): ...
 
-                // test_err parenthesized_context_manager_py38
-                // # parse_options: {"target-version": "3.8"}
-                // with (foo as x, bar as y): ...
-                // with (foo, bar as y): ...
-                // with (foo as x, bar): ...
-                self.add_unsupported_syntax_error(
-                    UnsupportedSyntaxErrorKind::ParenthesizedContextManager,
-                    open_paren_range,
-                );
+                    // test_err parenthesized_context_manager_py38
+                    // # parse_options: {"target-version": "3.8"}
+                    // with (foo as x, bar as y): ...
+                    // with (foo, bar as y): ...
+                    // with (foo as x, bar): ...
+                    self.add_unsupported_syntax_error(
+                        UnsupportedSyntaxErrorKind::ParenthesizedContextManager,
+                        open_paren_range,
+                    );
 
-                self.expect(TokenKind::Rpar);
-                items
-            } _ => {
-                // test_ok ambiguous_lpar_with_items_if_expr
-                // with (x) if True else y: ...
-                // with (x for x in iter) if True else y: ...
-                // with (x async for x in iter) if True else y: ...
-                // with (x)[0] if True else y: ...
+                    self.expect(TokenKind::Rpar);
+                    items
+                }
+                _ => {
+                    // test_ok ambiguous_lpar_with_items_if_expr
+                    // with (x) if True else y: ...
+                    // with (x for x in iter) if True else y: ...
+                    // with (x async for x in iter) if True else y: ...
+                    // with (x)[0] if True else y: ...
 
-                // test_ok ambiguous_lpar_with_items_binary_expr
-                // # It doesn't matter what's inside the parentheses, these tests need to make sure
-                // # all binary expressions parses correctly.
-                // with (a) and b: ...
-                // with (a) is not b: ...
-                // # Make sure precedence works
-                // with (a) or b and c: ...
-                // with (a) and b or c: ...
-                // with (a | b) << c | d: ...
-                // # Postfix should still be parsed first
-                // with (a)[0] + b * c: ...
-                self.parse_comma_separated_list_into_vec(
-                    RecoveryContextKind::WithItems(WithItemKind::ParenthesizedExpression),
-                    |p| p.parse_with_item(WithItemParsingState::Regular).item,
-                )
-            }}
+                    // test_ok ambiguous_lpar_with_items_binary_expr
+                    // # It doesn't matter what's inside the parentheses, these tests need to make sure
+                    // # all binary expressions parses correctly.
+                    // with (a) and b: ...
+                    // with (a) is not b: ...
+                    // # Make sure precedence works
+                    // with (a) or b and c: ...
+                    // with (a) and b or c: ...
+                    // with (a | b) << c | d: ...
+                    // # Postfix should still be parsed first
+                    // with (a)[0] + b * c: ...
+                    self.parse_comma_separated_list_into_vec(
+                        RecoveryContextKind::WithItems(WithItemKind::ParenthesizedExpression),
+                        |p| p.parse_with_item(WithItemParsingState::Regular).item,
+                    )
+                }
+            }
         } else {
             self.parse_comma_separated_list_into_vec(
                 RecoveryContextKind::WithItems(WithItemKind::Unparenthesized),

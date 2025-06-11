@@ -3,7 +3,7 @@ use std::fmt::{Debug, Display, Formatter, Write};
 use std::hash::{Hash, Hasher};
 use std::ops::Deref;
 
-use crate::{nodes, Expr};
+use crate::{Expr, nodes};
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -379,7 +379,7 @@ impl<'a> UnqualifiedName<'a> {
             Expr::Attribute(attr1) => attr1,
             // Ex) `foo`
             Expr::Name(nodes::ExprName { id, .. }) => {
-                return Some(Self::from_slice(&[id.as_str()]))
+                return Some(Self::from_slice(&[id.as_str()]));
             }
             _ => return None,
         };
@@ -388,7 +388,7 @@ impl<'a> UnqualifiedName<'a> {
             Expr::Attribute(attr2) => attr2,
             // Ex) `foo.bar`
             Expr::Name(nodes::ExprName { id, .. }) => {
-                return Some(Self::from_slice(&[id.as_str(), attr1.attr.as_str()]))
+                return Some(Self::from_slice(&[id.as_str(), attr1.attr.as_str()]));
             }
             _ => return None,
         };

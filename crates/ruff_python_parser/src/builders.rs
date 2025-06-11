@@ -1,9 +1,9 @@
 #![allow(clippy::return_self_not_must_use)]
+use ruff_python_ast::ExprContext;
 ///
 /// Helper methods to build AST from expressions.
 ///
 use ruff_python_ast::name::Name;
-use ruff_python_ast::ExprContext;
 use ruff_python_ast::{self as ast, Expr};
 use ruff_text_size::TextRange;
 
