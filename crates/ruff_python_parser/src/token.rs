@@ -887,8 +887,7 @@ impl StringFlags for TokenFlags {
         } else if self.intersects(
             TokenFlags::PATH_STRING | TokenFlags::GLOB_STRING | TokenFlags::BACKTICK_STRING,
         ) {
-            todo!()
-            // AnyStringPrefix::Bytes(ByteStringPrefix::Raw { uppercase_r: true })
+            AnyStringPrefix::Bytes(ByteStringPrefix::Raw { uppercase_r: true })
         } else {
             AnyStringPrefix::Regular(StringLiteralPrefix::Empty)
         }

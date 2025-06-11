@@ -311,10 +311,14 @@ impl_to_ast!(StmtAssign, call "Assign" with fields [
     targets,
     value
 ]);
-impl_to_ast!(WithItem, call "withitem" with fields [
-    context_expr,
-    optional_vars
-]);
+impl ToAst for WithItem {
+    fn to_ast(&self, module: &AstModule) -> PyResult {
+        module.attr("withitem")?.callk([
+            ("context_expr", self.context_expr.to_ast(module)?),
+            ("optional_vars", self.optional_vars.to_ast(module)?),
+        ])
+    }
+}
 impl ToAst for StmtWith {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let cls = if self.is_async {

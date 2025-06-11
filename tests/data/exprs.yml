@@ -50,7 +50,7 @@ ands:
     exp: __xonsh__.cmd('ls').hide() and __xonsh__.cmd('grep', 'wakka').hide()
   - inp: "![ls] && ![grep wakka] && ![grep jawaka]"
     exp:
-      __xonsh__.cmd('ls').hide() and __xonsh__.cmd('grep', 'wakka').hide() and __xonsh__.cmd('grep',
+      (__xonsh__.cmd('ls').hide() and __xonsh__.cmd('grep', 'wakka').hide()) and __xonsh__.cmd('grep',
       'jawaka').hide()
 ors:
   - inp: "![ls] or ![grep wakka]"
@@ -63,7 +63,7 @@ ors:
     exp: __xonsh__.cmd('ls').hide() or __xonsh__.cmd('grep', 'wakka').hide()
   - inp: "![ls] || ![grep wakka] || ![grep jawaka]"
     exp:
-      __xonsh__.cmd('ls').hide() or __xonsh__.cmd('grep', 'wakka').hide() or __xonsh__.cmd('grep',
+      (__xonsh__.cmd('ls').hide() or __xonsh__.cmd('grep', 'wakka').hide()) or __xonsh__.cmd('grep',
       'jawaka').hide()
 bg:
   - inp: $(emacs ugggh &)

@@ -1085,7 +1085,15 @@ impl<'src> Parser<'src> {
         op: BoolOp,
         context: ExpressionContext,
     ) -> ast::ExprBoolOp {
-        self.bump(TokenKind::from(op));
+        let tok_kind = TokenKind::from(op);
+        if matches!(
+            self.current_token_kind(),
+            TokenKind::DoubleAmp | TokenKind::DoublePipe
+        ) {
+            self.do_bump(tok_kind);
+        } else {
+            self.bump(tok_kind);
+        }
 
         let mut values = vec![lhs];
         let mut progress = ParserProgress::default();
