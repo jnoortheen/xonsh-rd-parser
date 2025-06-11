@@ -4,6 +4,7 @@ use ruff_python_ast::name::Name;
 use ruff_python_ast::{self as ast, DictItem, Expr, ExprContext, ExprDict, ExprTuple};
 use ruff_text_size::{Ranged, TextRange, TextSize};
 
+use crate::builders::ExprWrap;
 use crate::ParseErrorType;
 
 use crate::{
@@ -29,6 +30,7 @@ impl Parser<'_> {
         }
         cmd.attr(method, self.node_range(start))
             .call_empty(self.node_range(start))
+            .into()
     }
 
     /// Parses a subprocess expression like `ls tmp-dir` with ![]
@@ -178,6 +180,7 @@ impl Parser<'_> {
                 let range = expr.range();
                 self.xonsh_attr("list_of_strs_or_callables")
                     .call0(vec![expr], range)
+                    .into()
             }
             TokenKind::Name if self.peek() == TokenKind::String => {
                 let start = self.node_start();
@@ -238,20 +241,20 @@ impl Parser<'_> {
     }
 
     /// Creates a xonsh attribute expression.
-    fn xonsh_attr(&mut self, name: impl Into<Name>) -> Expr {
-        let xonsh = self.expr_name("__xonsh__");
-        xonsh.attr(name, self.current_token_range())
+    fn xonsh_attr(&mut self, name: impl Into<Name>) -> ExprWrap {
+        self.expr_name("__xonsh__")
+            .attr(name, self.current_token_range())
     }
     fn to_identifier(&self, name: impl Into<Name>) -> ast::Identifier {
-        Expr::identifier(name, self.current_token_range())
+        ExprWrap::identifier(name, self.current_token_range())
     }
-    fn expr_name(&self, name: impl AsRef<str>) -> Expr {
+    fn expr_name(&self, name: impl AsRef<str>) -> ExprWrap {
         let val = ast::ExprName {
             range: self.current_token_range(),
             id: Name::new(name),
             ctx: ExprContext::Load,
         };
-        Expr::Name(val)
+        ExprWrap(Expr::Name(val))
     }
     fn to_string_literal(&self, range: TextRange) -> Expr {
         let value = self.source[range].to_string();
@@ -274,10 +277,10 @@ impl Parser<'_> {
                 )),
                 self.current_token_range(),
             );
-            self.expr_name("Invalid")
+            self.expr_name("Invalid").into()
         };
         let ast = ast::ExprSubscript {
-            value: Box::new(attr),
+            value: Box::new(attr.into()),
             slice: Box::new(slice),
             ctx: ExprContext::Load,
             range: self.node_range(start),
@@ -291,7 +294,7 @@ impl Parser<'_> {
         // Slice range doesn't include the `[` token.
         let slice_start = self.node_start();
 
-        let slice = if self.eat(TokenKind::Rbrace) {
+        let slice: Expr = if self.eat(TokenKind::Rbrace) {
             // Create an error when receiving an empty slice to parse, e.g. `x[]`
             let slice_range = self.node_range(slice_start);
             self.add_error(
@@ -301,7 +304,7 @@ impl Parser<'_> {
                 )),
                 slice_range,
             );
-            self.expr_name("Invalid")
+            self.expr_name("Invalid").into()
         } else {
             self.parse_slice(TokenKind::Rbrace)
         };
@@ -309,7 +312,7 @@ impl Parser<'_> {
         self.bump(TokenKind::Rbrace);
 
         let ast = ast::ExprSubscript {
-            value: Box::new(attr),
+            value: Box::new(attr.into()),
             slice: Box::new(slice),
             ctx: ExprContext::Load,
             range: self.node_range(slice_start),
@@ -317,25 +320,28 @@ impl Parser<'_> {
         Expr::Subscript(ast)
     }
     pub(super) fn parse_special_strings(&mut self, expr: Expr, start: TextSize) -> Expr {
-        if let Expr::StringLiteral(s) = &expr {
-            if s.value.is_path() {
-                return self
-                    .xonsh_attr("path_literal")
-                    .call0(vec![expr], self.node_range(start));
-            } else if s.value.is_regex() {
-                return self
-                    .xonsh_attr("Pattern")
-                    .call0(vec![expr], self.node_range(start))
-                    .attr("regex", self.node_range(start))
-                    .call_empty(self.node_range(start));
-            } else if s.value.is_glob() {
-                return self
-                    .xonsh_attr("Pattern")
-                    .call0(vec![expr], self.node_range(start))
-                    .attr("glob", self.node_range(start))
-                    .call_empty(self.node_range(start));
-            }
-        }
+        // if let Expr::StringLiteral(s) = &expr {
+        //     if s.value.is_path() {
+        //         return self
+        //             .xonsh_attr("path_literal")
+        //             .call0(vec![expr], self.node_range(start))
+        //             .into();
+        //     } else if s.value.is_regex() {
+        //         return self
+        //             .xonsh_attr("Pattern")
+        //             .call0(vec![expr], self.node_range(start))
+        //             .attr("regex", self.node_range(start))
+        //             .call_empty(self.node_range(start))
+        //             .into();
+        //     } else if s.value.is_glob() {
+        //         return self
+        //             .xonsh_attr("Pattern")
+        //             .call0(vec![expr], self.node_range(start))
+        //             .attr("glob", self.node_range(start))
+        //             .call_empty(self.node_range(start))
+        //             .into();
+        //     }
+        // }
         expr
     }
 
@@ -357,7 +363,7 @@ impl Parser<'_> {
             "help"
         };
         let args = vec![lhs];
-        self.xonsh_attr(method).call0(args, range)
+        self.xonsh_attr(method).call0(args, range).into()
     }
     pub(super) fn parse_call_macro(&mut self, lhs: Expr, start: TextSize) -> Expr {
         self.bump(TokenKind::BangLParen);
@@ -378,11 +384,11 @@ impl Parser<'_> {
                 range,
                 parenthesized: false,
             }),
-            self.expr_name("globals").call_empty(range),
-            self.expr_name("locals").call_empty(range),
+            self.expr_name("globals").call_empty(range).into(),
+            self.expr_name("locals").call_empty(range).into(),
         ];
         self.bump(closing);
-        self.xonsh_attr("call_macro").call0(args, range)
+        self.xonsh_attr("call_macro").call0(args, range).into()
     }
     #[inline]
     fn parse_call_macro_arg(&mut self, closing: TokenKind) -> Expr {
@@ -471,12 +477,12 @@ impl Parser<'_> {
                     let args = vec![
                         expr,
                         suite.clone(),
-                        self.expr_name("globals").call_empty(range),
-                        self.expr_name("locals").call_empty(range),
+                        self.expr_name("globals").call_empty(range).into(),
+                        self.expr_name("locals").call_empty(range).into(),
                     ];
 
                     ast::WithItem {
-                        context_expr: enter_macro.clone().call0(args, range),
+                        context_expr: enter_macro.clone().call0(args, range).into(),
                         optional_vars: item.optional_vars,
                         range,
                     }
@@ -515,7 +521,7 @@ fn string_literal(range: TextRange, value: String) -> Expr {
     let literal = ast::StringLiteral {
         value: value.into_boxed_str(),
         range,
-        flags: ast::StringLiteralFlags::default(),
+        flags: ast::StringLiteralFlags::empty(),
     };
 
     Expr::from(ast::ExprStringLiteral {

@@ -740,7 +740,7 @@ impl<'src> Parser<'src> {
     fn parse_dotted_name(&mut self) -> ast::Identifier {
         let start = self.node_start();
 
-        let mut dotted_name: CompactString = self.parse_identifier().id.into();
+        let mut dotted_name: CompactString = CompactString::from(self.parse_identifier().id.as_str());
         let mut progress = ParserProgress::default();
 
         while self.eat(TokenKind::Dot) {
@@ -757,7 +757,7 @@ impl<'src> Parser<'src> {
         // import a.b.c
         // import a .  b  . c
         ast::Identifier {
-            id: Name::from(dotted_name),
+            id: Name::from(dotted_name.as_str()),
             range: self.node_range(start),
         }
     }
@@ -991,7 +991,7 @@ impl<'src> Parser<'src> {
         }
     }
 
-    /// Parses an IPython escape command at the statement level.
+    /// Parses an `IPython` escape command at the statement level.
     ///
     /// # Panics
     ///
@@ -1013,7 +1013,7 @@ impl<'src> Parser<'src> {
         ast::StmtIpyEscapeCommand { range, kind, value }
     }
 
-    /// Parses an IPython help end escape command at the statement level.
+    /// Parses an `IPython` help end escape command at the statement level.
     ///
     /// # Panics
     ///

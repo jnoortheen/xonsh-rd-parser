@@ -81,7 +81,7 @@ use ruff_python_ast::{
 use ruff_python_trivia::CommentRanges;
 use ruff_text_size::{Ranged, TextRange, TextSize};
 use token_source::TokenSource;
-
+mod builders;
 mod error;
 pub mod lexer;
 mod parser;
@@ -259,7 +259,7 @@ pub fn parse_string_annotation(
 ///
 /// This function is the most general function to parse Python code. Based on the [`Mode`] supplied
 /// via the [`ParseOptions`], it can be used to parse a single expression, a full Python program,
-/// an interactive expression or a Python program containing IPython escape commands.
+/// an interactive expression or a Python program containing `IPython` escape commands.
 ///
 /// # Example
 ///
@@ -288,7 +288,7 @@ pub fn parse_string_annotation(
 /// assert!(parsed.is_ok());
 /// ```
 ///
-/// Additionally, we can parse a Python program containing IPython escapes:
+/// Additionally, we can parse a Python program containing `IPython` escapes:
 ///
 /// ```
 /// use ruff_python_parser::{parse, Mode, ParseOptions};
@@ -870,7 +870,7 @@ pub enum Mode {
     ParenthesizedExpression,
 
     /// The code consists of a sequence of statements which can include the
-    /// escape commands that are part of IPython syntax.
+    /// escape commands that are part of `IPython` syntax.
     ///
     /// ## Supported escape commands:
     ///

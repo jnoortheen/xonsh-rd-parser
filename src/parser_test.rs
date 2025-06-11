@@ -1,13 +1,13 @@
 #[cfg(test)]
 mod tests {
     use crate::annotate_src::CodeFrame;
-    use ruff_python_parser::{parse_unchecked, Mode};
+    use ruff_python_parser::{parse_unchecked, Mode, ParseOptions};
     use ruff_source_file::{LineIndex, SourceCode};
     use ruff_text_size::{Ranged, TextLen};
     use std::fmt::Write;
 
     fn test_valid_source(source: &str) -> String {
-        let parsed = parse_unchecked(source, Mode::Module);
+        let parsed = parse_unchecked(source, ParseOptions::from(Mode::Module));
 
         println!("Tokens: ");
         for token in parsed.tokens() {
@@ -15,7 +15,7 @@ mod tests {
         }
         println!("length: {:?}", source.text_len());
 
-        if !parsed.is_valid() {
+        if !parsed.has_no_syntax_errors() {
             let line_index = LineIndex::from_source_text(source);
             let source_code = SourceCode::new(source, &line_index);
 
@@ -36,7 +36,7 @@ mod tests {
         writeln!(&mut output, "## AST").unwrap();
         writeln!(&mut output, "\n```\n{:#?}\n```", parsed.syntax()).unwrap();
 
-        assert!(parsed.is_valid());
+        assert!(parsed.has_no_syntax_errors());
         output
     }
 
