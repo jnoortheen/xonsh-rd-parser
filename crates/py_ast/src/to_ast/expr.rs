@@ -129,7 +129,7 @@ impl ToAst for ExprFString {
     }
 }
 impl ToAst for ExprTString {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
+    fn to_ast(&self, _module: &AstModule) -> PyResult {
         todo!()
     }
 }
@@ -140,7 +140,7 @@ impl ToAst for ConversionFlag {
     }
 }
 impl ToAst for InterpolatedStringElement {
-    fn to_ast(&self, module: &AstModule) -> PyResult {
+    fn to_ast(&self, _module: &AstModule) -> PyResult {
         todo!()
     }
 }
