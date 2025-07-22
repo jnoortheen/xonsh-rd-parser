@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.6.1...v1.6.2) (2025-07-22)
+
+
+### Bug Fixes
+
+* Update pyproject.toml description ([37bdfeb](https://github.com/jnoortheen/xonsh-rd-parser/commit/37bdfeb9f6b115211bc04678fd38ba9a628d70ec))
+
 ## [1.6.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.6.0...v1.6.1) (2025-07-22)
 
 
