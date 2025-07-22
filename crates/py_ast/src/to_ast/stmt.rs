@@ -261,11 +261,14 @@ impl_to_ast!(StmtRaise, call "Raise" with fields [
 impl ToAst for ExceptHandler {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         match self {
-            ExceptHandler::ExceptHandler(node) => module.attr("ExceptHandler")?.callk([
-                ("type", node.type_.to_ast(module)?),
-                ("name", node.name.to_ast(module)?),
-                ("body", node.body.to_ast(module)?),
-            ]),
+            ExceptHandler::ExceptHandler(node) => module.attr("ExceptHandler")?.call(
+                node.range,
+                [
+                    ("type", node.type_.to_ast(module)?),
+                    ("name", node.name.to_ast(module)?),
+                    ("body", node.body.to_ast(module)?),
+                ],
+            ),
         }
     }
 }
