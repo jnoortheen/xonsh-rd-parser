@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.6.0...v1.6.1) (2025-07-22)
+
+
+### Bug Fixes
+
+* construct ExceptHandler nodes with location information ([#21](https://github.com/jnoortheen/xonsh-rd-parser/issues/21)) ([d9e16ea](https://github.com/jnoortheen/xonsh-rd-parser/commit/d9e16ea0a80197b642c84940d131f7fd581477cd))
+
 ## [1.6.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.5.0...v1.6.0) (2025-06-11)
 
 
