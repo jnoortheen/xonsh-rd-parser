@@ -977,7 +977,7 @@ checksum = "589f6da84c646204747d1270a2a5661ea66ed1cced2631d546fdfb155959f9ec"
 
 [[package]]
 name = "xonsh-rd-parser"
-version = "1.6.1"
+version = "1.6.2"
 dependencies = [
  "annotate-snippets",
  "bon",
