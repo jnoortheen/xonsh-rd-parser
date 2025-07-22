@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.3](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.6.2...v1.6.3) (2025-07-22)
+
+
+### Bug Fixes
+
+* PyPI release ([131f8de](https://github.com/jnoortheen/xonsh-rd-parser/commit/131f8deef21ec5ffb2a5e8d4b0493f922ecb9145))
+
 ## [1.6.2](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.6.1...v1.6.2) (2025-07-22)
 
 
