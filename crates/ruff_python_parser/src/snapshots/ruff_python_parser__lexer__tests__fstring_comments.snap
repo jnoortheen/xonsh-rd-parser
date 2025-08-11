@@ -14,7 +14,7 @@ snapshot_kind: text
         ),
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             "\n# not a comment ",
         ),
         4..21,
@@ -49,7 +49,7 @@ snapshot_kind: text
         41..42,
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             " # not a comment\n",
         ),
         42..59,

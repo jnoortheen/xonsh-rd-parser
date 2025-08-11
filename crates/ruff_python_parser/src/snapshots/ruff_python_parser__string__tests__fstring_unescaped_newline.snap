@@ -20,14 +20,14 @@ snapshot_kind: text
                                     node_index: AtomicNodeIndex(..),
                                     elements: [
                                         Literal(
-                                            FStringLiteralElement {
+                                            InterpolatedStringLiteralElement {
                                                 range: 4..5,
                                                 node_index: AtomicNodeIndex(..),
                                                 value: "\n",
                                             },
                                         ),
-                                        Expression(
-                                            FStringExpressionElement {
+                                        Interpolation(
+                                            InterpolatedElement {
                                                 range: 5..8,
                                                 node_index: AtomicNodeIndex(..),
                                                 expression: Name(

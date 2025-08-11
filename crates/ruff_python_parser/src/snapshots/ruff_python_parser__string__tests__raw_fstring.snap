@@ -19,8 +19,8 @@ snapshot_kind: text
                                     range: 0..7,
                                     node_index: AtomicNodeIndex(..),
                                     elements: [
-                                        Expression(
-                                            FStringExpressionElement {
+                                        Interpolation(
+                                            InterpolatedElement {
                                                 range: 3..6,
                                                 node_index: AtomicNodeIndex(..),
                                                 expression: Name(

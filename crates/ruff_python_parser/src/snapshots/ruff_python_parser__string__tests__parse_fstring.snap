@@ -19,8 +19,8 @@ snapshot_kind: text
                                     range: 0..18,
                                     node_index: AtomicNodeIndex(..),
                                     elements: [
-                                        Expression(
-                                            FStringExpressionElement {
+                                        Interpolation(
+                                            InterpolatedElement {
                                                 range: 2..5,
                                                 node_index: AtomicNodeIndex(..),
                                                 expression: Name(
@@ -36,8 +36,8 @@ snapshot_kind: text
                                                 format_spec: None,
                                             },
                                         ),
-                                        Expression(
-                                            FStringExpressionElement {
+                                        Interpolation(
+                                            InterpolatedElement {
                                                 range: 5..10,
                                                 node_index: AtomicNodeIndex(..),
                                                 expression: Name(
@@ -54,7 +54,7 @@ snapshot_kind: text
                                             },
                                         ),
                                         Literal(
-                                            FStringLiteralElement {
+                                            InterpolatedStringLiteralElement {
                                                 range: 10..17,
                                                 node_index: AtomicNodeIndex(..),
                                                 value: "{foo}",

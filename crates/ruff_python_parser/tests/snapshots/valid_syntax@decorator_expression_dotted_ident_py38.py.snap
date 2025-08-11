@@ -1,0 +1,94 @@
+---
+source: crates/ruff_python_parser/tests/fixtures.rs
+input_file: crates/ruff_python_parser/resources/inline/ok/decorator_expression_dotted_ident_py38.py
+snapshot_kind: text
+---
+## AST
+
+```
+Module(
+    ModModule {
+        node_index: AtomicNodeIndex(..),
+        range: 0..86,
+        body: [
+            FunctionDef(
+                StmtFunctionDef {
+                    node_index: AtomicNodeIndex(..),
+                    range: 45..85,
+                    is_async: false,
+                    decorator_list: [
+                        Decorator {
+                            range: 45..69,
+                            node_index: AtomicNodeIndex(..),
+                            expression: Attribute(
+                                ExprAttribute {
+                                    node_index: AtomicNodeIndex(..),
+                                    range: 46..69,
+                                    value: Attribute(
+                                        ExprAttribute {
+                                            node_index: AtomicNodeIndex(..),
+                                            range: 46..61,
+                                            value: Name(
+                                                ExprName {
+                                                    node_index: AtomicNodeIndex(..),
+                                                    range: 46..53,
+                                                    id: Name("buttons"),
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            attr: Identifier {
+                                                id: Name("clicked"),
+                                                range: 54..61,
+                                                node_index: AtomicNodeIndex(..),
+                                            },
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("connect"),
+                                        range: 62..69,
+                                        node_index: AtomicNodeIndex(..),
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                        },
+                    ],
+                    name: Identifier {
+                        id: Name("spam"),
+                        range: 74..78,
+                        node_index: AtomicNodeIndex(..),
+                    },
+                    type_params: None,
+                    parameters: Parameters {
+                        range: 78..80,
+                        node_index: AtomicNodeIndex(
+                            0,
+                        ),
+                        posonlyargs: [],
+                        args: [],
+                        vararg: None,
+                        kwonlyargs: [],
+                        kwarg: None,
+                    },
+                    returns: None,
+                    body: [
+                        Expr(
+                            StmtExpr {
+                                node_index: AtomicNodeIndex(..),
+                                range: 82..85,
+                                value: EllipsisLiteral(
+                                    ExprEllipsisLiteral {
+                                        node_index: AtomicNodeIndex(..),
+                                        range: 82..85,
+                                    },
+                                ),
+                            },
+                        ),
+                    ],
+                },
+            ),
+        ],
+    },
+)
+```

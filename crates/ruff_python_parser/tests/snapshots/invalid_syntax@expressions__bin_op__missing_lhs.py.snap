@@ -65,6 +65,6 @@ Module(
   |
 1 | / y
   | ^ Syntax Error: Expected a statement
-2 | 
+2 |
 3 | 1 + 2
   |

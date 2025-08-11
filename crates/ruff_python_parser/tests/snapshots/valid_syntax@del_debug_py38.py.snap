@@ -1,0 +1,33 @@
+---
+source: crates/ruff_python_parser/tests/fixtures.rs
+input_file: crates/ruff_python_parser/resources/inline/ok/del_debug_py38.py
+snapshot_kind: text
+---
+## AST
+
+```
+Module(
+    ModModule {
+        node_index: AtomicNodeIndex(..),
+        range: 0..57,
+        body: [
+            Delete(
+                StmtDelete {
+                    node_index: AtomicNodeIndex(..),
+                    range: 43..56,
+                    targets: [
+                        Name(
+                            ExprName {
+                                node_index: AtomicNodeIndex(..),
+                                range: 47..56,
+                                id: Name("__debug__"),
+                                ctx: Del,
+                            },
+                        ),
+                    ],
+                },
+            ),
+        ],
+    },
+)
+```

@@ -1,0 +1,23 @@
+---
+source: crates/ruff_python_parser/src/lexer.rs
+expression: line_continuation_at_eof_after_newline(WINDOWS_EOL)
+snapshot_kind: text
+---
+## Tokens
+```
+[
+    (
+        Unknown,
+        0..3,
+    ),
+]
+```
+## Errors
+```
+[
+    LexicalError {
+        error: Eof,
+        location: 0..3,
+    },
+]
+```

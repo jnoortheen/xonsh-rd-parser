@@ -1,6 +1,7 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/invalid/expressions/attribute/invalid_member.py
+snapshot_kind: text
 ---
 ## AST
 
@@ -13,28 +14,82 @@ Module(
             Expr(
                 StmtExpr {
                     node_index: AtomicNodeIndex(..),
-                    range: 0..1,
-                    value: Name(
-                        ExprName {
-                            node_index: AtomicNodeIndex(..),
-                            range: 0..1,
-                            id: Name("x"),
-                            ctx: Load,
-                        },
-                    ),
-                },
-            ),
-            Expr(
-                StmtExpr {
-                    node_index: AtomicNodeIndex(..),
                     range: 1..3,
-                    value: NumberLiteral(
-                        ExprNumberLiteral {
+                    value: Call(
+                        ExprCall {
                             node_index: AtomicNodeIndex(..),
                             range: 1..3,
-                            value: Float(
-                                0.1,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: AtomicNodeIndex(..),
+                                    range: 1..3,
+                                    value: Call(
+                                        ExprCall {
+                                            node_index: AtomicNodeIndex(..),
+                                            range: 1..3,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    node_index: AtomicNodeIndex(..),
+                                                    range: 1..3,
+                                                    value: Name(
+                                                        ExprName {
+                                                            node_index: AtomicNodeIndex(..),
+                                                            range: 1..3,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 1..3,
+                                                        node_index: AtomicNodeIndex(..),
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 1..3,
+                                                node_index: AtomicNodeIndex(..),
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            node_index: AtomicNodeIndex(..),
+                                                            range: 1..3,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 1..3,
+                                                                        node_index: AtomicNodeIndex(..),
+                                                                        value: ".1",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 1..3,
+                                        node_index: AtomicNodeIndex(..),
+                                    },
+                                    ctx: Load,
+                                },
                             ),
+                            arguments: Arguments {
+                                range: 1..3,
+                                node_index: AtomicNodeIndex(..),
+                                args: [],
+                                keywords: [],
+                            },
                         },
                     ),
                 },
@@ -42,43 +97,82 @@ Module(
             Expr(
                 StmtExpr {
                     node_index: AtomicNodeIndex(..),
-                    range: 4..5,
-                    value: Name(
-                        ExprName {
+                    range: 5..9,
+                    value: Call(
+                        ExprCall {
                             node_index: AtomicNodeIndex(..),
-                            range: 4..5,
-                            id: Name("x"),
-                            ctx: Load,
-                        },
-                    ),
-                },
-            ),
-            Expr(
-                StmtExpr {
-                    node_index: AtomicNodeIndex(..),
-                    range: 5..7,
-                    value: NumberLiteral(
-                        ExprNumberLiteral {
-                            node_index: AtomicNodeIndex(..),
-                            range: 5..7,
-                            value: Float(
-                                0.1,
+                            range: 5..9,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: AtomicNodeIndex(..),
+                                    range: 5..9,
+                                    value: Call(
+                                        ExprCall {
+                                            node_index: AtomicNodeIndex(..),
+                                            range: 5..9,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    node_index: AtomicNodeIndex(..),
+                                                    range: 5..7,
+                                                    value: Name(
+                                                        ExprName {
+                                                            node_index: AtomicNodeIndex(..),
+                                                            range: 5..7,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 5..7,
+                                                        node_index: AtomicNodeIndex(..),
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 5..9,
+                                                node_index: AtomicNodeIndex(..),
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            node_index: AtomicNodeIndex(..),
+                                                            range: 5..9,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 5..9,
+                                                                        node_index: AtomicNodeIndex(..),
+                                                                        value: ".1.0",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 5..9,
+                                        node_index: AtomicNodeIndex(..),
+                                    },
+                                    ctx: Load,
+                                },
                             ),
-                        },
-                    ),
-                },
-            ),
-            Expr(
-                StmtExpr {
-                    node_index: AtomicNodeIndex(..),
-                    range: 7..9,
-                    value: NumberLiteral(
-                        ExprNumberLiteral {
-                            node_index: AtomicNodeIndex(..),
-                            range: 7..9,
-                            value: Float(
-                                0.0,
-                            ),
+                            arguments: Arguments {
+                                range: 5..9,
+                                node_index: AtomicNodeIndex(..),
+                                args: [],
+                                keywords: [],
+                            },
                         },
                     ),
                 },
@@ -130,30 +224,6 @@ Module(
 )
 ```
 ## Errors
-
-  |
-1 | x.1
-  |  ^^ Syntax Error: Simple statements must be separated by newlines or semicolons
-2 | x.1.0
-3 | x.[0]
-  |
-
-
-  |
-1 | x.1
-2 | x.1.0
-  |  ^^ Syntax Error: Simple statements must be separated by newlines or semicolons
-3 | x.[0]
-  |
-
-
-  |
-1 | x.1
-2 | x.1.0
-  |    ^^ Syntax Error: Simple statements must be separated by newlines or semicolons
-3 | x.[0]
-  |
-
 
   |
 1 | x.1

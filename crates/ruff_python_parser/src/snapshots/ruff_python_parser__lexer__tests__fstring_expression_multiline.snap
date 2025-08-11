@@ -14,7 +14,7 @@ snapshot_kind: text
         ),
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             "first ",
         ),
         2..8,
@@ -63,7 +63,7 @@ snapshot_kind: text
         40..41,
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             " second",
         ),
         41..48,

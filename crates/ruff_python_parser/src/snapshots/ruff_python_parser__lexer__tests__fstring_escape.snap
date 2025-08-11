@@ -14,7 +14,7 @@ snapshot_kind: text
         ),
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             "\\",
         ),
         2..3,
@@ -37,7 +37,7 @@ snapshot_kind: text
         5..6,
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             "\\\"\\",
         ),
         6..9,
@@ -64,7 +64,7 @@ snapshot_kind: text
         12..13,
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             " \\\"\\\"\\\n end",
         ),
         13..24,

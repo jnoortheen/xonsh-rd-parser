@@ -14,7 +14,7 @@ snapshot_kind: text
         ),
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             "normal ",
         ),
         2..9,
@@ -37,7 +37,7 @@ snapshot_kind: text
         13..14,
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             " {another} ",
         ),
         14..27,
@@ -60,7 +60,7 @@ snapshot_kind: text
         31..32,
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             " {",
         ),
         32..35,
@@ -83,7 +83,7 @@ snapshot_kind: text
         41..42,
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             "}",
         ),
         42..44,

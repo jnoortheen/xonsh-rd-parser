@@ -28,7 +28,7 @@ snapshot_kind: text
         4..5,
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             "=10",
         ),
         5..8,
@@ -41,7 +41,7 @@ snapshot_kind: text
         8..9,
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             " ",
         ),
         9..10,
@@ -82,7 +82,7 @@ snapshot_kind: text
         18..19,
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             " ",
         ),
         19..20,
@@ -133,7 +133,7 @@ snapshot_kind: text
         30..31,
     ),
     (
-        FStringMiddle(
+        InterpolatedStringMiddle(
             " ",
         ),
         31..32,

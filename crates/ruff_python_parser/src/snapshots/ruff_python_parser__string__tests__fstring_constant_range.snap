@@ -20,14 +20,14 @@ snapshot_kind: text
                                     node_index: AtomicNodeIndex(..),
                                     elements: [
                                         Literal(
-                                            FStringLiteralElement {
+                                            InterpolatedStringLiteralElement {
                                                 range: 2..5,
                                                 node_index: AtomicNodeIndex(..),
                                                 value: "aaa",
                                             },
                                         ),
-                                        Expression(
-                                            FStringExpressionElement {
+                                        Interpolation(
+                                            InterpolatedElement {
                                                 range: 5..10,
                                                 node_index: AtomicNodeIndex(..),
                                                 expression: Name(
@@ -44,14 +44,14 @@ snapshot_kind: text
                                             },
                                         ),
                                         Literal(
-                                            FStringLiteralElement {
+                                            InterpolatedStringLiteralElement {
                                                 range: 10..13,
                                                 node_index: AtomicNodeIndex(..),
                                                 value: "ccc",
                                             },
                                         ),
-                                        Expression(
-                                            FStringExpressionElement {
+                                        Interpolation(
+                                            InterpolatedElement {
                                                 range: 13..18,
                                                 node_index: AtomicNodeIndex(..),
                                                 expression: Name(
@@ -68,7 +68,7 @@ snapshot_kind: text
                                             },
                                         ),
                                         Literal(
-                                            FStringLiteralElement {
+                                            InterpolatedStringLiteralElement {
                                                 range: 18..21,
                                                 node_index: AtomicNodeIndex(..),
                                                 value: "eee",

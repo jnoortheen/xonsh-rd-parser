@@ -33,14 +33,14 @@ snapshot_kind: text
                                         node_index: AtomicNodeIndex(..),
                                         elements: [
                                             Literal(
-                                                FStringLiteralElement {
+                                                InterpolatedStringLiteralElement {
                                                     range: 11..16,
                                                     node_index: AtomicNodeIndex(..),
                                                     value: "world",
                                                 },
                                             ),
-                                            Expression(
-                                                FStringExpressionElement {
+                                            Interpolation(
+                                                InterpolatedElement {
                                                     range: 16..21,
                                                     node_index: AtomicNodeIndex(..),
                                                     expression: StringLiteral(

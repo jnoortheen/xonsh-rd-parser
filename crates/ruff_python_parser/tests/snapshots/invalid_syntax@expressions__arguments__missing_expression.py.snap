@@ -184,6 +184,6 @@ Module(
 2 | call(x = )
 3 | call(*, y)
   |       ^ Syntax Error: Expected an expression
-4 | 
+4 |
 5 | foo
   |
