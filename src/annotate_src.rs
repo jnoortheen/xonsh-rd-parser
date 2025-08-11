@@ -1,5 +1,5 @@
 use ruff_python_parser::{ParseError, ParseErrorType};
-use ruff_source_file::{LineColumn, LineIndex, OneIndexed, SourceCode};
+use ruff_source_file::{LineColumn, OneIndexed, SourceCode};
 use ruff_text_size::TextRange;
 use std::fmt::Formatter;
 
@@ -9,11 +9,9 @@ use annotate_snippets::snippet::{AnnotationType, Slice, Snippet, SourceAnnotatio
 use pyo3::PyErr;
 use pyo3::exceptions::PySyntaxError;
 
-pub(crate) fn to_syntax_err(src: &str, filename: &str, err: &ParseError) -> PyErr {
-    let line_index = LineIndex::from_source_text(src);
-    let source_code = SourceCode::new(src, &line_index);
-    let code_frame = CodeFrame::new(&source_code, err);
-    let msg = format!("{err} in {filename}:\n{code_frame}");
+pub(crate) fn to_syntax_err(filename: &str, code: &SourceCode, err: &ParseError) -> PyErr {
+    let code_frame = CodeFrame::new(code, err);
+    let msg = format!("{err} in {filename}:\n{code_frame}",);
     PySyntaxError::new_err((
         msg,
         (
@@ -26,6 +24,7 @@ pub(crate) fn to_syntax_err(src: &str, filename: &str, err: &ParseError) -> PyEr
         ),
     ))
 }
+
 pub(crate) struct CodeFrame<'a> {
     range: TextRange,
     error: &'a ParseErrorType,
