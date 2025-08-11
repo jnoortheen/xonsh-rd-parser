@@ -1,26 +1,30 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/invalid/expressions/attribute/multiple_dots.py
-snapshot_kind: text
 ---
 ## AST
 
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..46,
         body: [
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 0..10,
                     value: Attribute(
                         ExprAttribute {
+                            node_index: AtomicNodeIndex(..),
                             range: 0..10,
                             value: Attribute(
                                 ExprAttribute {
+                                    node_index: AtomicNodeIndex(..),
                                     range: 0..6,
                                     value: Name(
                                         ExprName {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 0..5,
                                             id: Name("extra"),
                                             ctx: Load,
@@ -29,6 +33,7 @@ Module(
                                     attr: Identifier {
                                         id: Name(""),
                                         range: 6..6,
+                                        node_index: AtomicNodeIndex(..),
                                     },
                                     ctx: Load,
                                 },
@@ -36,6 +41,7 @@ Module(
                             attr: Identifier {
                                 id: Name("dot"),
                                 range: 7..10,
+                                node_index: AtomicNodeIndex(..),
                             },
                             ctx: Load,
                         },
@@ -44,142 +50,88 @@ Module(
             ),
             Expr(
                 StmtExpr {
-                    range: 19..27,
-                    value: Call(
-                        ExprCall {
-                            range: 19..27,
-                            func: Attribute(
-                                ExprAttribute {
-                                    range: 19..27,
-                                    value: Call(
-                                        ExprCall {
-                                            range: 19..27,
-                                            func: Attribute(
-                                                ExprAttribute {
-                                                    range: 19..22,
-                                                    value: Name(
-                                                        ExprName {
-                                                            range: 19..22,
-                                                            id: Name("__xonsh__"),
-                                                            ctx: Load,
-                                                        },
-                                                    ),
-                                                    attr: Identifier {
-                                                        id: Name("cmd"),
-                                                        range: 19..22,
-                                                    },
-                                                    ctx: Load,
-                                                },
-                                            ),
-                                            arguments: Arguments {
-                                                range: 19..27,
-                                                args: [
-                                                    StringLiteral(
-                                                        ExprStringLiteral {
-                                                            range: 19..27,
-                                                            value: StringLiteralValue {
-                                                                inner: Single(
-                                                                    StringLiteral {
-                                                                        range: 19..27,
-                                                                        value: "....dots",
-                                                                        flags: StringLiteralFlags {
-                                                                            quote_style: Single,
-                                                                            prefix: Empty,
-                                                                            triple_quoted: false,
-                                                                        },
-                                                                    },
-                                                                ),
-                                                            },
-                                                        },
-                                                    ),
-                                                ],
-                                                keywords: [],
-                                            },
-                                        },
-                                    ),
-                                    attr: Identifier {
-                                        id: Name("hide"),
-                                        range: 19..27,
-                                    },
-                                    ctx: Load,
-                                },
-                            ),
-                            arguments: Arguments {
-                                range: 19..27,
-                                args: [],
-                                keywords: [],
-                            },
+                    node_index: AtomicNodeIndex(..),
+                    range: 11..19,
+                    value: Name(
+                        ExprName {
+                            node_index: AtomicNodeIndex(..),
+                            range: 11..19,
+                            id: Name("multiple"),
+                            ctx: Load,
                         },
                     ),
                 },
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
+                    range: 19..27,
+                    value: Attribute(
+                        ExprAttribute {
+                            node_index: AtomicNodeIndex(..),
+                            range: 19..27,
+                            value: EllipsisLiteral(
+                                ExprEllipsisLiteral {
+                                    node_index: AtomicNodeIndex(..),
+                                    range: 19..22,
+                                },
+                            ),
+                            attr: Identifier {
+                                id: Name("dots"),
+                                range: 23..27,
+                                node_index: AtomicNodeIndex(..),
+                            },
+                            ctx: Load,
+                        },
+                    ),
+                },
+            ),
+            Expr(
+                StmtExpr {
+                    node_index: AtomicNodeIndex(..),
+                    range: 28..36,
+                    value: Name(
+                        ExprName {
+                            node_index: AtomicNodeIndex(..),
+                            range: 28..36,
+                            id: Name("multiple"),
+                            ctx: Load,
+                        },
+                    ),
+                },
+            ),
+            Expr(
+                StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 36..45,
-                    value: Call(
-                        ExprCall {
+                    value: Attribute(
+                        ExprAttribute {
+                            node_index: AtomicNodeIndex(..),
                             range: 36..45,
-                            func: Attribute(
+                            value: Attribute(
                                 ExprAttribute {
-                                    range: 36..45,
-                                    value: Call(
-                                        ExprCall {
-                                            range: 36..45,
-                                            func: Attribute(
-                                                ExprAttribute {
-                                                    range: 36..39,
-                                                    value: Name(
-                                                        ExprName {
-                                                            range: 36..39,
-                                                            id: Name("__xonsh__"),
-                                                            ctx: Load,
-                                                        },
-                                                    ),
-                                                    attr: Identifier {
-                                                        id: Name("cmd"),
-                                                        range: 36..39,
-                                                    },
-                                                    ctx: Load,
-                                                },
-                                            ),
-                                            arguments: Arguments {
-                                                range: 36..45,
-                                                args: [
-                                                    StringLiteral(
-                                                        ExprStringLiteral {
-                                                            range: 36..45,
-                                                            value: StringLiteralValue {
-                                                                inner: Single(
-                                                                    StringLiteral {
-                                                                        range: 36..45,
-                                                                        value: ".....dots",
-                                                                        flags: StringLiteralFlags {
-                                                                            quote_style: Single,
-                                                                            prefix: Empty,
-                                                                            triple_quoted: false,
-                                                                        },
-                                                                    },
-                                                                ),
-                                                            },
-                                                        },
-                                                    ),
-                                                ],
-                                                keywords: [],
-                                            },
+                                    node_index: AtomicNodeIndex(..),
+                                    range: 36..40,
+                                    value: EllipsisLiteral(
+                                        ExprEllipsisLiteral {
+                                            node_index: AtomicNodeIndex(..),
+                                            range: 36..39,
                                         },
                                     ),
                                     attr: Identifier {
-                                        id: Name("hide"),
-                                        range: 36..45,
+                                        id: Name(""),
+                                        range: 40..40,
+                                        node_index: AtomicNodeIndex(..),
                                     },
                                     ctx: Load,
                                 },
                             ),
-                            arguments: Arguments {
-                                range: 36..45,
-                                args: [],
-                                keywords: [],
+                            attr: Identifier {
+                                id: Name("dots"),
+                                range: 41..45,
+                                node_index: AtomicNodeIndex(..),
                             },
+                            ctx: Load,
                         },
                     ),
                 },
@@ -195,4 +147,28 @@ Module(
   |       ^ Syntax Error: Expected an identifier
 2 | multiple....dots
 3 | multiple.....dots
+  |
+
+
+  |
+1 | extra..dot
+2 | multiple....dots
+  |         ^^^ Syntax Error: Simple statements must be separated by newlines or semicolons
+3 | multiple.....dots
+  |
+
+
+  |
+1 | extra..dot
+2 | multiple....dots
+3 | multiple.....dots
+  |         ^^^ Syntax Error: Simple statements must be separated by newlines or semicolons
+  |
+
+
+  |
+1 | extra..dot
+2 | multiple....dots
+3 | multiple.....dots
+  |             ^ Syntax Error: Expected an identifier
   |

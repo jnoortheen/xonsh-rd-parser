@@ -18,6 +18,7 @@ repos:
       - id: check-toml
       - id: check-merge-conflict
       - id: debug-statements
+        exclude: crates/ruff_python_parser.*
       - id: check-added-large-files
 
   - repo: https://github.com/compilerla/conventional-pre-commit

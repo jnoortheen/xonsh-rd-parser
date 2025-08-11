@@ -1,23 +1,26 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/invalid/expressions/compare/invalid_order.py
-snapshot_kind: text
 ---
 ## AST
 
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..131,
         body: [
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 0..10,
                     value: Compare(
                         ExprCompare {
+                            node_index: AtomicNodeIndex(..),
                             range: 0..10,
                             left: Name(
                                 ExprName {
+                                    node_index: AtomicNodeIndex(..),
                                     range: 0..1,
                                     id: Name("x"),
                                     ctx: Load,
@@ -29,10 +32,12 @@ Module(
                             comparators: [
                                 UnaryOp(
                                     ExprUnaryOp {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 5..10,
                                         op: Not,
                                         operand: Name(
                                             ExprName {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 9..10,
                                                 id: Name("y"),
                                                 ctx: Load,
@@ -47,10 +52,12 @@ Module(
             ),
             Assign(
                 StmtAssign {
+                    node_index: AtomicNodeIndex(..),
                     range: 35..41,
                     targets: [
                         Name(
                             ExprName {
+                                node_index: AtomicNodeIndex(..),
                                 range: 35..36,
                                 id: Name("x"),
                                 ctx: Store,
@@ -59,9 +66,11 @@ Module(
                     ],
                     value: Compare(
                         ExprCompare {
+                            node_index: AtomicNodeIndex(..),
                             range: 38..41,
                             left: Name(
                                 ExprName {
+                                    node_index: AtomicNodeIndex(..),
                                     range: 38..38,
                                     id: Name(""),
                                     ctx: Invalid,
@@ -73,6 +82,7 @@ Module(
                             comparators: [
                                 Name(
                                     ExprName {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 40..41,
                                         id: Name("y"),
                                         ctx: Load,
@@ -85,107 +95,49 @@ Module(
             ),
             Expr(
                 StmtExpr {
-                    range: 122..130,
-                    value: Call(
-                        ExprCall {
-                            range: 122..130,
-                            func: Attribute(
-                                ExprAttribute {
-                                    range: 122..130,
-                                    value: Call(
-                                        ExprCall {
-                                            range: 122..130,
-                                            func: Attribute(
-                                                ExprAttribute {
-                                                    range: 122..125,
-                                                    value: Name(
-                                                        ExprName {
-                                                            range: 122..125,
-                                                            id: Name("__xonsh__"),
-                                                            ctx: Load,
-                                                        },
-                                                    ),
-                                                    attr: Identifier {
-                                                        id: Name("cmd"),
-                                                        range: 122..125,
-                                                    },
-                                                    ctx: Load,
-                                                },
-                                            ),
-                                            arguments: Arguments {
-                                                range: 122..130,
-                                                args: [
-                                                    StringLiteral(
-                                                        ExprStringLiteral {
-                                                            range: 122..125,
-                                                            value: StringLiteralValue {
-                                                                inner: Single(
-                                                                    StringLiteral {
-                                                                        range: 122..125,
-                                                                        value: "not",
-                                                                        flags: StringLiteralFlags {
-                                                                            quote_style: Single,
-                                                                            prefix: Empty,
-                                                                            triple_quoted: false,
-                                                                        },
-                                                                    },
-                                                                ),
-                                                            },
-                                                        },
-                                                    ),
-                                                    StringLiteral(
-                                                        ExprStringLiteral {
-                                                            range: 126..128,
-                                                            value: StringLiteralValue {
-                                                                inner: Single(
-                                                                    StringLiteral {
-                                                                        range: 126..128,
-                                                                        value: "is",
-                                                                        flags: StringLiteralFlags {
-                                                                            quote_style: Single,
-                                                                            prefix: Empty,
-                                                                            triple_quoted: false,
-                                                                        },
-                                                                    },
-                                                                ),
-                                                            },
-                                                        },
-                                                    ),
-                                                    StringLiteral(
-                                                        ExprStringLiteral {
-                                                            range: 129..130,
-                                                            value: StringLiteralValue {
-                                                                inner: Single(
-                                                                    StringLiteral {
-                                                                        range: 129..130,
-                                                                        value: "y",
-                                                                        flags: StringLiteralFlags {
-                                                                            quote_style: Single,
-                                                                            prefix: Empty,
-                                                                            triple_quoted: false,
-                                                                        },
-                                                                    },
-                                                                ),
-                                                            },
-                                                        },
-                                                    ),
-                                                ],
-                                                keywords: [],
-                                            },
-                                        },
-                                    ),
-                                    attr: Identifier {
-                                        id: Name("hide"),
-                                        range: 122..130,
-                                    },
+                    node_index: AtomicNodeIndex(..),
+                    range: 120..121,
+                    value: Name(
+                        ExprName {
+                            node_index: AtomicNodeIndex(..),
+                            range: 120..121,
+                            id: Name("x"),
+                            ctx: Load,
+                        },
+                    ),
+                },
+            ),
+            Expr(
+                StmtExpr {
+                    node_index: AtomicNodeIndex(..),
+                    range: 122..128,
+                    value: UnaryOp(
+                        ExprUnaryOp {
+                            node_index: AtomicNodeIndex(..),
+                            range: 122..128,
+                            op: Not,
+                            operand: Name(
+                                ExprName {
+                                    node_index: AtomicNodeIndex(..),
+                                    range: 126..128,
+                                    id: Name("is"),
                                     ctx: Load,
                                 },
                             ),
-                            arguments: Arguments {
-                                range: 122..130,
-                                args: [],
-                                keywords: [],
-                            },
+                        },
+                    ),
+                },
+            ),
+            Expr(
+                StmtExpr {
+                    node_index: AtomicNodeIndex(..),
+                    range: 129..130,
+                    value: Name(
+                        ExprName {
+                            node_index: AtomicNodeIndex(..),
+                            range: 129..130,
+                            id: Name("y"),
+                            ctx: Load,
                         },
                     ),
                 },
@@ -199,7 +151,7 @@ Module(
   |
 1 | x in not y
   |      ^^^^^ Syntax Error: Boolean 'not' expression cannot be used here
-2 | 
+2 |
 3 | # `=>` instead of `>=`
   |
 
@@ -208,6 +160,27 @@ Module(
 3 | # `=>` instead of `>=`
 4 | x => y
   |    ^ Syntax Error: Expected an expression
-5 | 
+5 |
 6 | # Same here as well, `not` without `in` is considered to be a unary operator
+  |
+
+
+  |
+6 | # Same here as well, `not` without `in` is considered to be a unary operator
+7 | x not is y
+  |   ^^^ Syntax Error: Simple statements must be separated by newlines or semicolons
+  |
+
+
+  |
+6 | # Same here as well, `not` without `in` is considered to be a unary operator
+7 | x not is y
+  |       ^^ Syntax Error: Expected an identifier, but found a keyword 'is' that cannot be used here
+  |
+
+
+  |
+6 | # Same here as well, `not` without `in` is considered to be a unary operator
+7 | x not is y
+  |          ^ Syntax Error: Simple statements must be separated by newlines or semicolons
   |

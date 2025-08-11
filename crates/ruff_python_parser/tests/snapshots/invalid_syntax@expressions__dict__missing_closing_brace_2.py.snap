@@ -8,19 +8,23 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..27,
         body: [
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 0..6,
                     value: Dict(
                         ExprDict {
+                            node_index: AtomicNodeIndex(..),
                             range: 0..6,
                             items: [
                                 DictItem {
                                     key: Some(
                                         Name(
                                             ExprName {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 1..2,
                                                 id: Name("x"),
                                                 ctx: Load,
@@ -29,6 +33,7 @@ Module(
                                     ),
                                     value: NumberLiteral(
                                         ExprNumberLiteral {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 4..5,
                                             value: Int(
                                                 1,
@@ -43,16 +48,21 @@ Module(
             ),
             FunctionDef(
                 StmtFunctionDef {
+                    node_index: AtomicNodeIndex(..),
                     range: 8..27,
                     is_async: false,
                     decorator_list: [],
                     name: Identifier {
                         id: Name("foo"),
                         range: 12..15,
+                        node_index: AtomicNodeIndex(..),
                     },
                     type_params: None,
                     parameters: Parameters {
                         range: 15..17,
+                        node_index: AtomicNodeIndex(
+                            0,
+                        ),
                         posonlyargs: [],
                         args: [],
                         vararg: None,
@@ -63,6 +73,7 @@ Module(
                     body: [
                         Pass(
                             StmtPass {
+                                node_index: AtomicNodeIndex(..),
                                 range: 23..27,
                             },
                         ),

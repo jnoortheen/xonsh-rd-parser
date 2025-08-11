@@ -6,27 +6,33 @@ snapshot_kind: text
 [
     Expr(
         StmtExpr {
+            node_index: AtomicNodeIndex(..),
             range: 0..11,
             value: FString(
                 ExprFString {
+                    node_index: AtomicNodeIndex(..),
                     range: 0..11,
                     value: FStringValue {
                         inner: Single(
                             FString(
                                 FString {
                                     range: 0..11,
+                                    node_index: AtomicNodeIndex(..),
                                     elements: [
                                         Literal(
                                             FStringLiteralElement {
                                                 range: 4..5,
+                                                node_index: AtomicNodeIndex(..),
                                                 value: "\n",
                                             },
                                         ),
                                         Expression(
                                             FStringExpressionElement {
                                                 range: 5..8,
+                                                node_index: AtomicNodeIndex(..),
                                                 expression: Name(
                                                     ExprName {
+                                                        node_index: AtomicNodeIndex(..),
                                                         range: 6..7,
                                                         id: Name("x"),
                                                         ctx: Load,

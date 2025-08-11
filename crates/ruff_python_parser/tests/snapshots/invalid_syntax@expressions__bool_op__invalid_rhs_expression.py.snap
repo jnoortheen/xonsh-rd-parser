@@ -8,18 +8,22 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..31,
         body: [
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 0..17,
                     value: BoolOp(
                         ExprBoolOp {
+                            node_index: AtomicNodeIndex(..),
                             range: 0..17,
                             op: And,
                             values: [
                                 Name(
                                     ExprName {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 0..1,
                                         id: Name("x"),
                                         ctx: Load,
@@ -27,19 +31,26 @@ Module(
                                 ),
                                 Lambda(
                                     ExprLambda {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 6..17,
                                         parameters: Some(
                                             Parameters {
                                                 range: 13..14,
+                                                node_index: AtomicNodeIndex(
+                                                    0,
+                                                ),
                                                 posonlyargs: [],
                                                 args: [
                                                     ParameterWithDefault {
                                                         range: 13..14,
+                                                        node_index: AtomicNodeIndex(..),
                                                         parameter: Parameter {
                                                             range: 13..14,
+                                                            node_index: AtomicNodeIndex(..),
                                                             name: Identifier {
                                                                 id: Name("y"),
                                                                 range: 13..14,
+                                                                node_index: AtomicNodeIndex(..),
                                                             },
                                                             annotation: None,
                                                         },
@@ -53,6 +64,7 @@ Module(
                                         ),
                                         body: Name(
                                             ExprName {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 16..17,
                                                 id: Name("y"),
                                                 ctx: Load,
@@ -67,14 +79,17 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 19..31,
                     value: BoolOp(
                         ExprBoolOp {
+                            node_index: AtomicNodeIndex(..),
                             range: 19..31,
                             op: Or,
                             values: [
                                 Name(
                                     ExprName {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 19..20,
                                         id: Name("x"),
                                         ctx: Load,
@@ -82,10 +97,12 @@ Module(
                                 ),
                                 Yield(
                                     ExprYield {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 24..31,
                                         value: Some(
                                             Name(
                                                 ExprName {
+                                                    node_index: AtomicNodeIndex(..),
                                                     range: 30..31,
                                                     id: Name("y"),
                                                     ctx: Load,

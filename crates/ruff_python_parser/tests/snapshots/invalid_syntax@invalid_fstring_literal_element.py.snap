@@ -8,23 +8,28 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..58,
         body: [
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 0..26,
                     value: FString(
                         ExprFString {
+                            node_index: AtomicNodeIndex(..),
                             range: 0..26,
                             value: FStringValue {
                                 inner: Single(
                                     FString(
                                         FString {
                                             range: 0..26,
+                                            node_index: AtomicNodeIndex(..),
                                             elements: [
                                                 Literal(
                                                     FStringLiteralElement {
                                                         range: 2..25,
+                                                        node_index: AtomicNodeIndex(..),
                                                         value: "",
                                                     },
                                                 ),
@@ -44,19 +49,23 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 27..57,
                     value: FString(
                         ExprFString {
+                            node_index: AtomicNodeIndex(..),
                             range: 27..57,
                             value: FStringValue {
                                 inner: Single(
                                     FString(
                                         FString {
                                             range: 27..57,
+                                            node_index: AtomicNodeIndex(..),
                                             elements: [
                                                 Literal(
                                                     FStringLiteralElement {
                                                         range: 31..54,
+                                                        node_index: AtomicNodeIndex(..),
                                                         value: "",
                                                     },
                                                 ),

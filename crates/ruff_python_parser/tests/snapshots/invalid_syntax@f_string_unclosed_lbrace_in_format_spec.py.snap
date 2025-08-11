@@ -8,31 +8,38 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..29,
         body: [
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 0..12,
                     value: FString(
                         ExprFString {
+                            node_index: AtomicNodeIndex(..),
                             range: 0..12,
                             value: FStringValue {
                                 inner: Single(
                                     FString(
                                         FString {
                                             range: 0..12,
+                                            node_index: AtomicNodeIndex(..),
                                             elements: [
                                                 Literal(
                                                     FStringLiteralElement {
                                                         range: 2..8,
+                                                        node_index: AtomicNodeIndex(..),
                                                         value: "hello ",
                                                     },
                                                 ),
                                                 Expression(
                                                     FStringExpressionElement {
                                                         range: 8..11,
+                                                        node_index: AtomicNodeIndex(..),
                                                         expression: Name(
                                                             ExprName {
+                                                                node_index: AtomicNodeIndex(..),
                                                                 range: 9..10,
                                                                 id: Name("x"),
                                                                 ctx: Load,
@@ -43,6 +50,7 @@ Module(
                                                         format_spec: Some(
                                                             FStringFormatSpec {
                                                                 range: 11..11,
+                                                                node_index: AtomicNodeIndex(..),
                                                                 elements: [],
                                                             },
                                                         ),
@@ -64,27 +72,33 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 13..28,
                     value: FString(
                         ExprFString {
+                            node_index: AtomicNodeIndex(..),
                             range: 13..28,
                             value: FStringValue {
                                 inner: Single(
                                     FString(
                                         FString {
                                             range: 13..28,
+                                            node_index: AtomicNodeIndex(..),
                                             elements: [
                                                 Literal(
                                                     FStringLiteralElement {
                                                         range: 15..21,
+                                                        node_index: AtomicNodeIndex(..),
                                                         value: "hello ",
                                                     },
                                                 ),
                                                 Expression(
                                                     FStringExpressionElement {
                                                         range: 21..27,
+                                                        node_index: AtomicNodeIndex(..),
                                                         expression: Name(
                                                             ExprName {
+                                                                node_index: AtomicNodeIndex(..),
                                                                 range: 22..23,
                                                                 id: Name("x"),
                                                                 ctx: Load,
@@ -95,10 +109,12 @@ Module(
                                                         format_spec: Some(
                                                             FStringFormatSpec {
                                                                 range: 24..27,
+                                                                node_index: AtomicNodeIndex(..),
                                                                 elements: [
                                                                     Literal(
                                                                         FStringLiteralElement {
                                                                             range: 24..27,
+                                                                            node_index: AtomicNodeIndex(..),
                                                                             value: ".3f",
                                                                         },
                                                                     ),

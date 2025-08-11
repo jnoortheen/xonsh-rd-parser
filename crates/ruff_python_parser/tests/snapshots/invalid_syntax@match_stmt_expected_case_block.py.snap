@@ -8,13 +8,16 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..61,
         body: [
             Match(
                 StmtMatch {
+                    node_index: AtomicNodeIndex(..),
                     range: 0..13,
                     subject: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 6..7,
                             id: Name("x"),
                             ctx: Load,
@@ -25,10 +28,12 @@ Module(
             ),
             Assign(
                 StmtAssign {
+                    node_index: AtomicNodeIndex(..),
                     range: 13..18,
                     targets: [
                         Name(
                             ExprName {
+                                node_index: AtomicNodeIndex(..),
                                 range: 13..14,
                                 id: Name("x"),
                                 ctx: Store,
@@ -37,6 +42,7 @@ Module(
                     ],
                     value: NumberLiteral(
                         ExprNumberLiteral {
+                            node_index: AtomicNodeIndex(..),
                             range: 17..18,
                             value: Int(
                                 1,
@@ -47,9 +53,11 @@ Module(
             ),
             Match(
                 StmtMatch {
+                    node_index: AtomicNodeIndex(..),
                     range: 19..32,
                     subject: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 25..26,
                             id: Name("x"),
                             ctx: Load,
@@ -60,9 +68,11 @@ Module(
             ),
             Match(
                 StmtMatch {
+                    node_index: AtomicNodeIndex(..),
                     range: 32..60,
                     subject: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 38..39,
                             id: Name("y"),
                             ctx: Load,
@@ -71,9 +81,11 @@ Module(
                     cases: [
                         MatchCase {
                             range: 49..60,
+                            node_index: AtomicNodeIndex(..),
                             pattern: MatchAs(
                                 PatternMatchAs {
                                     range: 54..55,
+                                    node_index: AtomicNodeIndex(..),
                                     pattern: None,
                                     name: None,
                                 },
@@ -82,9 +94,11 @@ Module(
                             body: [
                                 Expr(
                                     StmtExpr {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 57..60,
                                         value: EllipsisLiteral(
                                             ExprEllipsisLiteral {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 57..60,
                                             },
                                         ),

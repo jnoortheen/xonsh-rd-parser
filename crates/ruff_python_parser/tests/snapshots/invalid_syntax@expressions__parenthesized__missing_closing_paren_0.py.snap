@@ -8,13 +8,16 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..47,
         body: [
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 46..47,
                     value: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 47..47,
                             id: Name(""),
                             ctx: Invalid,

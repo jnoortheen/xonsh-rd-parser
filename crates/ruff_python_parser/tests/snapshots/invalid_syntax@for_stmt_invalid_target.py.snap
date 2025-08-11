@@ -8,14 +8,17 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..154,
         body: [
             For(
                 StmtFor {
+                    node_index: AtomicNodeIndex(..),
                     range: 0..15,
                     is_async: false,
                     target: NumberLiteral(
                         ExprNumberLiteral {
+                            node_index: AtomicNodeIndex(..),
                             range: 4..5,
                             value: Int(
                                 1,
@@ -24,6 +27,7 @@ Module(
                     ),
                     iter: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 9..10,
                             id: Name("x"),
                             ctx: Load,
@@ -32,9 +36,11 @@ Module(
                     body: [
                         Expr(
                             StmtExpr {
+                                node_index: AtomicNodeIndex(..),
                                 range: 12..15,
                                 value: EllipsisLiteral(
                                     ExprEllipsisLiteral {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 12..15,
                                     },
                                 ),
@@ -46,15 +52,18 @@ Module(
             ),
             For(
                 StmtFor {
+                    node_index: AtomicNodeIndex(..),
                     range: 16..33,
                     is_async: false,
                     target: StringLiteral(
                         ExprStringLiteral {
+                            node_index: AtomicNodeIndex(..),
                             range: 20..23,
                             value: StringLiteralValue {
                                 inner: Single(
                                     StringLiteral {
                                         range: 20..23,
+                                        node_index: AtomicNodeIndex(..),
                                         value: "a",
                                         flags: StringLiteralFlags {
                                             quote_style: Double,
@@ -68,6 +77,7 @@ Module(
                     ),
                     iter: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 27..28,
                             id: Name("x"),
                             ctx: Load,
@@ -76,9 +86,11 @@ Module(
                     body: [
                         Expr(
                             StmtExpr {
+                                node_index: AtomicNodeIndex(..),
                                 range: 30..33,
                                 value: EllipsisLiteral(
                                     ExprEllipsisLiteral {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 30..33,
                                     },
                                 ),
@@ -90,18 +102,22 @@ Module(
             ),
             For(
                 StmtFor {
+                    node_index: AtomicNodeIndex(..),
                     range: 34..56,
                     is_async: false,
                     target: Starred(
                         ExprStarred {
+                            node_index: AtomicNodeIndex(..),
                             range: 38..46,
                             value: BoolOp(
                                 ExprBoolOp {
+                                    node_index: AtomicNodeIndex(..),
                                     range: 39..46,
                                     op: And,
                                     values: [
                                         Name(
                                             ExprName {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 39..40,
                                                 id: Name("x"),
                                                 ctx: Load,
@@ -109,6 +125,7 @@ Module(
                                         ),
                                         Name(
                                             ExprName {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 45..46,
                                                 id: Name("y"),
                                                 ctx: Load,
@@ -122,6 +139,7 @@ Module(
                     ),
                     iter: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 50..51,
                             id: Name("z"),
                             ctx: Load,
@@ -130,9 +148,11 @@ Module(
                     body: [
                         Expr(
                             StmtExpr {
+                                node_index: AtomicNodeIndex(..),
                                 range: 53..56,
                                 value: EllipsisLiteral(
                                     ExprEllipsisLiteral {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 53..56,
                                     },
                                 ),
@@ -144,16 +164,20 @@ Module(
             ),
             For(
                 StmtFor {
+                    node_index: AtomicNodeIndex(..),
                     range: 57..77,
                     is_async: false,
                     target: Starred(
                         ExprStarred {
+                            node_index: AtomicNodeIndex(..),
                             range: 61..67,
                             value: BinOp(
                                 ExprBinOp {
+                                    node_index: AtomicNodeIndex(..),
                                     range: 62..67,
                                     left: Name(
                                         ExprName {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 62..63,
                                             id: Name("x"),
                                             ctx: Load,
@@ -162,6 +186,7 @@ Module(
                                     op: BitOr,
                                     right: Name(
                                         ExprName {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 66..67,
                                             id: Name("y"),
                                             ctx: Load,
@@ -174,6 +199,7 @@ Module(
                     ),
                     iter: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 71..72,
                             id: Name("z"),
                             ctx: Load,
@@ -182,9 +208,11 @@ Module(
                     body: [
                         Expr(
                             StmtExpr {
+                                node_index: AtomicNodeIndex(..),
                                 range: 74..77,
                                 value: EllipsisLiteral(
                                     ExprEllipsisLiteral {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 74..77,
                                     },
                                 ),
@@ -196,13 +224,16 @@ Module(
             ),
             For(
                 StmtFor {
+                    node_index: AtomicNodeIndex(..),
                     range: 78..99,
                     is_async: false,
                     target: Await(
                         ExprAwait {
+                            node_index: AtomicNodeIndex(..),
                             range: 82..89,
                             value: Name(
                                 ExprName {
+                                    node_index: AtomicNodeIndex(..),
                                     range: 88..89,
                                     id: Name("x"),
                                     ctx: Load,
@@ -212,6 +243,7 @@ Module(
                     ),
                     iter: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 93..94,
                             id: Name("z"),
                             ctx: Load,
@@ -220,9 +252,11 @@ Module(
                     body: [
                         Expr(
                             StmtExpr {
+                                node_index: AtomicNodeIndex(..),
                                 range: 96..99,
                                 value: EllipsisLiteral(
                                     ExprEllipsisLiteral {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 96..99,
                                     },
                                 ),
@@ -234,17 +268,21 @@ Module(
             ),
             For(
                 StmtFor {
+                    node_index: AtomicNodeIndex(..),
                     range: 100..121,
                     is_async: false,
                     target: Yield(
                         ExprYield {
+                            node_index: AtomicNodeIndex(..),
                             range: 104..116,
                             value: Some(
                                 Compare(
                                     ExprCompare {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 110..116,
                                         left: Name(
                                             ExprName {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 110..111,
                                                 id: Name("x"),
                                                 ctx: Load,
@@ -256,6 +294,7 @@ Module(
                                         comparators: [
                                             Name(
                                                 ExprName {
+                                                    node_index: AtomicNodeIndex(..),
                                                     range: 115..116,
                                                     id: Name("y"),
                                                     ctx: Load,
@@ -269,6 +308,7 @@ Module(
                     ),
                     iter: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 116..116,
                             id: Name(""),
                             ctx: Invalid,
@@ -277,9 +317,11 @@ Module(
                     body: [
                         Expr(
                             StmtExpr {
+                                node_index: AtomicNodeIndex(..),
                                 range: 118..121,
                                 value: EllipsisLiteral(
                                     ExprEllipsisLiteral {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 118..121,
                                     },
                                 ),
@@ -291,14 +333,17 @@ Module(
             ),
             For(
                 StmtFor {
+                    node_index: AtomicNodeIndex(..),
                     range: 122..153,
                     is_async: false,
                     target: List(
                         ExprList {
+                            node_index: AtomicNodeIndex(..),
                             range: 126..143,
                             elts: [
                                 Name(
                                     ExprName {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 127..128,
                                         id: Name("x"),
                                         ctx: Store,
@@ -306,6 +351,7 @@ Module(
                                 ),
                                 NumberLiteral(
                                     ExprNumberLiteral {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 130..131,
                                         value: Int(
                                             1,
@@ -314,6 +360,7 @@ Module(
                                 ),
                                 Name(
                                     ExprName {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 133..134,
                                         id: Name("y"),
                                         ctx: Store,
@@ -321,18 +368,22 @@ Module(
                                 ),
                                 Starred(
                                     ExprStarred {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 136..142,
                                         value: List(
                                             ExprList {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 137..142,
                                                 elts: [
                                                     StringLiteral(
                                                         ExprStringLiteral {
+                                                            node_index: AtomicNodeIndex(..),
                                                             range: 138..141,
                                                             value: StringLiteralValue {
                                                                 inner: Single(
                                                                     StringLiteral {
                                                                         range: 138..141,
+                                                                        node_index: AtomicNodeIndex(..),
                                                                         value: "a",
                                                                         flags: StringLiteralFlags {
                                                                             quote_style: Double,
@@ -357,6 +408,7 @@ Module(
                     ),
                     iter: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 147..148,
                             id: Name("z"),
                             ctx: Load,
@@ -365,9 +417,11 @@ Module(
                     body: [
                         Expr(
                             StmtExpr {
+                                node_index: AtomicNodeIndex(..),
                                 range: 150..153,
                                 value: EllipsisLiteral(
                                     ExprEllipsisLiteral {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 150..153,
                                     },
                                 ),

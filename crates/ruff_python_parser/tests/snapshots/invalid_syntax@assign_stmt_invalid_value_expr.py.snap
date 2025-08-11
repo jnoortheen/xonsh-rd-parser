@@ -8,45 +8,61 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..72,
         body: [
             Assign(
                 StmtAssign {
+                    node_index: AtomicNodeIndex(..),
                     range: 0..12,
                     targets: [
                         Name(
                             ExprName {
+                                node_index: AtomicNodeIndex(..),
                                 range: 0..1,
                                 id: Name("x"),
                                 ctx: Store,
                             },
                         ),
                     ],
-                    value: Starred(
-                        ExprStarred {
-                            range: 4..12,
-                            value: BoolOp(
-                                ExprBoolOp {
-                                    range: 5..12,
-                                    op: And,
-                                    values: [
-                                        Name(
-                                            ExprName {
-                                                range: 5..6,
-                                                id: Name("a"),
-                                                ctx: Load,
+                    value: Tuple(
+                        ExprTuple {
+                            node_index: AtomicNodeIndex(..),
+                            range: 4..15,
+                            elts: [
+                                Starred(
+                                    ExprStarred {
+                                        node_index: AtomicNodeIndex(..),
+                                        range: 5..13,
+                                        value: BoolOp(
+                                            ExprBoolOp {
+                                                node_index: AtomicNodeIndex(..),
+                                                range: 6..13,
+                                                op: And,
+                                                values: [
+                                                    Name(
+                                                        ExprName {
+                                                            node_index: AtomicNodeIndex(..),
+                                                            range: 6..7,
+                                                            id: Name("a"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    Name(
+                                                        ExprName {
+                                                            node_index: AtomicNodeIndex(..),
+                                                            range: 12..13,
+                                                            id: Name("b"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                ],
                                             },
                                         ),
-                                        Name(
-                                            ExprName {
-                                                range: 11..12,
-                                                id: Name("b"),
-                                                ctx: Load,
-                                            },
-                                        ),
-                                    ],
-                                },
-                            ),
+                                        ctx: Load,
+                                    },
+                                ),
+                            ],
                             ctx: Load,
                         },
                     ),
@@ -54,33 +70,56 @@ Module(
             ),
             Assign(
                 StmtAssign {
+                    node_index: AtomicNodeIndex(..),
                     range: 13..25,
                     targets: [
                         Name(
                             ExprName {
+                                node_index: AtomicNodeIndex(..),
                                 range: 13..14,
                                 id: Name("x"),
                                 ctx: Store,
                             },
                         ),
                     ],
-                    value: Starred(
-                        ExprStarred {
-                            range: 17..25,
-                            value: Yield(
-                                ExprYield {
-                                    range: 18..25,
-                                    value: Some(
-                                        Name(
-                                            ExprName {
-                                                range: 24..25,
-                                                id: Name("x"),
-                                                ctx: Load,
+                    value: Tuple(
+                        ExprTuple {
+                            node_index: AtomicNodeIndex(..),
+                            range: 20..34,
+                            elts: [
+                                NumberLiteral(
+                                    ExprNumberLiteral {
+                                        node_index: AtomicNodeIndex(..),
+                                        range: 21..23,
+                                        value: Int(
+                                            42,
+                                        ),
+                                    },
+                                ),
+                                Starred(
+                                    ExprStarred {
+                                        node_index: AtomicNodeIndex(..),
+                                        range: 25..33,
+                                        value: Yield(
+                                            ExprYield {
+                                                node_index: AtomicNodeIndex(..),
+                                                range: 26..33,
+                                                value: Some(
+                                                    Name(
+                                                        ExprName {
+                                                            node_index: AtomicNodeIndex(..),
+                                                            range: 32..33,
+                                                            id: Name("x"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                ),
                                             },
                                         ),
-                                    ),
-                                },
-                            ),
+                                        ctx: Load,
+                                    },
+                                ),
+                            ],
                             ctx: Load,
                         },
                     ),
@@ -88,97 +127,144 @@ Module(
             ),
             Assign(
                 StmtAssign {
+                    node_index: AtomicNodeIndex(..),
                     range: 26..43,
                     targets: [
                         Name(
                             ExprName {
+                                node_index: AtomicNodeIndex(..),
                                 range: 26..27,
                                 id: Name("x"),
                                 ctx: Store,
                             },
                         ),
                     ],
-                    value: Starred(
-                        ExprStarred {
-                            range: 30..43,
-                            value: YieldFrom(
-                                ExprYieldFrom {
-                                    range: 31..43,
-                                    value: Name(
-                                        ExprName {
-                                            range: 42..43,
-                                            id: Name("x"),
-                                            ctx: Load,
-                                        },
-                                    ),
-                                },
-                            ),
+                    value: Tuple(
+                        ExprTuple {
+                            node_index: AtomicNodeIndex(..),
+                            range: 39..58,
+                            elts: [
+                                NumberLiteral(
+                                    ExprNumberLiteral {
+                                        node_index: AtomicNodeIndex(..),
+                                        range: 40..42,
+                                        value: Int(
+                                            42,
+                                        ),
+                                    },
+                                ),
+                                Starred(
+                                    ExprStarred {
+                                        node_index: AtomicNodeIndex(..),
+                                        range: 44..57,
+                                        value: YieldFrom(
+                                            ExprYieldFrom {
+                                                node_index: AtomicNodeIndex(..),
+                                                range: 45..57,
+                                                value: Name(
+                                                    ExprName {
+                                                        node_index: AtomicNodeIndex(..),
+                                                        range: 56..57,
+                                                        id: Name("x"),
+                                                        ctx: Load,
+                                                    },
+                                                ),
+                                            },
+                                        ),
+                                        ctx: Load,
+                                    },
+                                ),
+                            ],
                             ctx: Load,
+                            parenthesized: true,
                         },
                     ),
                 },
             ),
             Assign(
                 StmtAssign {
+                    node_index: AtomicNodeIndex(..),
                     range: 44..60,
                     targets: [
                         Name(
                             ExprName {
+                                node_index: AtomicNodeIndex(..),
                                 range: 44..45,
                                 id: Name("x"),
                                 ctx: Store,
                             },
                         ),
                     ],
-                    value: Starred(
-                        ExprStarred {
-                            range: 48..60,
-                            value: Lambda(
-                                ExprLambda {
-                                    range: 49..60,
-                                    parameters: Some(
-                                        Parameters {
-                                            range: 56..57,
-                                            posonlyargs: [],
-                                            args: [
-                                                ParameterWithDefault {
-                                                    range: 56..57,
-                                                    parameter: Parameter {
-                                                        range: 56..57,
-                                                        name: Identifier {
-                                                            id: Name("x"),
-                                                            range: 56..57,
-                                                        },
-                                                        annotation: None,
+                    value: Tuple(
+                        ExprTuple {
+                            node_index: AtomicNodeIndex(..),
+                            range: 63..78,
+                            elts: [
+                                Starred(
+                                    ExprStarred {
+                                        node_index: AtomicNodeIndex(..),
+                                        range: 64..76,
+                                        value: Lambda(
+                                            ExprLambda {
+                                                node_index: AtomicNodeIndex(..),
+                                                range: 65..76,
+                                                parameters: Some(
+                                                    Parameters {
+                                                        range: 72..73,
+                                                        node_index: AtomicNodeIndex(
+                                                            0,
+                                                        ),
+                                                        posonlyargs: [],
+                                                        args: [
+                                                            ParameterWithDefault {
+                                                                range: 72..73,
+                                                                node_index: AtomicNodeIndex(..),
+                                                                parameter: Parameter {
+                                                                    range: 72..73,
+                                                                    node_index: AtomicNodeIndex(..),
+                                                                    name: Identifier {
+                                                                        id: Name("x"),
+                                                                        range: 72..73,
+                                                                        node_index: AtomicNodeIndex(..),
+                                                                    },
+                                                                    annotation: None,
+                                                                },
+                                                                default: None,
+                                                            },
+                                                        ],
+                                                        vararg: None,
+                                                        kwonlyargs: [],
+                                                        kwarg: None,
                                                     },
-                                                    default: None,
-                                                },
-                                            ],
-                                            vararg: None,
-                                            kwonlyargs: [],
-                                            kwarg: None,
-                                        },
-                                    ),
-                                    body: Name(
-                                        ExprName {
-                                            range: 59..60,
-                                            id: Name("x"),
-                                            ctx: Load,
-                                        },
-                                    ),
-                                },
-                            ),
+                                                ),
+                                                body: Name(
+                                                    ExprName {
+                                                        node_index: AtomicNodeIndex(..),
+                                                        range: 75..76,
+                                                        id: Name("x"),
+                                                        ctx: Load,
+                                                    },
+                                                ),
+                                            },
+                                        ),
+                                        ctx: Load,
+                                    },
+                                ),
+                            ],
                             ctx: Load,
+                            parenthesized: true,
                         },
                     ),
                 },
             ),
             Assign(
                 StmtAssign {
+                    node_index: AtomicNodeIndex(..),
                     range: 61..66,
                     targets: [
                         Name(
                             ExprName {
+                                node_index: AtomicNodeIndex(..),
                                 range: 61..62,
                                 id: Name("x"),
                                 ctx: Store,
@@ -187,6 +273,7 @@ Module(
                     ],
                     value: Name(
                         ExprName {
+                            node_index: AtomicNodeIndex(..),
                             range: 65..66,
                             id: Name("x"),
                             ctx: Load,
@@ -196,9 +283,11 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 70..71,
                     value: NumberLiteral(
                         ExprNumberLiteral {
+                            node_index: AtomicNodeIndex(..),
                             range: 70..71,
                             value: Int(
                                 1,

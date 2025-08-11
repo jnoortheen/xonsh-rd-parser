@@ -1,10 +1,10 @@
 #![allow(clippy::return_self_not_must_use)]
-use ruff_python_ast::ExprContext;
 ///
 /// Helper methods to build AST from expressions.
 ///
 use ruff_python_ast::name::Name;
 use ruff_python_ast::{self as ast, Expr};
+use ruff_python_ast::{AtomicNodeIndex, ExprContext};
 use ruff_text_size::TextRange;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -31,6 +31,7 @@ impl ExprWrap {
             func: Box::new(self.0),
             arguments,
             range,
+            node_index: AtomicNodeIndex::dummy(),
         })
         .into()
     }
@@ -40,6 +41,7 @@ impl ExprWrap {
             range,
             args: args.into_boxed_slice(),
             keywords: vec![].into_boxed_slice(),
+            node_index: AtomicNodeIndex::dummy(),
         };
         self.call(arguments, range)
     }
@@ -49,6 +51,7 @@ impl ExprWrap {
             value: Box::new(self.0),
             ctx: ExprContext::Load,
             range,
+            node_index: AtomicNodeIndex::dummy(),
         })
     }
     pub(crate) fn call_empty(self, range: TextRange) -> Self {
@@ -60,6 +63,7 @@ impl ExprWrap {
             attr: Self::identifier(name, range),
             value: Box::new(self.0),
             ctx: ExprContext::Load,
+            node_index: AtomicNodeIndex::dummy(),
         };
 
         Expr::from(name).into()

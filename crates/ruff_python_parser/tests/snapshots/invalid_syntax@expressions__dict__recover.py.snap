@@ -8,17 +8,21 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..346,
         body: [
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 88..91,
                     value: Set(
                         ExprSet {
+                            node_index: AtomicNodeIndex(..),
                             range: 88..91,
                             elts: [
                                 Name(
                                     ExprName {
+                                        node_index: AtomicNodeIndex(..),
                                         range: 89..89,
                                         id: Name(""),
                                         ctx: Invalid,
@@ -31,15 +35,18 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 93..105,
                     value: Dict(
                         ExprDict {
+                            node_index: AtomicNodeIndex(..),
                             range: 93..105,
                             items: [
                                 DictItem {
                                     key: Some(
                                         NumberLiteral(
                                             ExprNumberLiteral {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 94..95,
                                                 value: Int(
                                                     1,
@@ -49,6 +56,7 @@ Module(
                                     ),
                                     value: NumberLiteral(
                                         ExprNumberLiteral {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 97..98,
                                             value: Int(
                                                 2,
@@ -60,6 +68,7 @@ Module(
                                     key: Some(
                                         NumberLiteral(
                                             ExprNumberLiteral {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 100..101,
                                                 value: Int(
                                                     3,
@@ -69,6 +78,7 @@ Module(
                                     ),
                                     value: NumberLiteral(
                                         ExprNumberLiteral {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 103..104,
                                             value: Int(
                                                 4,
@@ -83,15 +93,18 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 107..115,
                     value: Dict(
                         ExprDict {
+                            node_index: AtomicNodeIndex(..),
                             range: 107..115,
                             items: [
                                 DictItem {
                                     key: Some(
                                         NumberLiteral(
                                             ExprNumberLiteral {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 108..109,
                                                 value: Int(
                                                     1,
@@ -101,6 +114,7 @@ Module(
                                     ),
                                     value: NumberLiteral(
                                         ExprNumberLiteral {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 111..112,
                                             value: Int(
                                                 2,
@@ -115,15 +129,18 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 133..144,
                     value: Dict(
                         ExprDict {
+                            node_index: AtomicNodeIndex(..),
                             range: 133..144,
                             items: [
                                 DictItem {
                                     key: Some(
                                         NumberLiteral(
                                             ExprNumberLiteral {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 134..135,
                                                 value: Int(
                                                     1,
@@ -133,6 +150,7 @@ Module(
                                     ),
                                     value: NumberLiteral(
                                         ExprNumberLiteral {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 137..138,
                                             value: Int(
                                                 2,
@@ -144,6 +162,7 @@ Module(
                                     key: Some(
                                         NumberLiteral(
                                             ExprNumberLiteral {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 139..140,
                                                 value: Int(
                                                     3,
@@ -153,6 +172,7 @@ Module(
                                     ),
                                     value: NumberLiteral(
                                         ExprNumberLiteral {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 142..143,
                                             value: Int(
                                                 4,
@@ -167,15 +187,18 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 157..162,
                     value: Dict(
                         ExprDict {
+                            node_index: AtomicNodeIndex(..),
                             range: 157..162,
                             items: [
                                 DictItem {
                                     key: Some(
                                         NumberLiteral(
                                             ExprNumberLiteral {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 158..159,
                                                 value: Int(
                                                     1,
@@ -185,6 +208,7 @@ Module(
                                     ),
                                     value: Name(
                                         ExprName {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 160..160,
                                             id: Name(""),
                                             ctx: Invalid,
@@ -198,15 +222,18 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 201..205,
                     value: Dict(
                         ExprDict {
+                            node_index: AtomicNodeIndex(..),
                             range: 201..205,
                             items: [
                                 DictItem {
                                     key: None,
                                     value: Name(
                                         ExprName {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 204..204,
                                             id: Name(""),
                                             ctx: Invalid,
@@ -220,15 +247,18 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 206..222,
                     value: Dict(
                         ExprDict {
+                            node_index: AtomicNodeIndex(..),
                             range: 206..222,
                             items: [
                                 DictItem {
                                     key: Some(
                                         Name(
                                             ExprName {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 207..208,
                                                 id: Name("x"),
                                                 ctx: Load,
@@ -237,6 +267,7 @@ Module(
                                     ),
                                     value: Name(
                                         ExprName {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 210..211,
                                             id: Name("y"),
                                             ctx: Load,
@@ -247,6 +278,7 @@ Module(
                                     key: None,
                                     value: Name(
                                         ExprName {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 215..215,
                                             id: Name(""),
                                             ctx: Invalid,
@@ -257,6 +289,7 @@ Module(
                                     key: Some(
                                         Name(
                                             ExprName {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 217..218,
                                                 id: Name("a"),
                                                 ctx: Load,
@@ -265,6 +298,7 @@ Module(
                                     ),
                                     value: Name(
                                         ExprName {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 220..221,
                                             id: Name("b"),
                                             ctx: Load,
@@ -278,18 +312,22 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 310..330,
                     value: Dict(
                         ExprDict {
+                            node_index: AtomicNodeIndex(..),
                             range: 310..330,
                             items: [
                                 DictItem {
                                     key: Some(
                                         Starred(
                                             ExprStarred {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 311..313,
                                                 value: Name(
                                                     ExprName {
+                                                        node_index: AtomicNodeIndex(..),
                                                         range: 312..313,
                                                         id: Name("x"),
                                                         ctx: Load,
@@ -301,6 +339,7 @@ Module(
                                     ),
                                     value: Name(
                                         ExprName {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 315..316,
                                             id: Name("y"),
                                             ctx: Load,
@@ -311,6 +350,7 @@ Module(
                                     key: Some(
                                         Name(
                                             ExprName {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 318..319,
                                                 id: Name("z"),
                                                 ctx: Load,
@@ -319,6 +359,7 @@ Module(
                                     ),
                                     value: Name(
                                         ExprName {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 321..322,
                                             id: Name("a"),
                                             ctx: Load,
@@ -329,9 +370,11 @@ Module(
                                     key: Some(
                                         Starred(
                                             ExprStarred {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 324..326,
                                                 value: Name(
                                                     ExprName {
+                                                        node_index: AtomicNodeIndex(..),
                                                         range: 325..326,
                                                         id: Name("b"),
                                                         ctx: Load,
@@ -343,6 +386,7 @@ Module(
                                     ),
                                     value: Name(
                                         ExprName {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 328..329,
                                             id: Name("c"),
                                             ctx: Load,
@@ -356,15 +400,18 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 331..345,
                     value: Dict(
                         ExprDict {
+                            node_index: AtomicNodeIndex(..),
                             range: 331..345,
                             items: [
                                 DictItem {
                                     key: Some(
                                         Name(
                                             ExprName {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 332..333,
                                                 id: Name("x"),
                                                 ctx: Load,
@@ -373,9 +420,11 @@ Module(
                                     ),
                                     value: Starred(
                                         ExprStarred {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 335..337,
                                             value: Name(
                                                 ExprName {
+                                                    node_index: AtomicNodeIndex(..),
                                                     range: 336..337,
                                                     id: Name("y"),
                                                     ctx: Load,
@@ -389,6 +438,7 @@ Module(
                                     key: Some(
                                         Name(
                                             ExprName {
+                                                node_index: AtomicNodeIndex(..),
                                                 range: 339..340,
                                                 id: Name("z"),
                                                 ctx: Load,
@@ -397,9 +447,11 @@ Module(
                                     ),
                                     value: Starred(
                                         ExprStarred {
+                                            node_index: AtomicNodeIndex(..),
                                             range: 342..344,
                                             value: Name(
                                                 ExprName {
+                                                    node_index: AtomicNodeIndex(..),
                                                     range: 343..344,
                                                     id: Name("a"),
                                                     ctx: Load,

@@ -587,7 +587,7 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 [[package]]
 name = "ruff_annotate_snippets"
 version = "0.1.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.11.13#5faf72a4d9b50c6e330165685e57fae14ca68b73"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
 dependencies = [
  "anstyle",
  "memchr",
@@ -597,7 +597,7 @@ dependencies = [
 [[package]]
 name = "ruff_cache"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.11.13#5faf72a4d9b50c6e330165685e57fae14ca68b73"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
 dependencies = [
  "filetime",
  "glob",
@@ -610,7 +610,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_ast"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.11.13#5faf72a4d9b50c6e330165685e57fae14ca68b73"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
 dependencies = [
  "aho-corasick",
  "bitflags",
@@ -624,6 +624,7 @@ dependencies = [
  "ruff_text_size",
  "rustc-hash",
  "serde",
+ "thiserror",
 ]
 
 [[package]]
@@ -654,7 +655,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_trivia"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.11.13#5faf72a4d9b50c6e330165685e57fae14ca68b73"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
 dependencies = [
  "itertools",
  "ruff_source_file",
@@ -665,7 +666,7 @@ dependencies = [
 [[package]]
 name = "ruff_source_file"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.11.13#5faf72a4d9b50c6e330165685e57fae14ca68b73"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
 dependencies = [
  "memchr",
  "ruff_text_size",
@@ -674,7 +675,7 @@ dependencies = [
 [[package]]
 name = "ruff_text_size"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.11.13#5faf72a4d9b50c6e330165685e57fae14ca68b73"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
 dependencies = [
  "serde",
 ]
@@ -784,6 +785,26 @@ name = "target-lexicon"
 version = "0.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e502f78cdbb8ba4718f566c418c52bc729126ffd16baee5baa718cf25dd5a69a"
+
+[[package]]
+name = "thiserror"
+version = "2.0.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "567b8a2dae586314f7be2a752ec7474332959c6460e02bde30d702a66d488708"
+dependencies = [
+ "thiserror-impl",
+]
+
+[[package]]
+name = "thiserror-impl"
+version = "2.0.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f7cf42b4507d8ea322120659672cf1b9dbb93f8f2d4ecfd6e51350ff5b17a1d"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "tinyvec"

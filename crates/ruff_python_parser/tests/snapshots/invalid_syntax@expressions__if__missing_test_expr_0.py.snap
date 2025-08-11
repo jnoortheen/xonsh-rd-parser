@@ -8,16 +8,20 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
+        node_index: AtomicNodeIndex(..),
         range: 0..76,
         body: [
             Expr(
                 StmtExpr {
+                    node_index: AtomicNodeIndex(..),
                     range: 51..55,
                     value: If(
                         ExprIf {
+                            node_index: AtomicNodeIndex(..),
                             range: 51..55,
                             test: Name(
                                 ExprName {
+                                    node_index: AtomicNodeIndex(..),
                                     range: 55..55,
                                     id: Name(""),
                                     ctx: Invalid,
@@ -25,6 +29,7 @@ Module(
                             ),
                             body: Name(
                                 ExprName {
+                                    node_index: AtomicNodeIndex(..),
                                     range: 51..52,
                                     id: Name("x"),
                                     ctx: Load,
@@ -32,6 +37,7 @@ Module(
                             ),
                             orelse: Name(
                                 ExprName {
+                                    node_index: AtomicNodeIndex(..),
                                     range: 55..55,
                                     id: Name(""),
                                     ctx: Invalid,
@@ -43,16 +49,21 @@ Module(
             ),
             FunctionDef(
                 StmtFunctionDef {
+                    node_index: AtomicNodeIndex(..),
                     range: 57..76,
                     is_async: false,
                     decorator_list: [],
                     name: Identifier {
                         id: Name("foo"),
                         range: 61..64,
+                        node_index: AtomicNodeIndex(..),
                     },
                     type_params: None,
                     parameters: Parameters {
                         range: 64..66,
+                        node_index: AtomicNodeIndex(
+                            0,
+                        ),
                         posonlyargs: [],
                         args: [],
                         vararg: None,
@@ -63,6 +74,7 @@ Module(
                     body: [
                         Pass(
                             StmtPass {
+                                node_index: AtomicNodeIndex(..),
                                 range: 72..76,
                             },
                         ),

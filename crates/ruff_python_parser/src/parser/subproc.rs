@@ -1,7 +1,9 @@
 use std::vec;
 
 use ruff_python_ast::name::Name;
-use ruff_python_ast::{self as ast, DictItem, Expr, ExprContext, ExprDict, ExprTuple};
+use ruff_python_ast::{
+    self as ast, AtomicNodeIndex, DictItem, Expr, ExprContext, ExprDict, ExprTuple,
+};
 use ruff_text_size::{Ranged, TextRange, TextSize};
 
 use crate::ParseErrorType;
@@ -41,6 +43,7 @@ impl Parser<'_> {
         ast::Stmt::Expr(ast::StmtExpr {
             range: self.node_range(start),
             value: Box::new(expr),
+            node_index: AtomicNodeIndex::dummy(),
         })
     }
 
@@ -79,6 +82,7 @@ impl Parser<'_> {
                         arg: Some(self.to_identifier("bg")),
                         value: self.literal_true(),
                         range: self.current_token_range(),
+                        node_index: AtomicNodeIndex::dummy(),
                     });
                     self.bump_any(); // skip `&`
                     self.bump(closing); // skip `)`
@@ -94,11 +98,13 @@ impl Parser<'_> {
                 let expr = Expr::from(ExprDict {
                     range,
                     items: redirects,
+                    node_index: AtomicNodeIndex::dummy(),
                 });
                 keywords.push(ast::Keyword {
                     arg: Some(self.to_identifier("redirects")),
                     value: expr,
                     range: self.node_range(start),
+                    node_index: AtomicNodeIndex::dummy(),
                 });
             }
         }
@@ -107,6 +113,7 @@ impl Parser<'_> {
             range: self.node_range(start),
             args: cmds.into_boxed_slice(),
             keywords: keywords.into_boxed_slice(),
+            node_index: AtomicNodeIndex::dummy(),
         }
     }
 
@@ -256,6 +263,7 @@ impl Parser<'_> {
             range: self.current_token_range(),
             id: Name::new(name),
             ctx: ExprContext::Load,
+            node_index: AtomicNodeIndex::dummy(),
         };
         ExprWrap(Expr::Name(val))
     }
@@ -287,6 +295,7 @@ impl Parser<'_> {
             slice: Box::new(slice),
             ctx: ExprContext::Load,
             range: self.node_range(start),
+            node_index: AtomicNodeIndex::dummy(),
         };
         Expr::Subscript(ast)
     }
@@ -319,6 +328,7 @@ impl Parser<'_> {
             slice: Box::new(slice),
             ctx: ExprContext::Load,
             range: self.node_range(slice_start),
+            node_index: AtomicNodeIndex::dummy(),
         };
         Expr::Subscript(ast)
     }
@@ -356,6 +366,7 @@ impl Parser<'_> {
         Expr::BooleanLiteral(ast::ExprBooleanLiteral {
             value: true,
             range: self.node_range(self.node_start()),
+            node_index: AtomicNodeIndex::dummy(),
         })
     }
 
@@ -390,6 +401,7 @@ impl Parser<'_> {
                 ctx: ExprContext::Load,
                 range,
                 parenthesized: false,
+                node_index: AtomicNodeIndex::dummy(),
             }),
             self.expr_name("globals").call_empty(range).into(),
             self.expr_name("locals").call_empty(range).into(),
@@ -467,7 +479,10 @@ impl Parser<'_> {
         }
         let range = self.node_range(start);
         let body = {
-            let pass = ast::StmtPass { range };
+            let pass = ast::StmtPass {
+                range,
+                node_index: AtomicNodeIndex::dummy(),
+            };
             vec![ast::Stmt::from(pass)]
         };
         let items = {
@@ -492,6 +507,7 @@ impl Parser<'_> {
                         context_expr: enter_macro.clone().call0(args, range).into(),
                         optional_vars: item.optional_vars,
                         range,
+                        node_index: AtomicNodeIndex::dummy(),
                     }
                 })
                 .collect()
@@ -504,6 +520,7 @@ impl Parser<'_> {
             body,
             is_async: false,
             range,
+            node_index: AtomicNodeIndex::dummy(),
         }
     }
 }
@@ -529,10 +546,12 @@ fn string_literal(range: TextRange, value: String) -> Expr {
         value: value.into_boxed_str(),
         range,
         flags: ast::StringLiteralFlags::empty(),
+        node_index: AtomicNodeIndex::dummy(),
     };
 
     Expr::from(ast::ExprStringLiteral {
         value: ast::StringLiteralValue::single(literal),
         range,
+        node_index: AtomicNodeIndex::dummy(),
     })
 }
