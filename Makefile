@@ -1,19 +1,5 @@
-test:
-	cargo clippy
-	cargo nextest run --workspace --all-features
-	uv run pytest
-.PHONY: test
-
-bench:
-	pytest --codspeed tests/bench.py
-	# pytest tests/test_simple.py --memray
-	python tests/bench_mem.py --empty
-	python tests/bench_mem.py
-.PHONY: bench
-
 pull:
-	git fetch ruff-repo main
-	git rm -r --cached crates/ruff_python_ast
-	git checkout ruff-repo/main -- crates/ruff_python_ast
-	# git format-patch 37f260b5af55176d333b627e997d443fbfb3341e --output-directory=parser-patches -- crates/ruff_python_parser
+	git fetch ruff-repo --tags
+	git format-patch origin/v1.0.0..origin/v1.1.0 --output-directory=patches -- crates/ruff_python_parser1
+	git checkout ruff-repo/main -- crates/ruff_python_parser1
 .PHONY: pull

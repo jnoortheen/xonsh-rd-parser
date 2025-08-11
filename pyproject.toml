@@ -39,3 +39,22 @@ exclude = ["crates", "tests/data"]
 ignore = [
     "E402", # top level imports
 ]
+
+[tool.poe.tasks]
+test.sequence = [
+    { cmd = "cargo clippy" },
+    { cmd = "cargo nextest run --workspace --all-features" },
+    { cmd = "uv run pytest" },
+]
+bench.sequence = [
+    { cmd = "pytest --codspeed tests/bench.py" },
+    # "pytest tests/test_simple.py --memray",
+    { cmd = "python tests/bench_mem.py --empty" },
+    { cmd = "python tests/bench_mem.py" },
+]
+[tool.poe.tasks.pull-ruff-crates]
+sequence = [
+    { cmd = "git fetch ruff-repo --tags" },
+    { cmd = "git format-patch $from..$to --output-directory=parser-patches -- crates/ruff_python_parser" },
+    { cmd = "echo 'Patches created in .local directory'" },
+]
