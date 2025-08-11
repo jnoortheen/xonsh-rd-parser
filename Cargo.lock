@@ -587,7 +587,7 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 [[package]]
 name = "ruff_annotate_snippets"
 version = "0.1.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.2#9bee8376a17401f9736b45fdefffb62edc2f1668"
 dependencies = [
  "anstyle",
  "memchr",
@@ -597,7 +597,7 @@ dependencies = [
 [[package]]
 name = "ruff_cache"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.2#9bee8376a17401f9736b45fdefffb62edc2f1668"
 dependencies = [
  "filetime",
  "glob",
@@ -610,7 +610,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_ast"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.2#9bee8376a17401f9736b45fdefffb62edc2f1668"
 dependencies = [
  "aho-corasick",
  "bitflags",
@@ -655,7 +655,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_trivia"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.2#9bee8376a17401f9736b45fdefffb62edc2f1668"
 dependencies = [
  "itertools",
  "ruff_source_file",
@@ -666,7 +666,7 @@ dependencies = [
 [[package]]
 name = "ruff_source_file"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.2#9bee8376a17401f9736b45fdefffb62edc2f1668"
 dependencies = [
  "memchr",
  "ruff_text_size",
@@ -675,7 +675,7 @@ dependencies = [
 [[package]]
 name = "ruff_text_size"
 version = "0.0.0"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.0#87f0feb21a1af67195bebf94d811770393f9f447"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.12.2#9bee8376a17401f9736b45fdefffb62edc2f1668"
 dependencies = [
  "serde",
 ]

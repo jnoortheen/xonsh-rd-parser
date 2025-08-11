@@ -66,3 +66,26 @@ fn test_xonsh_procs() {
 
     insta::assert_debug_snapshot!(suite);
 }
+
+#[test]
+fn test_fstring_expr_inner_line_continuation_and_t_string() {
+    let source = r#"f'{\t"i}'"#;
+
+    let parsed = parse_expression(source);
+
+    let error = parsed.unwrap_err();
+
+    insta::assert_debug_snapshot!(error);
+}
+
+#[test]
+fn test_fstring_expr_inner_line_continuation_newline_t_string() {
+    let source = r#"f'{\
+t"i}'"#;
+
+    let parsed = parse_expression(source);
+
+    let error = parsed.unwrap_err();
+
+    insta::assert_debug_snapshot!(error);
+}
