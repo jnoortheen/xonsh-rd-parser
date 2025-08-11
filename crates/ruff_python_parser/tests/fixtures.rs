@@ -270,10 +270,8 @@ fn extract_options(source: &str) -> Option<ParseOptions> {
     options.map(ParseOptions::from)
 }
 
-// Test that is intentionally ignored by default.
-// Use it for quickly debugging a parser issue.
 #[test]
-#[ignore]
+#[ignore = "Use it for quickly debugging a parser issue."]
 #[expect(clippy::print_stdout)]
 fn parser_quick_test() {
     let source = "\

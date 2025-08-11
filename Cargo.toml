@@ -112,6 +112,7 @@ get_unwrap = "warn"
 rc_buffer = "warn"
 rc_mutex = "warn"
 rest_pat_in_fully_bound_structs = "warn"
+unnecessary_debug_formatting = "allow"
 
 
 # Enable a small amount of optimization in the dev profile.
