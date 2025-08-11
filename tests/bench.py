@@ -1,19 +1,24 @@
 import pytest
 
-
-@pytest.mark.benchmark(group="parse_string")
-def test_parse_string(benchmark, parse_string):
-    @benchmark
-    def main():
-        src_txt = "print(1)"
-        return parse_string(src_txt)
+pytestmark = pytest.mark.benchmark
 
 
-@pytest.mark.benchmark(group="parse_file")
-def test_parse_file(benchmark, parse_file):
-    @benchmark
-    def main():
-        from pathlib import Path
+@pytest.fixture(name="big_python_file", scope="module")
+def _big_python_file(tmp_path_factory):
+    src_file = tmp_path_factory.mktemp("parser") / "big_file.py"
+    with src_file.open("w") as fw:
+        for idx in range(10000):
+            fw.write(f"x_{idx} = {idx} + 1\n")
+            fw.write(f"print(x_{idx})\n")
+            fw.write(f"assert x_{idx} == {idx} + 1\n")
+            if idx % 200 == 0:
+                fw.flush()
+    return src_file
 
-        path = Path(__file__).parent / "bench.py"
-        return parse_file(str(path))
+
+def test_parse_string(big_python_file, parse_string):
+    parse_string(big_python_file.read_text())
+
+
+def test_parse_file(parse_file, big_python_file):
+    parse_file(str(big_python_file))

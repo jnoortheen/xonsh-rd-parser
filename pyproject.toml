@@ -49,7 +49,7 @@ test.sequence = [
     { cmd = "pytest" },
 ]
 bench.sequence = [
-    { cmd = "pytest --codspeed tests/bench.py" },
+    { cmd = "pytest --codspeed --codspeed-warmup-time=5 tests/bench.py" },
     # "pytest tests/test_simple.py --memray",
     { cmd = "python tests/bench_mem.py --empty" },
     { cmd = "python tests/bench_mem.py" },
