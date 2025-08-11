@@ -46,7 +46,7 @@ ignore = [
 test.sequence = [
     { cmd = "cargo clippy" },
     { cmd = "cargo nextest run --workspace --all-features" },
-    { cmd = "uv run pytest" },
+    { cmd = "pytest" },
 ]
 bench.sequence = [
     { cmd = "pytest --codspeed tests/bench.py" },
