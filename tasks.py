@@ -46,11 +46,13 @@ def toml_file(path: str | Path):
     path.write_text(tomlkit.dumps(toml_doc))
 
 
-def _update_cargo_deps() -> tuple[str, str]:
+def _update_cargo_deps() -> tuple[str, str | None]:
     with toml_file("Cargo.toml") as cargo_file:
         dependencies = cargo_file["workspace"]["dependencies"]
         current_tag = dependencies["ruff_python_ast"]["tag"]
         next_tag = _get_next_tag(version.parse(current_tag))
+        if next_tag is None:
+            return current_tag, next_tag
 
         for dep, dep_data in dependencies.items():
             if dep.startswith("ruff_") and dep_data.get("tag") == current_tag:
@@ -61,6 +63,9 @@ def _update_cargo_deps() -> tuple[str, str]:
 def pull_ruff_crates():
     run("git fetch ruff-repo --tags", check=False)
     current, to = _update_cargo_deps()
+    if to is None:
+        print("No new version of ruff_python_parser found")
+        return
     run(
         f"git format-patch {current}..{to} --output-directory=parser-patches -- crates/ruff_python_parser"
     )
