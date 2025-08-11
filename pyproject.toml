@@ -25,6 +25,8 @@ dev = [
     "psutil",
     "inline-snapshot",
     "ruamel.yaml",
+    "tomlkit",
+    "packaging",
 ]
 [tool.maturin]
 features = ["pyo3/extension-module"]
@@ -52,9 +54,4 @@ bench.sequence = [
     { cmd = "python tests/bench_mem.py --empty" },
     { cmd = "python tests/bench_mem.py" },
 ]
-[tool.poe.tasks.pull-ruff-crates]
-sequence = [
-    { cmd = "git fetch ruff-repo --tags" },
-    { cmd = "git format-patch $from..$to --output-directory=parser-patches -- crates/ruff_python_parser" },
-    { cmd = "echo 'Patches created in .local directory'" },
-]
+pull-ruff-crates.script = "tasks:pull_ruff_crates"
