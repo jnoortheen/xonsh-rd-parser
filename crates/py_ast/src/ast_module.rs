@@ -1,39 +1,39 @@
 /// A wrapper around the Python ast module.
 use pyo3::prelude::PyModule;
 use pyo3::types::{IntoPyDict, PyAnyMethods};
-use pyo3::{IntoPyObject, IntoPyObjectExt, PyObject, PyResult, Python};
+use pyo3::{Bound, IntoPyObject, IntoPyObjectExt, PyAny, PyObject, PyResult, Python};
 use ruff_source_file::SourceCode;
 use ruff_text_size::TextRange;
 
 pub struct AstModule<'py> {
-    obj: PyObject,
-    pub py: Python<'py>,
+    obj: Bound<'py, PyAny>,
     source_code: &'py SourceCode<'py, 'py>,
 }
 
 impl<'py> AstModule<'py> {
+    pub fn py(&self) -> Python<'py> {
+        self.obj.py()
+    }
     pub fn new(py: Python<'py>, source_code: &'py SourceCode) -> PyResult<Self> {
-        let obj: PyObject = PyModule::import(py, "ast")?.unbind().into();
+        let obj = PyModule::import(py, "ast")?;
         Ok(Self {
-            obj,
-            py,
+            obj: obj.into_any(),
             source_code,
         })
     }
     pub(crate) fn attr(&self, name: &str) -> PyResult<Self> {
-        let obj = self.obj.getattr(self.py, name)?;
+        let obj = self.obj.getattr(name)?;
         Ok(AstModule {
             obj,
-            py: self.py,
             source_code: self.source_code,
         })
     }
     pub fn call<T: IntoPyDict<'py>>(&self, range: TextRange, kwargs: T) -> PyResult<PyObject> {
-        let dict = kwargs.into_py_dict(self.py)?;
+        let dict = kwargs.into_py_dict(self.obj.py())?;
         for (key, value) in self.location(range) {
             dict.set_item(key, value)?;
         }
-        Ok(self.obj.bind(self.py).call((), Some(&dict))?.into())
+        Ok(self.obj.call((), Some(&dict))?.into())
     }
     pub(crate) fn location(&self, range: TextRange) -> [(&'static str, usize); 4] {
         let start = self.source_code.line_column(range.start());
@@ -50,15 +50,15 @@ impl<'py> AstModule<'py> {
         self.attr("Constant")?.call(range, [("value", value)])
     }
     pub fn call0(&self) -> PyResult<PyObject> {
-        Ok(self.obj.bind(self.py).call0()?.into())
+        Ok(self.obj.call0()?.into())
     }
     pub fn callk<T: IntoPyDict<'py>>(&self, kwargs: T) -> PyResult<PyObject> {
-        let kwargs = kwargs.into_py_dict(self.py)?;
-        Ok(self.obj.bind(self.py).call((), Some(&kwargs))?.into())
+        let kwargs = kwargs.into_py_dict(self.obj.py())?;
+        Ok(self.obj.call((), Some(&kwargs))?.into())
     }
 
     pub fn empty_list(&self) -> PyResult<PyObject> {
         let empty_vec: Vec<i32> = vec![]; // Explicitly specify the type of Vec
-        empty_vec.into_py_any(self.py)
+        empty_vec.into_py_any(self.obj.py())
     }
 }

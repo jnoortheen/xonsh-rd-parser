@@ -55,19 +55,19 @@ impl ToAst for Expr {
 impl ToAst for ExprNumberLiteral {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let value = match &self.value {
-            Number::Int(value) => value.as_u64().into_py_any(module.py),
-            Number::Float(value) => value.into_py_any(module.py),
+            Number::Int(value) => value.as_u64().into_py_any(module.py()),
+            Number::Float(value) => value.into_py_any(module.py()),
             Number::Complex { real, imag } => Complex {
                 re: *real,
                 im: *imag,
             }
-            .into_py_any(module.py),
+            .into_py_any(module.py()),
         };
-        module.to_const(self.range(), value?.into_py_any(module.py)?)
+        module.to_const(self.range(), value?.into_py_any(module.py())?)
     }
 }
-impl_to_ast!(ExprEllipsisLiteral, |module| module.py.Ellipsis());
-impl_to_ast!(ExprNoneLiteral, |module| module.py.None());
+impl_to_ast!(ExprEllipsisLiteral, |module| module.py().Ellipsis());
+impl_to_ast!(ExprNoneLiteral, |module| module.py().None());
 impl ToAst for ExprBooleanLiteral {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module.to_const(self.range(), self.value)
@@ -89,9 +89,9 @@ impl ToAst for ExprStringLiteral {
         let kwargs = [
             (
                 "value",
-                self.value.to_str().to_string().into_py_any(module.py)?,
+                self.value.to_str().to_string().into_py_any(module.py())?,
             ),
-            ("kind", kind.into_py_any(module.py)?),
+            ("kind", kind.into_py_any(module.py())?),
         ];
         module.attr("Constant")?.call(self.range(), kwargs)
     }
@@ -106,12 +106,12 @@ impl ToAst for ExprFString {
                         StringLiteralPrefix::Unicode => Some("u"),
                         _ => None,
                     }
-                    .into_py_any(module.py)?;
+                    .into_py_any(module.py())?;
                     let obj = module.attr("Constant")?.call(
                         self.range(),
                         [
                             ("kind", kind),
-                            ("value", s.as_str().into_py_any(module.py)?),
+                            ("value", s.as_str().into_py_any(module.py())?),
                         ],
                     )?;
                     parts.push(obj);
@@ -136,7 +136,7 @@ impl ToAst for ExprTString {
 impl ToAst for ConversionFlag {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let flag = *self as i8;
-        flag.into_py_any(module.py)
+        flag.into_py_any(module.py())
     }
 }
 impl ToAst for InterpolatedStringFormatSpec {
@@ -147,7 +147,7 @@ impl ToAst for InterpolatedStringFormatSpec {
         }
         module
             .attr("JoinedStr")?
-            .call(self.range(), [("values", values.into_py_any(module.py)?)])
+            .call(self.range(), [("values", values.into_py_any(module.py())?)])
     }
 }
 impl ToAst for InterpolatedElement {
@@ -167,7 +167,7 @@ impl ToAst for InterpolatedStringElement {
         let obj = match self {
             Self::Literal(literal) => module.to_const(
                 self.range(),
-                literal.value.to_string().into_py_any(module.py)?,
+                literal.value.to_string().into_py_any(module.py())?,
             )?,
             Self::Interpolation(expr) => expr.to_ast(module)?,
         };
@@ -202,7 +202,7 @@ impl_to_ast!(ExprAwait, call "Await" with fields [value]);
 impl_to_ast!(ExprName, call "Name" with fields [id, ctx]);
 impl ToAst for name::Name {
     fn to_ast(&self, module: &AstModule) -> PyResult {
-        self.as_str().to_string().into_py_any(module.py)
+        self.as_str().to_string().into_py_any(module.py())
     }
 }
 impl_to_ast!(ExprStarred, call "Starred" with fields [value, ctx]);
@@ -241,7 +241,10 @@ impl ToAst for Comprehension {
             ("target", self.target.to_ast(module)?),
             ("iter", self.iter.to_ast(module)?),
             ("ifs", self.ifs.to_ast(module)?),
-            ("is_async", u8::from(self.is_async).into_py_any(module.py)?),
+            (
+                "is_async",
+                u8::from(self.is_async).into_py_any(module.py())?,
+            ),
         ])
     }
 }
@@ -288,8 +291,8 @@ impl ToAst for OptionalParameters {
                 ("defaults", module.empty_list()?),
                 ("kwonlyargs", module.empty_list()?),
                 ("kw_defaults", module.empty_list()?),
-                ("vararg", module.py.None()),
-                ("kwarg", module.py.None()),
+                ("vararg", module.py().None()),
+                ("kwarg", module.py().None()),
             ]),
         }
     }

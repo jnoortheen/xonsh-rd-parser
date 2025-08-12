@@ -47,9 +47,9 @@ impl ToAst for PatternMatchValue {
 impl ToAst for PatternMatchSingleton {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         let value = match self.value {
-            Singleton::None => module.py.None(),
-            Singleton::True => true.into_py_any(module.py)?,
-            Singleton::False => false.into_py_any(module.py)?,
+            Singleton::None => module.py().None(),
+            Singleton::True => true.into_py_any(module.py())?,
+            Singleton::False => false.into_py_any(module.py())?,
         };
         module
             .attr("MatchSingleton")?
@@ -113,8 +113,8 @@ impl ToAst for PatternMatchClass {
             [
                 ("cls", self.cls.to_ast(module)?),
                 ("patterns", self.arguments.patterns.to_ast(module)?),
-                ("kwd_attrs", kwd_attrs.into_py_any(module.py)?),
-                ("kwd_patterns", kwd_patterns.into_py_any(module.py)?),
+                ("kwd_attrs", kwd_attrs.into_py_any(module.py())?),
+                ("kwd_patterns", kwd_patterns.into_py_any(module.py())?),
             ],
         )
     }
