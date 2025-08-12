@@ -1,5 +1,8 @@
 # Xonsh Recursive Descent Parser
 
+[![PyPI version](https://img.shields.io/pypi/v/xonsh-rd-parser.svg)](https://pypi.org/project/xonsh-rd-parser/)
+[![CodSpeed Badge](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://codspeed.io/jnoortheen/xonsh-rd-parser)
+
 A Rust based, recursive descent parser for [Xonsh](https://xon.sh).
 
 # Usage
@@ -10,7 +13,7 @@ A Rust based, recursive descent parser for [Xonsh](https://xon.sh).
 pip install xonsh-rd-parser
 ```
 
-- Use it to parse Xonsh CFG 
+- Use it to parse Xonsh CFG
 ```py
 from xonsh_rd_parser import Parse
 Parse("print($HOME)").parse()
