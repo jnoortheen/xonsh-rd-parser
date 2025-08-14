@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.6.3...v1.7.0) (2025-08-14)
+
+
+### Features
+
+* improve performance by reusing bound objects ([3e97509](https://github.com/jnoortheen/xonsh-rd-parser/commit/3e97509667203adf63866de672b2cd83e093a045))
+
 ## [1.6.3](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.6.2...v1.6.3) (2025-07-22)
 
 
