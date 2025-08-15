@@ -1,7 +1,7 @@
 /// A wrapper around the Python ast module.
 use pyo3::prelude::PyModule;
-use pyo3::types::{IntoPyDict, PyAnyMethods};
-use pyo3::{Bound, IntoPyObject, IntoPyObjectExt, PyAny, PyObject, PyResult, Python};
+use pyo3::types::{IntoPyDict, PyAnyMethods, PyString};
+use pyo3::{Bound, IntoPyObject, IntoPyObjectExt, PyAny, PyObject, PyResult, Python, intern};
 use ruff_source_file::SourceCode;
 use ruff_text_size::TextRange;
 
@@ -35,15 +35,15 @@ impl<'py> AstModule<'py> {
         }
         Ok(self.obj.call((), Some(&dict))?.into())
     }
-    pub(crate) fn location(&self, range: TextRange) -> [(&'static str, usize); 4] {
+    pub(crate) fn location(&self, range: TextRange) -> [(&Bound<'_, PyString>, usize); 4] {
         let start = self.source_code.line_column(range.start());
         let end = self.source_code.line_column(range.end());
-
+        let py = self.py();
         [
-            ("lineno", start.line.get()),
-            ("col_offset", start.column.get()),
-            ("end_lineno", end.line.get()),
-            ("end_col_offset", end.column.get()),
+            (intern!(py, "lineno"), start.line.get()),
+            (intern!(py, "col_offset"), start.column.get()),
+            (intern!(py, "end_lineno"), end.line.get()),
+            (intern!(py, "end_col_offset"), end.column.get()),
         ]
     }
     pub fn to_const<T: IntoPyObject<'py>>(&self, range: TextRange, value: T) -> PyResult<PyObject> {
