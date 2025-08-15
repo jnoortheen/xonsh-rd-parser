@@ -14,4 +14,10 @@ mod xonsh_rd_parser {
 
     #[pymodule_export]
     use parser::PyParser;
+
+    /// Formats the sum of two numbers as string.
+    #[pyfunction]
+    fn get_big_py_file() -> PyResult<String> {
+        Ok(test_utils::get_big_py_file())
+    }
 }
