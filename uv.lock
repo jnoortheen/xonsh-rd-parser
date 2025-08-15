@@ -603,6 +603,19 @@ wheels = [
 ]
 
 [[package]]
+name = "xonsh"
+version = "0.19.9"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/eb/8f544caca583c5f9f0ae7d852769fdb8ed5f63b67646a3c66a2d19357d56/xonsh-0.19.9.tar.gz", hash = "sha256:4cab4c4d7a98aab7477a296f12bc008beccf3d090c6944f0b3375d80a574c37d", size = 730490, upload-time = "2025-06-24T19:59:54.029Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/72/ce/429bfed55803d7469fe3d0d02c385bc61eddfa7ace539b4fc0060fd8282d/xonsh-0.19.9-py310-none-any.whl", hash = "sha256:8974981f04740b35a6f283aefe8e50b72b00e83cf4a871d6cc04500c0e3be2dd", size = 645111, upload-time = "2025-06-24T19:59:46.79Z" },
+    { url = "https://files.pythonhosted.org/packages/a0/68/464a07569e8f973339a83d95eda980b60db4dbbe2da8ee82874081f9432c/xonsh-0.19.9-py311-none-any.whl", hash = "sha256:3c872d6f2f109ad3345af4476d2541a71d6ccdbbf2404b2fb2b95755c54e73ab", size = 645114, upload-time = "2025-06-24T19:59:52.857Z" },
+    { url = "https://files.pythonhosted.org/packages/0b/b6/a10c0c11eb2ed9edef4081feb588b1e16d8f9c752a288150163700c876cd/xonsh-0.19.9-py312-none-any.whl", hash = "sha256:ce0b91b8b25da835c0ffdb3f4aa4cf412ec5481f59a33ce9230cfa5fcbb5b0c8", size = 645105, upload-time = "2025-06-24T19:59:49.775Z" },
+    { url = "https://files.pythonhosted.org/packages/ca/8d/45f9bf28a54504cfca126ac13d7f04a564ac7c8559163f8ecbc73e87f0f2/xonsh-0.19.9-py313-none-any.whl", hash = "sha256:fa2b5f200413e92524b17da0bd6db08378e0ded12bbe81335bc94a03ea9fc670", size = 645640, upload-time = "2025-06-24T19:59:50.993Z" },
+    { url = "https://files.pythonhosted.org/packages/54/2a/fd19683e948aaa9fbcd217056417f8b7fdf972ead1b5820cbfe4f28ef93b/xonsh-0.19.9-py39-none-any.whl", hash = "sha256:b136f62f444483de2a83a8005c3e5e4fb1005a1625a4e51a2d35f0a717a7ac6f", size = 637405, upload-time = "2025-06-24T19:59:49.409Z" },
+]
+
+[[package]]
 name = "xonsh-rd-parser"
 source = { editable = "." }
 
@@ -619,6 +632,7 @@ dev = [
     { name = "pytest-subtests" },
     { name = "ruamel-yaml" },
     { name = "tomlkit" },
+    { name = "xonsh" },
 ]
 
 [package.metadata]
@@ -636,4 +650,5 @@ dev = [
     { name = "pytest-subtests", specifier = ">=0.13.1" },
     { name = "ruamel-yaml" },
     { name = "tomlkit" },
+    { name = "xonsh", specifier = ">=0.19.9" },
 ]

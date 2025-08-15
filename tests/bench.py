@@ -22,3 +22,10 @@ def test_parse_string(big_python_file, parse_string):
 
 def test_parse_file(parse_file, big_python_file):
     parse_file(str(big_python_file))
+
+
+def test_xonsh_ply(big_python_file):
+    from xonsh.parser import Parser
+
+    p = Parser()
+    p.parse(big_python_file.read_text())

@@ -27,6 +27,7 @@ dev = [
     "ruamel.yaml",
     "tomlkit",
     "packaging",
+    "xonsh>=0.19.9",
 ]
 [tool.maturin]
 features = ["pyo3/extension-module"]
@@ -50,8 +51,6 @@ test.sequence = [
 ]
 bench.sequence = [
     { cmd = "pytest --codspeed --codspeed-warmup-time=5 tests/bench.py" },
-    # "pytest tests/test_simple.py --memray",
-    { cmd = "python tests/bench_mem.py --empty" },
-    { cmd = "python tests/bench_mem.py" },
+    { cmd = "pytest tests/bench.py --memray" },
 ]
 pull-ruff-crates.script = "tasks:pull_ruff_crates"
