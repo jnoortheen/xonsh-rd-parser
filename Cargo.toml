@@ -21,7 +21,7 @@ edition = "2024"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
 name = "xonsh_rd_parser"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 pyo3 = { workspace = true }
@@ -35,6 +35,7 @@ bon = { workspace = true }
 
 [dev-dependencies]
 # insta = { workspace = true }
+divan = { package = "codspeed-divan-compat", version = "*" }
 
 [workspace.dependencies]
 ruff_cache = { git = "https://github.com/astral-sh/ruff.git", tag = "0.12.8" }
@@ -126,3 +127,7 @@ unnecessary_debug_formatting = "allow"
 [profile.dev.package]
 insta.opt-level = 3
 similar.opt-level = 3
+
+[[bench]]
+name = "parser"
+harness = false

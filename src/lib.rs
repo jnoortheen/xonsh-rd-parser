@@ -3,6 +3,7 @@ mod lexer;
 mod location;
 pub mod parser;
 mod parser_test;
+pub mod test_utils;
 
 use pyo3::prelude::*;
 

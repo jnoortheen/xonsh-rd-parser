@@ -55,7 +55,7 @@ impl PyParser {
     }
 
     #[staticmethod]
-    fn parse_file(py: Python<'_>, path: &str) -> PyResult<PyObject> {
+    pub fn parse_file(py: Python<'_>, path: &str) -> PyResult<PyObject> {
         let src = std::fs::read_to_string(path).unwrap();
         let src = PyString::new(py, &src);
         PyParser::new(src, Some(path))?.parse(py)

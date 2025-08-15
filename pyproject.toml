@@ -51,6 +51,8 @@ test.sequence = [
 ]
 bench.sequence = [
     { cmd = "pytest --codspeed --codspeed-warmup-time=5 tests/bench.py" },
-    { cmd = "pytest tests/bench.py --memray" },
+    { cmd = "pytest tests/bench.py::test_parse_file --memray" },
+    { cmd = "pytest tests/bench.py::test_xonsh_ply --memray" },
+    { cmd = "cargo bench" }
 ]
 pull-ruff-crates.script = "tasks:pull_ruff_crates"

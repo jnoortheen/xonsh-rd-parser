@@ -50,3 +50,19 @@ mod tests {
         // insta::assert_snapshot!(output);
     }
 }
+
+#[cfg(test)]
+mod py_tests {
+    use crate::parser::PyParser;
+    use crate::test_utils::get_big_py_file;
+    use pyo3::prelude::*;
+
+    #[test]
+    fn test_py_parser() {
+        pyo3::prepare_freethreaded_python();
+        Python::with_gil(|py| {
+            let file_name = get_big_py_file();
+            PyParser::parse_file(py, file_name.as_str()).unwrap();
+        })
+    }
+}

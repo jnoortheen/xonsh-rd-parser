@@ -1,7 +1,5 @@
 import pytest
 
-pytestmark = pytest.mark.benchmark
-
 
 @pytest.fixture(name="big_python_file", scope="module")
 def _big_python_file(tmp_path_factory):
@@ -16,16 +14,18 @@ def _big_python_file(tmp_path_factory):
     return src_file
 
 
-def test_parse_string(big_python_file, parse_string):
-    parse_string(big_python_file.read_text())
+def test_parse_file(big_python_file, parse_file, benchmark):
+    def target():
+        parse_file(str(big_python_file))
+
+    benchmark.pedantic(target, iterations=5, warmup_rounds=1)
 
 
-def test_parse_file(parse_file, big_python_file):
-    parse_file(str(big_python_file))
+def test_xonsh_ply(big_python_file, benchmark):
+    def target():
+        from xonsh.parser import Parser
 
+        p = Parser()
+        p.parse(big_python_file.read_text())
 
-def test_xonsh_ply(big_python_file):
-    from xonsh.parser import Parser
-
-    p = Parser()
-    p.parse(big_python_file.read_text())
+    benchmark.pedantic(target, iterations=5, warmup_rounds=1)
