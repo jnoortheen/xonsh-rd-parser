@@ -6,27 +6,27 @@ snapshot_kind: text
 [
     Expr(
         StmtExpr {
-            node_index: AtomicNodeIndex(..),
+            node_index: NodeIndex(None),
             range: 0..19,
             value: Call(
                 ExprCall {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 2..19,
                     func: Attribute(
                         ExprAttribute {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 2..19,
                             value: Call(
                                 ExprCall {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 2..19,
                                     func: Attribute(
                                         ExprAttribute {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 2..6,
                                             value: Name(
                                                 ExprName {
-                                                    node_index: AtomicNodeIndex(..),
+                                                    node_index: NodeIndex(None),
                                                     range: 2..6,
                                                     id: Name("__xonsh__"),
                                                     ctx: Load,
@@ -35,24 +35,24 @@ snapshot_kind: text
                                             attr: Identifier {
                                                 id: Name("cmd"),
                                                 range: 2..6,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                             },
                                             ctx: Load,
                                         },
                                     ),
                                     arguments: Arguments {
                                         range: 2..19,
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         args: [
                                             StringLiteral(
                                                 ExprStringLiteral {
-                                                    node_index: AtomicNodeIndex(..),
+                                                    node_index: NodeIndex(None),
                                                     range: 2..6,
                                                     value: StringLiteralValue {
                                                         inner: Single(
                                                             StringLiteral {
                                                                 range: 2..6,
-                                                                node_index: AtomicNodeIndex(..),
+                                                                node_index: NodeIndex(None),
                                                                 value: "echo",
                                                                 flags: StringLiteralFlags {
                                                                     quote_style: Single,
@@ -66,13 +66,13 @@ snapshot_kind: text
                                             ),
                                             StringLiteral(
                                                 ExprStringLiteral {
-                                                    node_index: AtomicNodeIndex(..),
+                                                    node_index: NodeIndex(None),
                                                     range: 7..10,
                                                     value: StringLiteralValue {
                                                         inner: Single(
                                                             StringLiteral {
                                                                 range: 7..10,
-                                                                node_index: AtomicNodeIndex(..),
+                                                                node_index: NodeIndex(None),
                                                                 value: "123",
                                                                 flags: StringLiteralFlags {
                                                                     quote_style: Single,
@@ -86,13 +86,13 @@ snapshot_kind: text
                                             ),
                                             StringLiteral(
                                                 ExprStringLiteral {
-                                                    node_index: AtomicNodeIndex(..),
+                                                    node_index: NodeIndex(None),
                                                     range: 11..18,
                                                     value: StringLiteralValue {
                                                         inner: Single(
                                                             StringLiteral {
                                                                 range: 11..18,
-                                                                node_index: AtomicNodeIndex(..),
+                                                                node_index: NodeIndex(None),
                                                                 value: "hello",
                                                                 flags: StringLiteralFlags {
                                                                     quote_style: Single,
@@ -112,14 +112,14 @@ snapshot_kind: text
                             attr: Identifier {
                                 id: Name("out"),
                                 range: 2..19,
-                                node_index: AtomicNodeIndex(..),
+                                node_index: NodeIndex(None),
                             },
                             ctx: Load,
                         },
                     ),
                     arguments: Arguments {
                         range: 2..19,
-                        node_index: AtomicNodeIndex(..),
+                        node_index: NodeIndex(None),
                         args: [],
                         keywords: [],
                     },

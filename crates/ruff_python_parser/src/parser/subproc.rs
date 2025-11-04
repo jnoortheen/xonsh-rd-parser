@@ -43,7 +43,7 @@ impl Parser<'_> {
         ast::Stmt::Expr(ast::StmtExpr {
             range: self.node_range(start),
             value: Box::new(expr),
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         })
     }
 
@@ -82,7 +82,7 @@ impl Parser<'_> {
                         arg: Some(self.to_identifier("bg")),
                         value: self.literal_true(),
                         range: self.current_token_range(),
-                        node_index: AtomicNodeIndex::dummy(),
+                        node_index: AtomicNodeIndex::NONE,
                     });
                     self.bump_any(); // skip `&`
                     self.bump(closing); // skip `)`
@@ -98,13 +98,13 @@ impl Parser<'_> {
                 let expr = Expr::from(ExprDict {
                     range,
                     items: redirects,
-                    node_index: AtomicNodeIndex::dummy(),
+                    node_index: AtomicNodeIndex::NONE,
                 });
                 keywords.push(ast::Keyword {
                     arg: Some(self.to_identifier("redirects")),
                     value: expr,
                     range: self.node_range(start),
-                    node_index: AtomicNodeIndex::dummy(),
+                    node_index: AtomicNodeIndex::NONE,
                 });
             }
         }
@@ -113,7 +113,7 @@ impl Parser<'_> {
             range: self.node_range(start),
             args: cmds.into_boxed_slice(),
             keywords: keywords.into_boxed_slice(),
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         }
     }
 
@@ -141,7 +141,7 @@ impl Parser<'_> {
         }
     }
     fn parse_proc_single(&mut self, closing: TokenKind) -> Expr {
-//         dbg!(&self.current_token_kind(), &self.current_token_range());
+        //         dbg!(&self.current_token_kind(), &self.current_token_range());
         let start = self.node_start();
         let mut offset = self.node_end();
         let mut nesting = 0;
@@ -263,7 +263,7 @@ impl Parser<'_> {
             range: self.current_token_range(),
             id: Name::new(name),
             ctx: ExprContext::Load,
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         };
         ExprWrap(Expr::Name(val))
     }
@@ -295,7 +295,7 @@ impl Parser<'_> {
             slice: Box::new(slice),
             ctx: ExprContext::Load,
             range: self.node_range(start),
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         };
         Expr::Subscript(ast)
     }
@@ -328,7 +328,7 @@ impl Parser<'_> {
             slice: Box::new(slice),
             ctx: ExprContext::Load,
             range: self.node_range(slice_start),
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         };
         Expr::Subscript(ast)
     }
@@ -366,7 +366,7 @@ impl Parser<'_> {
         Expr::BooleanLiteral(ast::ExprBooleanLiteral {
             value: true,
             range: self.node_range(self.node_start()),
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         })
     }
 
@@ -401,7 +401,7 @@ impl Parser<'_> {
                 ctx: ExprContext::Load,
                 range,
                 parenthesized: false,
-                node_index: AtomicNodeIndex::dummy(),
+                node_index: AtomicNodeIndex::NONE,
             }),
             self.expr_name("globals").call_empty(range).into(),
             self.expr_name("locals").call_empty(range).into(),
@@ -481,7 +481,7 @@ impl Parser<'_> {
         let body = {
             let pass = ast::StmtPass {
                 range,
-                node_index: AtomicNodeIndex::dummy(),
+                node_index: AtomicNodeIndex::NONE,
             };
             vec![ast::Stmt::from(pass)]
         };
@@ -507,7 +507,7 @@ impl Parser<'_> {
                         context_expr: enter_macro.clone().call0(args, range).into(),
                         optional_vars: item.optional_vars,
                         range,
-                        node_index: AtomicNodeIndex::dummy(),
+                        node_index: AtomicNodeIndex::NONE,
                     }
                 })
                 .collect()
@@ -520,7 +520,7 @@ impl Parser<'_> {
             body,
             is_async: false,
             range,
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         }
     }
 }
@@ -546,12 +546,12 @@ fn string_literal(range: TextRange, value: String) -> Expr {
         value: value.into_boxed_str(),
         range,
         flags: ast::StringLiteralFlags::empty(),
-        node_index: AtomicNodeIndex::dummy(),
+        node_index: AtomicNodeIndex::NONE,
     };
 
     Expr::from(ast::ExprStringLiteral {
         value: ast::StringLiteralValue::single(literal),
         range,
-        node_index: AtomicNodeIndex::dummy(),
+        node_index: AtomicNodeIndex::NONE,
     })
 }

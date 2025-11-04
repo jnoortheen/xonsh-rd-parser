@@ -769,7 +769,7 @@ impl<'src> Parser<'src> {
         ast::Identifier {
             id: Name::from(dotted_name.as_str()),
             range: self.node_range(start),
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         }
     }
 

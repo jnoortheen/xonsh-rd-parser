@@ -31,7 +31,7 @@ impl ExprWrap {
             func: Box::new(self.0),
             arguments,
             range,
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         })
         .into()
     }
@@ -41,7 +41,7 @@ impl ExprWrap {
             range,
             args: args.into_boxed_slice(),
             keywords: vec![].into_boxed_slice(),
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         };
         self.call(arguments, range)
     }
@@ -51,7 +51,7 @@ impl ExprWrap {
             value: Box::new(self.0),
             ctx: ExprContext::Load,
             range,
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         })
     }
     pub(crate) fn call_empty(self, range: TextRange) -> Self {
@@ -63,7 +63,7 @@ impl ExprWrap {
             attr: Self::identifier(name, range),
             value: Box::new(self.0),
             ctx: ExprContext::Load,
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         };
 
         Expr::from(name).into()

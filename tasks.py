@@ -2,9 +2,9 @@ import contextlib
 import shlex
 import subprocess as sp
 from pathlib import Path
-from packaging import version
 
 import tomlkit
+from packaging import version
 
 
 class Color:
@@ -69,3 +69,5 @@ def pull_ruff_crates():
     run(
         f"git format-patch {current}..{to} --output-directory=parser-patches -- crates/ruff_python_parser"
     )
+    # now you can apply the patches using
+    # git apply --reject parser-patches/*.patch && rm parser-patches/*.patch
