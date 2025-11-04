@@ -28,8 +28,8 @@ Module(
                             type_params: [
                                 TypeVar(
                                     TypeParamTypeVar {
-                                        range: 54..69,
                                         node_index: NodeIndex(None),
+                                        range: 54..69,
                                         name: Identifier {
                                             id: Name("S"),
                                             range: 54..55,
@@ -68,8 +68,8 @@ Module(
                                 ),
                                 TypeVar(
                                     TypeParamTypeVar {
-                                        range: 71..79,
                                         node_index: NodeIndex(None),
+                                        range: 71..79,
                                         name: Identifier {
                                             id: Name("T"),
                                             range: 71..72,
@@ -90,8 +90,8 @@ Module(
                                 ),
                                 TypeVarTuple(
                                     TypeParamTypeVarTuple {
-                                        range: 81..84,
                                         node_index: NodeIndex(None),
+                                        range: 81..84,
                                         name: Identifier {
                                             id: Name("Ts"),
                                             range: 82..84,
@@ -102,8 +102,8 @@ Module(
                                 ),
                                 ParamSpec(
                                     TypeParamParamSpec {
-                                        range: 86..89,
                                         node_index: NodeIndex(None),
+                                        range: 86..89,
                                         name: Identifier {
                                             id: Name("P"),
                                             range: 88..89,
