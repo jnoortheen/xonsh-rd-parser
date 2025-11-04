@@ -8,29 +8,29 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
-        node_index: AtomicNodeIndex(..),
+        node_index: NodeIndex(None),
         range: 0..86,
         body: [
             FunctionDef(
                 StmtFunctionDef {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 45..85,
                     is_async: false,
                     decorator_list: [
                         Decorator {
                             range: 45..69,
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             expression: Attribute(
                                 ExprAttribute {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 46..69,
                                     value: Attribute(
                                         ExprAttribute {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 46..61,
                                             value: Name(
                                                 ExprName {
-                                                    node_index: AtomicNodeIndex(..),
+                                                    node_index: NodeIndex(None),
                                                     range: 46..53,
                                                     id: Name("buttons"),
                                                     ctx: Load,
@@ -39,7 +39,7 @@ Module(
                                             attr: Identifier {
                                                 id: Name("clicked"),
                                                 range: 54..61,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                             },
                                             ctx: Load,
                                         },
@@ -47,7 +47,7 @@ Module(
                                     attr: Identifier {
                                         id: Name("connect"),
                                         range: 62..69,
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                     },
                                     ctx: Load,
                                 },
@@ -57,14 +57,12 @@ Module(
                     name: Identifier {
                         id: Name("spam"),
                         range: 74..78,
-                        node_index: AtomicNodeIndex(..),
+                        node_index: NodeIndex(None),
                     },
                     type_params: None,
                     parameters: Parameters {
                         range: 78..80,
-                        node_index: AtomicNodeIndex(
-                            0,
-                        ),
+                        node_index: NodeIndex(None),
                         posonlyargs: [],
                         args: [],
                         vararg: None,
@@ -75,11 +73,11 @@ Module(
                     body: [
                         Expr(
                             StmtExpr {
-                                node_index: AtomicNodeIndex(..),
+                                node_index: NodeIndex(None),
                                 range: 82..85,
                                 value: EllipsisLiteral(
                                     ExprEllipsisLiteral {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 82..85,
                                     },
                                 ),

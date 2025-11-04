@@ -103,7 +103,7 @@ Module(
                                                                             ),
                                                                             Name(
                                                                                 ExprName {
-                                                                                    node_index: AtomicNodeIndex(..),
+                                                                                    node_index: NodeIndex(None),
                                                                                     range: 94..95,
                                                                                     id: Name("y"),
                                                                                     ctx: Load,

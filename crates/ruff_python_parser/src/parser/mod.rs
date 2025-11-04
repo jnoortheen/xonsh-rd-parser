@@ -135,7 +135,7 @@ impl<'src> Parser<'src> {
         ModExpression {
             body: Box::new(parsed_expr.expr),
             range: self.node_range(start),
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         }
     }
 
@@ -153,7 +153,7 @@ impl<'src> Parser<'src> {
         ModModule {
             body,
             range: TextRange::new(self.start_offset, self.current_token_range().end()),
-            node_index: AtomicNodeIndex::dummy(),
+            node_index: AtomicNodeIndex::NONE,
         }
     }
 

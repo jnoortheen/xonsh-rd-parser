@@ -6,26 +6,26 @@ snapshot_kind: text
 [
     Expr(
         StmtExpr {
-            node_index: AtomicNodeIndex(..),
+            node_index: NodeIndex(None),
             range: 0..18,
             value: FString(
                 ExprFString {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 0..18,
                     value: FStringValue {
                         inner: Single(
                             FString(
                                 FString {
                                     range: 0..18,
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     elements: [
                                         Interpolation(
                                             InterpolatedElement {
                                                 range: 2..5,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 expression: Name(
                                                     ExprName {
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                         range: 3..4,
                                                         id: Name("a"),
                                                         ctx: Load,
@@ -39,10 +39,10 @@ snapshot_kind: text
                                         Interpolation(
                                             InterpolatedElement {
                                                 range: 5..10,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 expression: Name(
                                                     ExprName {
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                         range: 7..8,
                                                         id: Name("b"),
                                                         ctx: Load,
@@ -56,7 +56,7 @@ snapshot_kind: text
                                         Literal(
                                             InterpolatedStringLiteralElement {
                                                 range: 10..17,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 value: "{foo}",
                                             },
                                         ),

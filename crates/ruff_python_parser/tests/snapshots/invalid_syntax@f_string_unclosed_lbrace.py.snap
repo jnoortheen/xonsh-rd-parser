@@ -156,11 +156,11 @@ Module(
             ),
             Expr(
                 StmtExpr {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 24..37,
                     value: FString(
                         ExprFString {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 24..37,
                             value: FStringValue {
                                 inner: Concatenated(

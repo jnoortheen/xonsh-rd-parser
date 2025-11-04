@@ -8,16 +8,16 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
-        node_index: AtomicNodeIndex(..),
+        node_index: NodeIndex(None),
         range: 0..34,
         body: [
             Match(
                 StmtMatch {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 0..33,
                     subject: NumberLiteral(
                         ExprNumberLiteral {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 6..7,
                             value: Int(
                                 2,
@@ -27,14 +27,14 @@ Module(
                     cases: [
                         MatchCase {
                             range: 13..33,
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             pattern: MatchClass(
                                 PatternMatchClass {
                                     range: 18..28,
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     cls: Name(
                                         ExprName {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 18..23,
                                             id: Name("Class"),
                                             ctx: Load,
@@ -42,27 +42,27 @@ Module(
                                     ),
                                     arguments: PatternArguments {
                                         range: 23..28,
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         patterns: [],
                                         keywords: [
                                             PatternKeyword {
                                                 range: 24..27,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 attr: Identifier {
                                                     id: Name("x"),
                                                     range: 24..25,
-                                                    node_index: AtomicNodeIndex(..),
+                                                    node_index: NodeIndex(None),
                                                 },
                                                 pattern: MatchAs(
                                                     PatternMatchAs {
                                                         range: 26..27,
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                         pattern: None,
                                                         name: Some(
                                                             Identifier {
                                                                 id: Name("x"),
                                                                 range: 26..27,
-                                                                node_index: AtomicNodeIndex(..),
+                                                                node_index: NodeIndex(None),
                                                             },
                                                         ),
                                                     },
@@ -76,11 +76,11 @@ Module(
                             body: [
                                 Expr(
                                     StmtExpr {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 30..33,
                                         value: EllipsisLiteral(
                                             ExprEllipsisLiteral {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 30..33,
                                             },
                                         ),

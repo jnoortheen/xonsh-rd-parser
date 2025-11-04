@@ -8,21 +8,21 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
-        node_index: AtomicNodeIndex(..),
+        node_index: NodeIndex(None),
         range: 0..146,
         body: [
             Expr(
                 StmtExpr {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 136..146,
                     value: Tuple(
                         ExprTuple {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 136..146,
                             elts: [
                                 NumberLiteral(
                                     ExprNumberLiteral {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 137..138,
                                         value: Int(
                                             1,
@@ -31,11 +31,11 @@ Module(
                                 ),
                                 BinOp(
                                     ExprBinOp {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 141..146,
                                         left: Name(
                                             ExprName {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 141..142,
                                                 id: Name("x"),
                                                 ctx: Load,
@@ -44,7 +44,7 @@ Module(
                                         op: Add,
                                         right: Name(
                                             ExprName {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 145..146,
                                                 id: Name("y"),
                                                 ctx: Load,

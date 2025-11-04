@@ -179,19 +179,19 @@ Module(
             ),
             Expr(
                 StmtExpr {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 10..15,
                     value: Subscript(
                         ExprSubscript {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 10..15,
                             value: Attribute(
                                 ExprAttribute {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 10..12,
                                     value: Name(
                                         ExprName {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 10..11,
                                             id: Name("x"),
                                             ctx: Load,
@@ -200,14 +200,14 @@ Module(
                                     attr: Identifier {
                                         id: Name(""),
                                         range: 12..12,
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                     },
                                     ctx: Load,
                                 },
                             ),
                             slice: NumberLiteral(
                                 ExprNumberLiteral {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 13..14,
                                     value: Int(
                                         0,

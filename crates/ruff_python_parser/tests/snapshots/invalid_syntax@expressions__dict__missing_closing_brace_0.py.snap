@@ -8,23 +8,23 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
-        node_index: AtomicNodeIndex(..),
+        node_index: NodeIndex(None),
         range: 0..24,
         body: [
             Expr(
                 StmtExpr {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 0..24,
                     value: Dict(
                         ExprDict {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 0..24,
                             items: [
                                 DictItem {
                                     key: Some(
                                         Name(
                                             ExprName {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 1..2,
                                                 id: Name("x"),
                                                 ctx: Load,
@@ -33,7 +33,7 @@ Module(
                                     ),
                                     value: Name(
                                         ExprName {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 5..8,
                                             id: Name("def"),
                                             ctx: Load,
@@ -44,11 +44,11 @@ Module(
                                     key: Some(
                                         Call(
                                             ExprCall {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 9..14,
                                                 func: Name(
                                                     ExprName {
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                         range: 9..12,
                                                         id: Name("foo"),
                                                         ctx: Load,
@@ -56,7 +56,7 @@ Module(
                                                 ),
                                                 arguments: Arguments {
                                                     range: 12..14,
-                                                    node_index: AtomicNodeIndex(..),
+                                                    node_index: NodeIndex(None),
                                                     args: [],
                                                     keywords: [],
                                                 },
@@ -65,7 +65,7 @@ Module(
                                     ),
                                     value: Name(
                                         ExprName {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 20..24,
                                             id: Name("pass"),
                                             ctx: Load,

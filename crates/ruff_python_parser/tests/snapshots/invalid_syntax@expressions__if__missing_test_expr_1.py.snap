@@ -8,20 +8,20 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
-        node_index: AtomicNodeIndex(..),
+        node_index: NodeIndex(None),
         range: 0..64,
         body: [
             Expr(
                 StmtExpr {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 53..57,
                     value: If(
                         ExprIf {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 53..57,
                             test: Name(
                                 ExprName {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 57..57,
                                     id: Name(""),
                                     ctx: Invalid,
@@ -29,7 +29,7 @@ Module(
                             ),
                             body: Name(
                                 ExprName {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 53..54,
                                     id: Name("x"),
                                     ctx: Load,
@@ -37,7 +37,7 @@ Module(
                             ),
                             orelse: Name(
                                 ExprName {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 57..57,
                                     id: Name(""),
                                     ctx: Invalid,
@@ -49,15 +49,15 @@ Module(
             ),
             Expr(
                 StmtExpr {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 59..64,
                     value: BinOp(
                         ExprBinOp {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 59..64,
                             left: NumberLiteral(
                                 ExprNumberLiteral {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 59..60,
                                     value: Int(
                                         1,
@@ -67,7 +67,7 @@ Module(
                             op: Add,
                             right: NumberLiteral(
                                 ExprNumberLiteral {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 63..64,
                                     value: Int(
                                         1,

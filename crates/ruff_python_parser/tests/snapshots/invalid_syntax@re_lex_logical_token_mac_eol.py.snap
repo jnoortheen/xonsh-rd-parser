@@ -8,20 +8,20 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
-        node_index: AtomicNodeIndex(..),
+        node_index: NodeIndex(None),
         range: 0..46,
         body: [
             If(
                 StmtIf {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 0..46,
                     test: Call(
                         ExprCall {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 3..19,
                             func: Name(
                                 ExprName {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 3..7,
                                     id: Name("call"),
                                     ctx: Load,
@@ -29,11 +29,11 @@ Module(
                             ),
                             arguments: Arguments {
                                 range: 7..19,
-                                node_index: AtomicNodeIndex(..),
+                                node_index: NodeIndex(None),
                                 args: [
                                     Name(
                                         ExprName {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 8..11,
                                             id: Name("foo"),
                                             ctx: Load,
@@ -41,12 +41,12 @@ Module(
                                     ),
                                     List(
                                         ExprList {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 13..18,
                                             elts: [
                                                 Name(
                                                     ExprName {
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                         range: 14..15,
                                                         id: Name("a"),
                                                         ctx: Load,
@@ -54,7 +54,7 @@ Module(
                                                 ),
                                                 Name(
                                                     ExprName {
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                         range: 17..18,
                                                         id: Name("b"),
                                                         ctx: Load,
@@ -72,21 +72,19 @@ Module(
                     body: [
                         FunctionDef(
                             StmtFunctionDef {
-                                node_index: AtomicNodeIndex(..),
+                                node_index: NodeIndex(None),
                                 range: 23..46,
                                 is_async: false,
                                 decorator_list: [],
                                 name: Identifier {
                                     id: Name("bar"),
                                     range: 27..30,
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                 },
                                 type_params: None,
                                 parameters: Parameters {
                                     range: 30..32,
-                                    node_index: AtomicNodeIndex(
-                                        0,
-                                    ),
+                                    node_index: NodeIndex(None),
                                     posonlyargs: [],
                                     args: [],
                                     vararg: None,
@@ -97,7 +95,7 @@ Module(
                                 body: [
                                     Pass(
                                         StmtPass {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 42..46,
                                         },
                                     ),

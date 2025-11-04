@@ -8,33 +8,33 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
-        node_index: AtomicNodeIndex(..),
+        node_index: NodeIndex(None),
         range: 0..129,
         body: [
             FunctionDef(
                 StmtFunctionDef {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 45..88,
                     is_async: false,
                     decorator_list: [
                         Decorator {
                             range: 45..72,
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             expression: Attribute(
                                 ExprAttribute {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 46..72,
                                     value: Attribute(
                                         ExprAttribute {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 46..64,
                                             value: Subscript(
                                                 ExprSubscript {
-                                                    node_index: AtomicNodeIndex(..),
+                                                    node_index: NodeIndex(None),
                                                     range: 46..56,
                                                     value: Name(
                                                         ExprName {
-                                                            node_index: AtomicNodeIndex(..),
+                                                            node_index: NodeIndex(None),
                                                             range: 46..53,
                                                             id: Name("buttons"),
                                                             ctx: Load,
@@ -42,7 +42,7 @@ Module(
                                                     ),
                                                     slice: NumberLiteral(
                                                         ExprNumberLiteral {
-                                                            node_index: AtomicNodeIndex(..),
+                                                            node_index: NodeIndex(None),
                                                             range: 54..55,
                                                             value: Int(
                                                                 0,
@@ -55,7 +55,7 @@ Module(
                                             attr: Identifier {
                                                 id: Name("clicked"),
                                                 range: 57..64,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                             },
                                             ctx: Load,
                                         },
@@ -63,7 +63,7 @@ Module(
                                     attr: Identifier {
                                         id: Name("connect"),
                                         range: 65..72,
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                     },
                                     ctx: Load,
                                 },
@@ -73,14 +73,12 @@ Module(
                     name: Identifier {
                         id: Name("spam"),
                         range: 77..81,
-                        node_index: AtomicNodeIndex(..),
+                        node_index: NodeIndex(None),
                     },
                     type_params: None,
                     parameters: Parameters {
                         range: 81..83,
-                        node_index: AtomicNodeIndex(
-                            0,
-                        ),
+                        node_index: NodeIndex(None),
                         posonlyargs: [],
                         args: [],
                         vararg: None,
@@ -91,11 +89,11 @@ Module(
                     body: [
                         Expr(
                             StmtExpr {
-                                node_index: AtomicNodeIndex(..),
+                                node_index: NodeIndex(None),
                                 range: 85..88,
                                 value: EllipsisLiteral(
                                     ExprEllipsisLiteral {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 85..88,
                                     },
                                 ),
@@ -106,24 +104,24 @@ Module(
             ),
             FunctionDef(
                 StmtFunctionDef {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 89..128,
                     is_async: false,
                     decorator_list: [
                         Decorator {
                             range: 89..113,
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             expression: Call(
                                 ExprCall {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 90..113,
                                     func: Named(
                                         ExprNamed {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 91..107,
                                             target: Name(
                                                 ExprName {
-                                                    node_index: AtomicNodeIndex(..),
+                                                    node_index: NodeIndex(None),
                                                     range: 91..92,
                                                     id: Name("x"),
                                                     ctx: Store,
@@ -131,26 +129,24 @@ Module(
                                             ),
                                             value: Lambda(
                                                 ExprLambda {
-                                                    node_index: AtomicNodeIndex(..),
+                                                    node_index: NodeIndex(None),
                                                     range: 96..107,
                                                     parameters: Some(
                                                         Parameters {
                                                             range: 103..104,
-                                                            node_index: AtomicNodeIndex(
-                                                                0,
-                                                            ),
+                                                            node_index: NodeIndex(None),
                                                             posonlyargs: [],
                                                             args: [
                                                                 ParameterWithDefault {
                                                                     range: 103..104,
-                                                                    node_index: AtomicNodeIndex(..),
+                                                                    node_index: NodeIndex(None),
                                                                     parameter: Parameter {
                                                                         range: 103..104,
-                                                                        node_index: AtomicNodeIndex(..),
+                                                                        node_index: NodeIndex(None),
                                                                         name: Identifier {
                                                                             id: Name("x"),
                                                                             range: 103..104,
-                                                                            node_index: AtomicNodeIndex(..),
+                                                                            node_index: NodeIndex(None),
                                                                         },
                                                                         annotation: None,
                                                                     },
@@ -164,7 +160,7 @@ Module(
                                                     ),
                                                     body: Name(
                                                         ExprName {
-                                                            node_index: AtomicNodeIndex(..),
+                                                            node_index: NodeIndex(None),
                                                             range: 106..107,
                                                             id: Name("x"),
                                                             ctx: Load,
@@ -176,11 +172,11 @@ Module(
                                     ),
                                     arguments: Arguments {
                                         range: 108..113,
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         args: [
                                             Name(
                                                 ExprName {
-                                                    node_index: AtomicNodeIndex(..),
+                                                    node_index: NodeIndex(None),
                                                     range: 109..112,
                                                     id: Name("foo"),
                                                     ctx: Load,
@@ -196,14 +192,12 @@ Module(
                     name: Identifier {
                         id: Name("bar"),
                         range: 118..121,
-                        node_index: AtomicNodeIndex(..),
+                        node_index: NodeIndex(None),
                     },
                     type_params: None,
                     parameters: Parameters {
                         range: 121..123,
-                        node_index: AtomicNodeIndex(
-                            0,
-                        ),
+                        node_index: NodeIndex(None),
                         posonlyargs: [],
                         args: [],
                         vararg: None,
@@ -214,11 +208,11 @@ Module(
                     body: [
                         Expr(
                             StmtExpr {
-                                node_index: AtomicNodeIndex(..),
+                                node_index: NodeIndex(None),
                                 range: 125..128,
                                 value: EllipsisLiteral(
                                     ExprEllipsisLiteral {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 125..128,
                                     },
                                 ),

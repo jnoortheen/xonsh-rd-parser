@@ -27,22 +27,22 @@ Module(
                     ],
                     value: Tuple(
                         ExprTuple {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 4..15,
                             elts: [
                                 Starred(
                                     ExprStarred {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 5..13,
                                         value: BoolOp(
                                             ExprBoolOp {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 6..13,
                                                 op: And,
                                                 values: [
                                                     Name(
                                                         ExprName {
-                                                            node_index: AtomicNodeIndex(..),
+                                                            node_index: NodeIndex(None),
                                                             range: 6..7,
                                                             id: Name("a"),
                                                             ctx: Load,
@@ -50,7 +50,7 @@ Module(
                                                     ),
                                                     Name(
                                                         ExprName {
-                                                            node_index: AtomicNodeIndex(..),
+                                                            node_index: NodeIndex(None),
                                                             range: 12..13,
                                                             id: Name("b"),
                                                             ctx: Load,
@@ -84,12 +84,12 @@ Module(
                     ],
                     value: Tuple(
                         ExprTuple {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 20..34,
                             elts: [
                                 NumberLiteral(
                                     ExprNumberLiteral {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 21..23,
                                         value: Int(
                                             42,
@@ -98,16 +98,16 @@ Module(
                                 ),
                                 Starred(
                                     ExprStarred {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 25..33,
                                         value: Yield(
                                             ExprYield {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 26..33,
                                                 value: Some(
                                                     Name(
                                                         ExprName {
-                                                            node_index: AtomicNodeIndex(..),
+                                                            node_index: NodeIndex(None),
                                                             range: 32..33,
                                                             id: Name("x"),
                                                             ctx: Load,
@@ -141,12 +141,12 @@ Module(
                     ],
                     value: Tuple(
                         ExprTuple {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 39..58,
                             elts: [
                                 NumberLiteral(
                                     ExprNumberLiteral {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 40..42,
                                         value: Int(
                                             42,
@@ -155,15 +155,15 @@ Module(
                                 ),
                                 Starred(
                                     ExprStarred {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 44..57,
                                         value: YieldFrom(
                                             ExprYieldFrom {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 45..57,
                                                 value: Name(
                                                     ExprName {
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                         range: 56..57,
                                                         id: Name("x"),
                                                         ctx: Load,
@@ -197,35 +197,33 @@ Module(
                     ],
                     value: Tuple(
                         ExprTuple {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 63..78,
                             elts: [
                                 Starred(
                                     ExprStarred {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 64..76,
                                         value: Lambda(
                                             ExprLambda {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 65..76,
                                                 parameters: Some(
                                                     Parameters {
                                                         range: 72..73,
-                                                        node_index: AtomicNodeIndex(
-                                                            0,
-                                                        ),
+                                                        node_index: NodeIndex(None),
                                                         posonlyargs: [],
                                                         args: [
                                                             ParameterWithDefault {
                                                                 range: 72..73,
-                                                                node_index: AtomicNodeIndex(..),
+                                                                node_index: NodeIndex(None),
                                                                 parameter: Parameter {
                                                                     range: 72..73,
-                                                                    node_index: AtomicNodeIndex(..),
+                                                                    node_index: NodeIndex(None),
                                                                     name: Identifier {
                                                                         id: Name("x"),
                                                                         range: 72..73,
-                                                                        node_index: AtomicNodeIndex(..),
+                                                                        node_index: NodeIndex(None),
                                                                     },
                                                                     annotation: None,
                                                                 },
@@ -239,7 +237,7 @@ Module(
                                                 ),
                                                 body: Name(
                                                     ExprName {
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                         range: 75..76,
                                                         id: Name("x"),
                                                         ctx: Load,

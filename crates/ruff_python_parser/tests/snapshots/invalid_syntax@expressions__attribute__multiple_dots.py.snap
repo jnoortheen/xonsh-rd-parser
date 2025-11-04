@@ -8,24 +8,24 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
-        node_index: AtomicNodeIndex(..),
+        node_index: NodeIndex(None),
         range: 0..46,
         body: [
             Expr(
                 StmtExpr {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 0..10,
                     value: Attribute(
                         ExprAttribute {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 0..10,
                             value: Attribute(
                                 ExprAttribute {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 0..6,
                                     value: Name(
                                         ExprName {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 0..5,
                                             id: Name("extra"),
                                             ctx: Load,
@@ -34,7 +34,7 @@ Module(
                                     attr: Identifier {
                                         id: Name(""),
                                         range: 6..6,
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                     },
                                     ctx: Load,
                                 },
@@ -42,7 +42,7 @@ Module(
                             attr: Identifier {
                                 id: Name("dot"),
                                 range: 7..10,
-                                node_index: AtomicNodeIndex(..),
+                                node_index: NodeIndex(None),
                             },
                             ctx: Load,
                         },

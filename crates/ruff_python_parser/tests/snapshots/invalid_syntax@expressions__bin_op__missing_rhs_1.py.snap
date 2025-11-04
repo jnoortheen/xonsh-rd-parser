@@ -8,24 +8,24 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
-        node_index: AtomicNodeIndex(..),
+        node_index: NodeIndex(None),
         range: 0..18,
         body: [
             Expr(
                 StmtExpr {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 0..11,
                     value: BinOp(
                         ExprBinOp {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 0..11,
                             left: BinOp(
                                 ExprBinOp {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 0..5,
                                     left: NumberLiteral(
                                         ExprNumberLiteral {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 0..1,
                                             value: Int(
                                                 1,
@@ -35,7 +35,7 @@ Module(
                                     op: Add,
                                     right: NumberLiteral(
                                         ExprNumberLiteral {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 4..5,
                                             value: Int(
                                                 2,
@@ -47,11 +47,11 @@ Module(
                             op: Sub,
                             right: BinOp(
                                 ExprBinOp {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 8..11,
                                     left: NumberLiteral(
                                         ExprNumberLiteral {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 8..9,
                                             value: Int(
                                                 3,
@@ -61,7 +61,7 @@ Module(
                                     op: Mult,
                                     right: Name(
                                         ExprName {
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                             range: 11..11,
                                             id: Name(""),
                                             ctx: Invalid,
@@ -75,15 +75,15 @@ Module(
             ),
             Expr(
                 StmtExpr {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 13..18,
                     value: BinOp(
                         ExprBinOp {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 13..18,
                             left: NumberLiteral(
                                 ExprNumberLiteral {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 13..14,
                                     value: Int(
                                         4,
@@ -93,7 +93,7 @@ Module(
                             op: Add,
                             right: NumberLiteral(
                                 ExprNumberLiteral {
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     range: 17..18,
                                     value: Int(
                                         5,

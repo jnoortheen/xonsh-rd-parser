@@ -6,18 +6,18 @@ snapshot_kind: text
 [
     Expr(
         StmtExpr {
-            node_index: AtomicNodeIndex(..),
+            node_index: NodeIndex(None),
             range: 0..3,
             value: FString(
                 ExprFString {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 0..3,
                     value: FStringValue {
                         inner: Single(
                             FString(
                                 FString {
                                     range: 0..3,
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     elements: [],
                                     flags: FStringFlags {
                                         quote_style: Double,

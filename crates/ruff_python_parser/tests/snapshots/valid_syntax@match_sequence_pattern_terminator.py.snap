@@ -8,16 +8,16 @@ snapshot_kind: text
 ```
 Module(
     ModModule {
-        node_index: AtomicNodeIndex(..),
+        node_index: NodeIndex(None),
         range: 0..95,
         body: [
             Match(
                 StmtMatch {
-                    node_index: AtomicNodeIndex(..),
+                    node_index: NodeIndex(None),
                     range: 0..94,
                     subject: Name(
                         ExprName {
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             range: 6..13,
                             id: Name("subject"),
                             ctx: Load,
@@ -26,17 +26,17 @@ Module(
                     cases: [
                         MatchCase {
                             range: 19..35,
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             pattern: MatchAs(
                                 PatternMatchAs {
                                     range: 24..25,
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     pattern: None,
                                     name: Some(
                                         Identifier {
                                             id: Name("a"),
                                             range: 24..25,
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                         },
                                     ),
                                 },
@@ -44,7 +44,7 @@ Module(
                             guard: Some(
                                 Name(
                                     ExprName {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 29..30,
                                         id: Name("x"),
                                         ctx: Load,
@@ -54,11 +54,11 @@ Module(
                             body: [
                                 Expr(
                                     StmtExpr {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 32..35,
                                         value: EllipsisLiteral(
                                             ExprEllipsisLiteral {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 32..35,
                                             },
                                         ),
@@ -68,22 +68,22 @@ Module(
                         },
                         MatchCase {
                             range: 40..54,
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             pattern: MatchSequence(
                                 PatternMatchSequence {
                                     range: 45..49,
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     patterns: [
                                         MatchAs(
                                             PatternMatchAs {
                                                 range: 45..46,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 pattern: None,
                                                 name: Some(
                                                     Identifier {
                                                         id: Name("a"),
                                                         range: 45..46,
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                     },
                                                 ),
                                             },
@@ -91,13 +91,13 @@ Module(
                                         MatchAs(
                                             PatternMatchAs {
                                                 range: 48..49,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 pattern: None,
                                                 name: Some(
                                                     Identifier {
                                                         id: Name("b"),
                                                         range: 48..49,
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                     },
                                                 ),
                                             },
@@ -109,11 +109,11 @@ Module(
                             body: [
                                 Expr(
                                     StmtExpr {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 51..54,
                                         value: EllipsisLiteral(
                                             ExprEllipsisLiteral {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 51..54,
                                             },
                                         ),
@@ -123,22 +123,22 @@ Module(
                         },
                         MatchCase {
                             range: 59..78,
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             pattern: MatchSequence(
                                 PatternMatchSequence {
                                     range: 64..68,
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     patterns: [
                                         MatchAs(
                                             PatternMatchAs {
                                                 range: 64..65,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 pattern: None,
                                                 name: Some(
                                                     Identifier {
                                                         id: Name("a"),
                                                         range: 64..65,
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                     },
                                                 ),
                                             },
@@ -146,13 +146,13 @@ Module(
                                         MatchAs(
                                             PatternMatchAs {
                                                 range: 67..68,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 pattern: None,
                                                 name: Some(
                                                     Identifier {
                                                         id: Name("b"),
                                                         range: 67..68,
-                                                        node_index: AtomicNodeIndex(..),
+                                                        node_index: NodeIndex(None),
                                                     },
                                                 ),
                                             },
@@ -163,7 +163,7 @@ Module(
                             guard: Some(
                                 Name(
                                     ExprName {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 72..73,
                                         id: Name("x"),
                                         ctx: Load,
@@ -173,11 +173,11 @@ Module(
                             body: [
                                 Expr(
                                     StmtExpr {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 75..78,
                                         value: EllipsisLiteral(
                                             ExprEllipsisLiteral {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 75..78,
                                             },
                                         ),
@@ -187,17 +187,17 @@ Module(
                         },
                         MatchCase {
                             range: 83..94,
-                            node_index: AtomicNodeIndex(..),
+                            node_index: NodeIndex(None),
                             pattern: MatchAs(
                                 PatternMatchAs {
                                     range: 88..89,
-                                    node_index: AtomicNodeIndex(..),
+                                    node_index: NodeIndex(None),
                                     pattern: None,
                                     name: Some(
                                         Identifier {
                                             id: Name("a"),
                                             range: 88..89,
-                                            node_index: AtomicNodeIndex(..),
+                                            node_index: NodeIndex(None),
                                         },
                                     ),
                                 },
@@ -206,11 +206,11 @@ Module(
                             body: [
                                 Expr(
                                     StmtExpr {
-                                        node_index: AtomicNodeIndex(..),
+                                        node_index: NodeIndex(None),
                                         range: 91..94,
                                         value: EllipsisLiteral(
                                             ExprEllipsisLiteral {
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 range: 91..94,
                                             },
                                         ),
