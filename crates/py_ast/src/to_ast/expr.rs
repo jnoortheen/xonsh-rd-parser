@@ -4,14 +4,14 @@ use super::ToAst;
 use crate::ast_module::AstModule;
 use crate::impl_to_ast;
 use num_complex::Complex;
-use pyo3::{IntoPyObjectExt, PyObject};
+use pyo3::{IntoPyObjectExt, Py, PyAny};
 use ruff_python_ast::str_prefix::StringLiteralPrefix;
 use ruff_python_ast::*;
 use ruff_text_size::Ranged;
 use std::borrow::Cow;
 use std::vec;
 
-type PyResult = pyo3::PyResult<PyObject>;
+type PyResult = pyo3::PyResult<Py<PyAny>>;
 
 impl ToAst for Expr {
     fn to_ast(&self, module: &AstModule) -> PyResult {
@@ -102,7 +102,7 @@ impl ToAst for ExprFString {
         for p in self.value.as_slice() {
             match p {
                 FStringPart::Literal(s) => {
-                    let kind: PyObject = match s.flags.prefix() {
+                    let kind: Py<PyAny> = match s.flags.prefix() {
                         StringLiteralPrefix::Unicode => Some("u"),
                         _ => None,
                     }

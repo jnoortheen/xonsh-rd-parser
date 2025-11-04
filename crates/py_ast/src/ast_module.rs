@@ -1,7 +1,7 @@
 /// A wrapper around the Python ast module.
 use pyo3::prelude::PyModule;
 use pyo3::types::{IntoPyDict, PyAnyMethods, PyString};
-use pyo3::{Bound, IntoPyObject, IntoPyObjectExt, PyAny, PyObject, PyResult, Python, intern};
+use pyo3::{Bound, IntoPyObject, IntoPyObjectExt, Py, PyAny, PyResult, Python, intern};
 use ruff_source_file::SourceCode;
 use ruff_text_size::TextRange;
 
@@ -28,7 +28,7 @@ impl<'py> AstModule<'py> {
             source_code: self.source_code,
         })
     }
-    pub fn call<T: IntoPyDict<'py>>(&self, range: TextRange, kwargs: T) -> PyResult<PyObject> {
+    pub fn call<T: IntoPyDict<'py>>(&self, range: TextRange, kwargs: T) -> PyResult<Py<PyAny>> {
         let dict = kwargs.into_py_dict(self.obj.py())?;
         for (key, value) in self.location(range) {
             dict.set_item(key, value)?;
@@ -46,18 +46,22 @@ impl<'py> AstModule<'py> {
             (intern!(py, "end_col_offset"), end.column.get()),
         ]
     }
-    pub fn to_const<T: IntoPyObject<'py>>(&self, range: TextRange, value: T) -> PyResult<PyObject> {
+    pub fn to_const<T: IntoPyObject<'py>>(
+        &self,
+        range: TextRange,
+        value: T,
+    ) -> PyResult<Py<PyAny>> {
         self.attr("Constant")?.call(range, [("value", value)])
     }
-    pub fn call0(&self) -> PyResult<PyObject> {
+    pub fn call0(&self) -> PyResult<Py<PyAny>> {
         Ok(self.obj.call0()?.into())
     }
-    pub fn callk<T: IntoPyDict<'py>>(&self, kwargs: T) -> PyResult<PyObject> {
+    pub fn callk<T: IntoPyDict<'py>>(&self, kwargs: T) -> PyResult<Py<PyAny>> {
         let kwargs = kwargs.into_py_dict(self.obj.py())?;
         Ok(self.obj.call((), Some(&kwargs))?.into())
     }
 
-    pub fn empty_list(&self) -> PyResult<PyObject> {
+    pub fn empty_list(&self) -> PyResult<Py<PyAny>> {
         let empty_vec: Vec<i32> = vec![]; // Explicitly specify the type of Vec
         empty_vec.into_py_any(self.obj.py())
     }

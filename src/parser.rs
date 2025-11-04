@@ -46,7 +46,7 @@ impl PyParser {
         })
     }
 
-    fn parse(&self, py: Python<'_>) -> PyResult<PyObject> {
+    fn parse(&self, py: Python<'_>) -> PyResult<Py<PyAny>> {
         let source_code = self.code(py)?;
         let parsed = self.parse_module(&source_code)?;
         let tree = parsed.into_syntax();
@@ -55,7 +55,7 @@ impl PyParser {
     }
 
     #[staticmethod]
-    pub fn parse_file(py: Python<'_>, path: &str) -> PyResult<PyObject> {
+    pub fn parse_file(py: Python<'_>, path: &str) -> PyResult<Py<PyAny>> {
         let src = std::fs::read_to_string(path).unwrap();
         let src = PyString::new(py, &src);
         PyParser::new(src, Some(path))?.parse(py)

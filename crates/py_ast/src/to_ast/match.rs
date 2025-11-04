@@ -2,7 +2,7 @@ use std::vec;
 
 use crate::ast_module::AstModule;
 
-use pyo3::{IntoPyObjectExt, PyObject};
+use pyo3::{IntoPyObjectExt, Py, PyAny};
 use ruff_python_ast::{
     MatchCase, Pattern, PatternMatchAs, PatternMatchClass, PatternMatchMapping, PatternMatchOr,
     PatternMatchSequence, PatternMatchSingleton, PatternMatchStar, PatternMatchValue, Singleton,
@@ -10,7 +10,7 @@ use ruff_python_ast::{
 
 use super::ToAst;
 
-type PyResult = pyo3::PyResult<PyObject>;
+type PyResult = pyo3::PyResult<Py<PyAny>>;
 impl ToAst for MatchCase {
     fn to_ast(&self, module: &AstModule) -> PyResult {
         module.attr("match_case")?.callk(

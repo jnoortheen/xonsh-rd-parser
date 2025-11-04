@@ -2,7 +2,7 @@ use std::vec;
 
 use super::ToAst;
 use crate::{ast_module::AstModule, impl_to_ast};
-use pyo3::{IntoPyObjectExt, PyObject};
+use pyo3::{IntoPyObjectExt, Py, PyAny};
 use ruff_python_ast::{
     Alias, Decorator, ElifElseClause, ExceptHandler, Expr, Identifier, ModModule, Parameter,
     ParameterWithDefault, Parameters, Stmt, StmtAnnAssign, StmtAssert, StmtAssign, StmtAugAssign,
@@ -12,7 +12,7 @@ use ruff_python_ast::{
     TypeParamTypeVar, TypeParamTypeVarTuple, TypeParams, WithItem,
 };
 
-type PyResult = pyo3::PyResult<PyObject>;
+type PyResult = pyo3::PyResult<Py<PyAny>>;
 
 impl_to_ast!(Parameter, call "arg" with |self, module| {
     "arg" => self.name.to_ast(module)?,

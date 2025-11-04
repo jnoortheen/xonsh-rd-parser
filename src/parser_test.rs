@@ -59,8 +59,8 @@ mod py_tests {
 
     #[test]
     fn test_py_parser() {
-        pyo3::prepare_freethreaded_python();
-        Python::with_gil(|py| {
+        Python::initialize();
+        Python::attach(|py| {
             let file_name = get_big_py_file();
             PyParser::parse_file(py, file_name.as_str()).unwrap();
         })
