@@ -71,8 +71,8 @@ def pull_ruff_crates():
     )
     patches = Path("parser-patches").glob("*.patch")
     if patches:
-        print("Patches found:")
+        print("Patches found:", patches)
         for patch in patches:
-            print(patch)
-        print("Apply them manually with:")
-        print("git apply --reject parser-patches/*.patch && rm parser-patches/*.patch")
+            run(f"git apply --3way {patch}")
+            run(f"rm {patch}")
+        # print("git apply --reject parser-patches/*.patch && rm parser-patches/*.patch")
