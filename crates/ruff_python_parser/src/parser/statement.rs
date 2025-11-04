@@ -749,8 +749,7 @@ impl<'src> Parser<'src> {
     fn parse_dotted_name(&mut self) -> ast::Identifier {
         let start = self.node_start();
 
-        let mut dotted_name: CompactString =
-            CompactString::from(self.parse_identifier().id.as_str());
+        let mut dotted_name: CompactString = self.parse_identifier().id.into();
         let mut progress = ParserProgress::default();
 
         while self.eat(TokenKind::Dot) {
@@ -767,7 +766,7 @@ impl<'src> Parser<'src> {
         // import a.b.c
         // import a .  b  . c
         ast::Identifier {
-            id: Name::from(dotted_name.as_str()),
+            id: Name::from(dotted_name),
             range: self.node_range(start),
             node_index: AtomicNodeIndex::NONE,
         }
@@ -1009,7 +1008,7 @@ impl<'src> Parser<'src> {
         }
     }
 
-    /// Parses an `IPython` escape command at the statement level.
+    /// Parses an IPython escape command at the statement level.
     ///
     /// # Panics
     ///
@@ -1036,7 +1035,7 @@ impl<'src> Parser<'src> {
         }
     }
 
-    /// Parses an `IPython` help end escape command at the statement level.
+    /// Parses an IPython help end escape command at the statement level.
     ///
     /// # Panics
     ///
@@ -2149,73 +2148,77 @@ impl<'src> Parser<'src> {
         let open_paren_range = self.current_token_range();
 
         if self.at(TokenKind::Lpar) {
-            match self.try_parse_parenthesized_with_items() {
-                Some(items) => {
-                    // test_ok tuple_context_manager_py38
-                    // # parse_options: {"target-version": "3.8"}
-                    // with (
-                    //   foo,
-                    //   bar,
-                    //   baz,
-                    // ) as tup: ...
+            if let (Some(items), has_trailing_comma) = self.try_parse_parenthesized_with_items() {
+                // test_ok tuple_context_manager_py38
+                // # parse_options: {"target-version": "3.8"}
+                // with (
+                //   foo,
+                //   bar,
+                //   baz,
+                // ) as tup: ...
 
-                    // test_err tuple_context_manager_py38
-                    // # parse_options: {"target-version": "3.8"}
-                    // # these cases are _syntactically_ valid before Python 3.9 because the `with` item
-                    // # is parsed as a tuple, but this will always cause a runtime error, so we flag it
-                    // # anyway
-                    // with (foo, bar): ...
-                    // with (
-                    //   open('foo.txt')) as foo: ...
-                    // with (
-                    //   foo,
-                    //   bar,
-                    //   baz,
-                    // ): ...
-                    // with (foo,): ...
+                // test_ok single_parenthesized_item_context_manager_py38
+                // # parse_options: {"target-version": "3.8"}
+                // with (
+                //   open('foo.txt')) as foo: ...
+                // with (
+                //   open('foo.txt')): ...
 
-                    // test_ok parenthesized_context_manager_py39
-                    // # parse_options: {"target-version": "3.9"}
-                    // with (foo as x, bar as y): ...
-                    // with (foo, bar as y): ...
-                    // with (foo as x, bar): ...
+                // test_err tuple_context_manager_py38
+                // # parse_options: {"target-version": "3.8"}
+                // # these cases are _syntactically_ valid before Python 3.9 because the `with` item
+                // # is parsed as a tuple, but this will always cause a runtime error, so we flag it
+                // # anyway
+                // with (foo, bar): ...
+                // with (
+                //   foo,
+                //   bar,
+                //   baz,
+                // ): ...
+                // with (foo,): ...
 
-                    // test_err parenthesized_context_manager_py38
-                    // # parse_options: {"target-version": "3.8"}
-                    // with (foo as x, bar as y): ...
-                    // with (foo, bar as y): ...
-                    // with (foo as x, bar): ...
+                // test_ok parenthesized_context_manager_py39
+                // # parse_options: {"target-version": "3.9"}
+                // with (foo as x, bar as y): ...
+                // with (foo, bar as y): ...
+                // with (foo as x, bar): ...
+
+                // test_err parenthesized_context_manager_py38
+                // # parse_options: {"target-version": "3.8"}
+                // with (foo as x, bar as y): ...
+                // with (foo, bar as y): ...
+                // with (foo as x, bar): ...
+                if items.len() > 1 || has_trailing_comma {
                     self.add_unsupported_syntax_error(
                         UnsupportedSyntaxErrorKind::ParenthesizedContextManager,
                         open_paren_range,
                     );
-
-                    self.expect(TokenKind::Rpar);
-                    items
                 }
-                _ => {
-                    // test_ok ambiguous_lpar_with_items_if_expr
-                    // with (x) if True else y: ...
-                    // with (x for x in iter) if True else y: ...
-                    // with (x async for x in iter) if True else y: ...
-                    // with (x)[0] if True else y: ...
 
-                    // test_ok ambiguous_lpar_with_items_binary_expr
-                    // # It doesn't matter what's inside the parentheses, these tests need to make sure
-                    // # all binary expressions parses correctly.
-                    // with (a) and b: ...
-                    // with (a) is not b: ...
-                    // # Make sure precedence works
-                    // with (a) or b and c: ...
-                    // with (a) and b or c: ...
-                    // with (a | b) << c | d: ...
-                    // # Postfix should still be parsed first
-                    // with (a)[0] + b * c: ...
-                    self.parse_comma_separated_list_into_vec(
-                        RecoveryContextKind::WithItems(WithItemKind::ParenthesizedExpression),
-                        |p| p.parse_with_item(WithItemParsingState::Regular).item,
-                    )
-                }
+                self.expect(TokenKind::Rpar);
+                items
+            } else {
+                // test_ok ambiguous_lpar_with_items_if_expr
+                // with (x) if True else y: ...
+                // with (x for x in iter) if True else y: ...
+                // with (x async for x in iter) if True else y: ...
+                // with (x)[0] if True else y: ...
+
+                // test_ok ambiguous_lpar_with_items_binary_expr
+                // # It doesn't matter what's inside the parentheses, these tests need to make sure
+                // # all binary expressions parses correctly.
+                // with (a) and b: ...
+                // with (a) is not b: ...
+                // # Make sure precedence works
+                // with (a) or b and c: ...
+                // with (a) and b or c: ...
+                // with (a | b) << c | d: ...
+                // # Postfix should still be parsed first
+                // with (a)[0] + b * c: ...
+                self.parse_comma_separated_list_into_vec(
+                    RecoveryContextKind::WithItems(WithItemKind::ParenthesizedExpression),
+                    |p| p.parse_with_item(WithItemParsingState::Regular).item,
+                )
             }
         } else {
             self.parse_comma_separated_list_into_vec(
@@ -2250,7 +2253,7 @@ impl<'src> Parser<'src> {
     /// If the parser isn't positioned at a `(` token.
     ///
     /// See: <https://docs.python.org/3/reference/compound_stmts.html#grammar-token-python-grammar-with_stmt_contents>
-    fn try_parse_parenthesized_with_items(&mut self) -> Option<Vec<WithItem>> {
+    fn try_parse_parenthesized_with_items(&mut self) -> (Option<Vec<WithItem>>, bool) {
         let checkpoint = self.checkpoint();
 
         // We'll start with the assumption that the with items are parenthesized.
@@ -2267,11 +2270,12 @@ impl<'src> Parser<'src> {
         // with (item1, item2 item3, item4): ...
         // with (item1, item2 as f1 item3, item4): ...
         // with (item1, item2: ...
-        self.parse_comma_separated_list(RecoveryContextKind::WithItems(with_item_kind), |p| {
-            let parsed_with_item = p.parse_with_item(WithItemParsingState::Speculative);
-            has_optional_vars |= parsed_with_item.item.optional_vars.is_some();
-            parsed_with_items.push(parsed_with_item);
-        });
+        let has_trailing_comma =
+            self.parse_comma_separated_list(RecoveryContextKind::WithItems(with_item_kind), |p| {
+                let parsed_with_item = p.parse_with_item(WithItemParsingState::Speculative);
+                has_optional_vars |= parsed_with_item.item.optional_vars.is_some();
+                parsed_with_items.push(parsed_with_item);
+            });
 
         // Check if our assumption is incorrect and it's actually a parenthesized expression.
         if has_optional_vars {
@@ -2341,7 +2345,7 @@ impl<'src> Parser<'src> {
             with_item_kind = WithItemKind::ParenthesizedExpression;
         }
 
-        if with_item_kind.is_parenthesized() {
+        let with_items = if with_item_kind.is_parenthesized() {
             Some(
                 parsed_with_items
                     .into_iter()
@@ -2352,7 +2356,9 @@ impl<'src> Parser<'src> {
             self.rewind(checkpoint);
 
             None
-        }
+        };
+
+        (with_items, has_trailing_comma)
     }
 
     /// Parses a single `with` item.

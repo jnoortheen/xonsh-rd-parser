@@ -31,6 +31,7 @@ Module(
                                                     quote_style: Single,
                                                     prefix: Empty,
                                                     triple_quoted: false,
+                                                    unclosed: false,
                                                 },
                                             },
                                         ),
@@ -68,6 +69,7 @@ Module(
                                                     quote_style: Single,
                                                     prefix: Regular,
                                                     triple_quoted: false,
+                                                    unclosed: true,
                                                 },
                                             },
                                         ),
@@ -246,22 +248,4 @@ Module(
    |     ^^^^^^^ Syntax Error: missing closing quote in string literal
  9 |     f'third'
 10 | )
-   |
-
-
-   |
- 8 |     'second
- 9 |     f'third'
-10 | )
-   | ^ Syntax Error: Expected a statement
-11 | 2 + 2
-   |
-
-
-   |
- 8 |     'second
- 9 |     f'third'
-10 | )
-   |  ^ Syntax Error: Expected a statement
-11 | 2 + 2
    |

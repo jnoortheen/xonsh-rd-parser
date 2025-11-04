@@ -69,10 +69,11 @@ def pull_ruff_crates():
     run(
         f"git format-patch {current}..{to} --output-directory=parser-patches -- crates/ruff_python_parser"
     )
-    patches = Path("parser-patches").glob("*.patch")
+    patches = list(Path("parser-patches").glob("*.patch"))
+    patches.sort()
     if patches:
-        print("Patches found:", patches)
+        print("Patches found:\n", "\n".join(map(str, patches)))
         for patch in patches:
+            # run(f"git apply --reject --ignore-whitespace {patch}")
             run(f"git apply --3way --ignore-whitespace {patch}")
             run(f"rm {patch}")
-        # print("git apply --reject parser-patches/*.patch && rm parser-patches/*.patch")

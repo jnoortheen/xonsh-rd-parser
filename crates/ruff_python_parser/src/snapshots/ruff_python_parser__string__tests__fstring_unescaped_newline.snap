@@ -48,6 +48,7 @@ snapshot_kind: text
                                         quote_style: Double,
                                         prefix: Regular,
                                         triple_quoted: true,
+                                        unclosed: false,
                                     },
                                 },
                             ),

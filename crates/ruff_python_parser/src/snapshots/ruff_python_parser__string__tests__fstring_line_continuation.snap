@@ -50,6 +50,7 @@ snapshot_kind: text
                                             uppercase_r: false,
                                         },
                                         triple_quoted: false,
+                                        unclosed: false,
                                     },
                                 },
                             ),

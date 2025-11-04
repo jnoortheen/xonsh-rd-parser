@@ -48,6 +48,7 @@ Module(
                                                 quote_style: Double,
                                                 prefix: Regular,
                                                 triple_quoted: false,
+                                                unclosed: false,
                                             },
                                         },
                                     ),
@@ -85,7 +86,7 @@ Module(
                                                             },
                                                         ),
                                                         debug_text: None,
-                                                        conversion: None,
+                                                        conversion: Repr,
                                                         format_spec: None,
                                                     },
                                                 ),
@@ -94,6 +95,7 @@ Module(
                                                 quote_style: Double,
                                                 prefix: Regular,
                                                 triple_quoted: false,
+                                                unclosed: false,
                                             },
                                         },
                                     ),
@@ -145,6 +147,7 @@ Module(
                                                 quote_style: Double,
                                                 prefix: Regular,
                                                 triple_quoted: false,
+                                                unclosed: false,
                                             },
                                         },
                                     ),
@@ -240,7 +243,7 @@ Module(
 
   |
 1 | f"{"
-  |    ^ Syntax Error: missing closing quote in string literal
+  |    ^ Syntax Error: Expected an expression
 2 | f"{foo!r"
 3 | f"{foo="
   |

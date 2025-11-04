@@ -58,6 +58,7 @@ snapshot_kind: text
                                                                                                     quote_style: Single,
                                                                                                     prefix: Empty,
                                                                                                     triple_quoted: false,
+                                                                                                    unclosed: false,
                                                                                                 },
                                                                                             },
                                                                                             StringLiteral {
@@ -68,6 +69,7 @@ snapshot_kind: text
                                                                                                     quote_style: Single,
                                                                                                     prefix: Empty,
                                                                                                     triple_quoted: false,
+                                                                                                    unclosed: false,
                                                                                                 },
                                                                                             },
                                                                                         ],
@@ -92,6 +94,7 @@ snapshot_kind: text
                                         quote_style: Double,
                                         prefix: Regular,
                                         triple_quoted: false,
+                                        unclosed: false,
                                     },
                                 },
                             ),

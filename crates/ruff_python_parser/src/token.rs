@@ -823,13 +823,15 @@ bitflags! {
         const RAW_STRING_LOWERCASE = 1 << 6;
         /// The token is a raw string and the prefix character is in uppercase.
         const RAW_STRING_UPPERCASE = 1 << 7;
+        /// String without matching closing quote(s)
+        const UNCLOSED_STRING = 1 << 8;
 
         /// string is a path string prefixed with `p` or `P`
-        const PATH_STRING = 1 << 8;
+        const PATH_STRING = 1 << 9;
         /// has backticks ``
-        const BACKTICK_STRING = 1 << 9;
+        const BACKTICK_STRING = 1 << 10;
         /// has g`` prefix
-        const GLOB_STRING = 1 << 10;
+        const GLOB_STRING = 1 << 11;
 
         /// The token is a raw string i.e., prefixed with `r` or `R`
         const RAW_STRING = Self::RAW_STRING_LOWERCASE.bits() | Self::RAW_STRING_UPPERCASE.bits();
@@ -889,6 +891,10 @@ impl StringFlags for TokenFlags {
         } else {
             AnyStringPrefix::Regular(StringLiteralPrefix::Empty)
         }
+    }
+
+    fn is_unclosed(self) -> bool {
+        self.intersects(TokenFlags::UNCLOSED_STRING)
     }
 }
 
