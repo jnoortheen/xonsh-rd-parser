@@ -709,6 +709,16 @@ impl SemanticSyntaxChecker {
             }
             Expr::YieldFrom(_) => {
                 Self::yield_outside_function(ctx, expr, YieldOutsideFunctionKind::YieldFrom);
+                if ctx.in_function_scope() && ctx.in_async_context() {
+                    // test_err yield_from_in_async_function
+                    // async def f(): yield from x
+
+                    Self::add_error(
+                        ctx,
+                        SemanticSyntaxErrorKind::YieldFromInAsyncFunction,
+                        expr.range(),
+                    );
+                }
             }
             Expr::Await(_) => {
                 Self::yield_outside_function(ctx, expr, YieldOutsideFunctionKind::Await);
@@ -952,6 +962,9 @@ impl Display for SemanticSyntaxError {
             SemanticSyntaxErrorKind::LoadBeforeGlobalDeclaration { name, start: _ } => {
                 write!(f, "name `{name}` is used prior to global declaration")
             }
+            SemanticSyntaxErrorKind::LoadBeforeNonlocalDeclaration { name, start: _ } => {
+                write!(f, "name `{name}` is used prior to nonlocal declaration")
+            }
             SemanticSyntaxErrorKind::InvalidStarExpression => {
                 f.write_str("Starred expression cannot be used here")
             }
@@ -976,6 +989,18 @@ impl Display for SemanticSyntaxError {
             }
             SemanticSyntaxErrorKind::NonlocalDeclarationAtModuleLevel => {
                 write!(f, "nonlocal declaration not allowed at module level")
+            }
+            SemanticSyntaxErrorKind::NonlocalAndGlobal(name) => {
+                write!(f, "name `{name}` is nonlocal and global")
+            }
+            SemanticSyntaxErrorKind::AnnotatedGlobal(name) => {
+                write!(f, "annotated name `{name}` can't be global")
+            }
+            SemanticSyntaxErrorKind::AnnotatedNonlocal(name) => {
+                write!(f, "annotated name `{name}` can't be nonlocal")
+            }
+            SemanticSyntaxErrorKind::YieldFromInAsyncFunction => {
+                f.write_str("`yield from` statement in async function; use `async for` instead")
             }
         }
     }
@@ -1207,6 +1232,24 @@ pub enum SemanticSyntaxErrorKind {
     /// [#111123]: https://github.com/python/cpython/issues/111123
     LoadBeforeGlobalDeclaration { name: String, start: TextSize },
 
+    /// Represents the use of a `nonlocal` variable before its `nonlocal` declaration.
+    ///
+    /// ## Examples
+    ///
+    /// ```python
+    /// def f():
+    ///     counter = 0
+    ///     def increment():
+    ///         print(f"Adding 1 to {counter}")
+    ///         nonlocal counter  # SyntaxError: name 'counter' is used prior to nonlocal declaration
+    ///         counter += 1
+    /// ```
+    ///
+    /// ## Known Issues
+    ///
+    /// See [`LoadBeforeGlobalDeclaration`][Self::LoadBeforeGlobalDeclaration].
+    LoadBeforeNonlocalDeclaration { name: String, start: TextSize },
+
     /// Represents the use of a starred expression in an invalid location, such as a `return` or
     /// `yield` statement.
     ///
@@ -1307,6 +1350,18 @@ pub enum SemanticSyntaxErrorKind {
 
     /// Represents a nonlocal declaration at module level
     NonlocalDeclarationAtModuleLevel,
+
+    /// Represents the same variable declared as both nonlocal and global
+    NonlocalAndGlobal(String),
+
+    /// Represents a type annotation on a variable that's been declared global
+    AnnotatedGlobal(String),
+
+    /// Represents a type annotation on a variable that's been declared nonlocal
+    AnnotatedNonlocal(String),
+
+    /// Represents the use of `yield from` inside an asynchronous function.
+    YieldFromInAsyncFunction,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, get_size2::GetSize)]

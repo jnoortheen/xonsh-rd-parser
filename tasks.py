@@ -69,5 +69,10 @@ def pull_ruff_crates():
     run(
         f"git format-patch {current}..{to} --output-directory=parser-patches -- crates/ruff_python_parser"
     )
-    # now you can apply the patches using
-    # git apply --reject parser-patches/*.patch && rm parser-patches/*.patch
+    patches = Path("parser-patches").glob("*.patch")
+    if patches:
+        print("Patches found:")
+        for patch in patches:
+            print(patch)
+        print("Apply them manually with:")
+        print("git apply --reject parser-patches/*.patch && rm parser-patches/*.patch")
