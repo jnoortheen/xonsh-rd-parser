@@ -6,7 +6,7 @@ def setup():
 
 
 def test_parse_file(parse_file, benchmark):
-    benchmark.pedantic(parse_file, setup=setup, rounds=5)
+    benchmark.pedantic(parse_file, setup=setup, rounds=4)
 
 
 def test_xonsh_ply(benchmark):
@@ -17,4 +17,4 @@ def test_xonsh_ply(benchmark):
         p = Parser()
         p.parse(Path(file_path).read_text())
 
-    benchmark.pedantic(target, setup=setup, rounds=5)
+    benchmark.pedantic(target, setup=setup, rounds=4)
