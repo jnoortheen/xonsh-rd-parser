@@ -209,7 +209,7 @@ jobs:
           dist-name: wheels-linux-x86_64
       - uses: CodSpeedHQ/action@v3
         with:
-          run: uv run --no-sync pytest tests/bench.py --codspeed -vv
+          run: make hyperfine-bench
           token: ${{ secrets.CODSPEED_TOKEN }}
         name: run benchmark
 
