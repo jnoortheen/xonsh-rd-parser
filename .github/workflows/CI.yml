@@ -202,6 +202,8 @@ jobs:
       - name: run benchmark
         if: ${{ matrix.python-version == '3.13' }}
         run: |
+          # todo: store hyperfine to github pages and use for charts
+          sudo apt-get install hyperfine -y
           make hyperfine-bench
           cat bench.md >> $GITHUB_STEP_SUMMARY
 #  benchmark:
