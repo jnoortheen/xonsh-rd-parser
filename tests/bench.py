@@ -17,4 +17,5 @@ def test_xonsh_ply(benchmark):
         p = Parser()
         p.parse(Path(file_path).read_text())
 
-    benchmark.pedantic(target, setup=setup, rounds=4)
+    # less rounds, to reduce CI running time
+    benchmark.pedantic(target, setup=setup, rounds=2)
