@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.0.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.7.0...v2.0.0) (2025-12-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* we no longer pre-build wheels for linux-armv7 platforms
+* require Python v3.11+
+* remove prebuilding wheels for linux(x86,s390x,ppc64le) and windows(x86) platforms to reduce CI usage.
+
+### Code Refactoring
+
+* remove prebuilding wheels for linux(x86,s390x,ppc64le) and windows(x86) platforms to reduce CI usage. ([2607e9a](https://github.com/jnoortheen/xonsh-rd-parser/commit/2607e9a3bbde7a076ae9fdd33300110ec7904c26))
+* require Python v3.11+ ([e655652](https://github.com/jnoortheen/xonsh-rd-parser/commit/e65565265ada95d4b8cfd36f488c143e3cd7d76a))
+* we no longer pre-build wheels for linux-armv7 platforms ([70ae431](https://github.com/jnoortheen/xonsh-rd-parser/commit/70ae43144c4e7ac016048bee1bd18a2a8e05a6b4))
+
 ## [1.7.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.6.3...v1.7.0) (2025-11-03)
 
 
