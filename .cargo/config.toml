@@ -1,6 +1,8 @@
 [build]
-rustflags = ["-Z", "threads=8",
-#    "--cfg", "pyo3_disable_reference_pool"
+rustflags = [
+    "-Z",
+    "threads=8",
+    #    "--cfg", "pyo3_disable_reference_pool"
 ]
 #rustc-wrapper = "sccache"
 
