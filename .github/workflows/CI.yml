@@ -208,17 +208,11 @@ jobs:
         with:
           python-version: "3.13"
           dist-name: wheels-linux-x86_64
-      # - uses: CodSpeedHQ/action@v3
-      #   with:
-      #     run: make bench
-      #     token: ${{ secrets.CODSPEED_TOKEN }}
-      #   name: run benchmark
-      - name: run benchmark
-        run: |
-          # todo: store hyperfine to github pages and use for charts
-          sudo apt-get install hyperfine -y
-          make hyperfine-bench
-          cat bench.md >> $GITHUB_STEP_SUMMARY
+      - uses: CodSpeedHQ/action@v3
+        with:
+          run: pytest --codspeed tests/bench.py
+          token: ${{ secrets.CODSPEED_TOKEN }}
+        name: run benchmark
 
   release:
     name: Release
