@@ -25,4 +25,9 @@ mod xonsh_rd_parser {
     fn is_debug_build() -> bool {
         cfg!(debug_assertions)
     }
+
+    #[pyfunction]
+    fn panic_test() {
+        panic!("test panic");
+    }
 }

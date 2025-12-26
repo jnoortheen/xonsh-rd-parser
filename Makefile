@@ -6,7 +6,8 @@ pull:
 
 .PHONY: hyperfine-bench
 hyperfine-bench:
-	hyperfine --warmup 1 --export-markdown bench.md 'uv run python tests/scripts/rd.py' 'uv run python tests/scripts/xply.py'
+# 	maturin develop
+	hyperfine --warmup 1 'uv run python tests/scripts/rd.py' 'uv run python tests/scripts/xply.py' --export-markdown .benchmarks/bench-$(shell date +%Y%m%d%H%M%S).md
 
 .PHONY: bench
 bench:
