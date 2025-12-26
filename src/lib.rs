@@ -20,4 +20,9 @@ mod xonsh_rd_parser {
     fn get_big_py_file() -> PyResult<String> {
         Ok(test_utils::get_big_py_file())
     }
+
+    #[pyfunction]
+    fn is_debug_build() -> bool {
+        cfg!(debug_assertions)
+    }
 }

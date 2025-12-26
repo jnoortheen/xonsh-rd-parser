@@ -1,4 +1,5 @@
-from xonsh_rd_parser import get_big_py_file, Parser
+import xonsh_rd_parser as rd
 
-file_path = get_big_py_file()
-_tree = Parser.parse_file(file_path)
+assert not rd.is_debug_build(), "Debug build is being used for benchmarking"
+file_path = rd.get_big_py_file()
+_tree = rd.Parser.parse_file(file_path)

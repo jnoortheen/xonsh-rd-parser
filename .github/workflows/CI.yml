@@ -199,27 +199,26 @@ jobs:
           dist-name: wheels-linux-x86_64
       - name: test with pytest
         run: uv run --no-sync pytest
+  benchmark:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/pkg-install
+        with:
+          python-version: "3.13"
+          dist-name: wheels-linux-x86_64
+      # - uses: CodSpeedHQ/action@v3
+      #   with:
+      #     run: make bench
+      #     token: ${{ secrets.CODSPEED_TOKEN }}
+      #   name: run benchmark
       - name: run benchmark
-        if: ${{ matrix.python-version == '3.13' }}
         run: |
           # todo: store hyperfine to github pages and use for charts
           sudo apt-get install hyperfine -y
           make hyperfine-bench
           cat bench.md >> $GITHUB_STEP_SUMMARY
-#  benchmark:
-#    runs-on: ubuntu-latest
-#    needs: [test]
-#    steps:
-#      - uses: actions/checkout@v4
-#      - uses: ./.github/actions/pkg-install
-#        with:
-#          python-version: "3.13"
-#          dist-name: wheels-linux-x86_64
-#      - uses: CodSpeedHQ/action@v3
-#        with:
-#          run: make bench
-#          token: ${{ secrets.CODSPEED_TOKEN }}
-#        name: run benchmark
 
   release:
     name: Release
