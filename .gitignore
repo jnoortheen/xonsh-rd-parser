@@ -87,3 +87,6 @@ rustc-ice-*.txt
 .env
 .codspeed/
 *.patch
+
+# hyperfine output
+bench.md
