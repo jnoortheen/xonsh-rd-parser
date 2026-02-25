@@ -16,7 +16,6 @@ description = "A Rust based, recursive descent parser for Xonsh"
 [dependency-groups]
 dev = [
     "pip",
-    "pytest-subtests>=0.13.1",
     "pytest>=8.2.2",
     "maturin-import-hook>=0.1.0",
     "pytest-codspeed",
