@@ -84,7 +84,7 @@ Module(
   |
 1 | call(a, b, \\\
   |            ^ Syntax Error: Expected a newline after line continuation character
-2 | 
+2 |
 3 | def bar():
   |
 
@@ -92,15 +92,15 @@ Module(
   |
 1 | call(a, b, \\\
   |             ^ Syntax Error: Expected a newline after line continuation character
-2 | 
+2 |
 3 | def bar():
   |
 
 
   |
 1 | call(a, b, \\\
-2 | 
-  | ^ Syntax Error: Expected ')', found newline
+2 |
+  | ^ Syntax Error: Expected `)`, found newline
 3 | def bar():
 4 |     pass
   |

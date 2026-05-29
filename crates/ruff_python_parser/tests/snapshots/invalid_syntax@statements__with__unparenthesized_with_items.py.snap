@@ -298,7 +298,7 @@ Module(
 
   |
 1 | # For parenthesized with items test cases, refer to `./ambiguous_lpar_with_items.py`
-2 | 
+2 |
 3 | with item,: pass
   |          ^ Syntax Error: Trailing comma not allowed
 4 | with item as x,: pass
@@ -358,5 +358,5 @@ Module(
 7 | with *item1, item2 as f: pass
 8 | with item1 as f, *item2: pass
 9 | with item := 0 as f: pass
-  |           ^^ Syntax Error: Expected ',', found ':='
+  |           ^^ Syntax Error: Expected `,`, found `:=`
   |
