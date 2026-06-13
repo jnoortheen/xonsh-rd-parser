@@ -55,4 +55,7 @@ bench.sequence = [
     { cmd = "pytest tests/bench.py::test_xonsh_ply --memray" },
     { cmd = "cargo bench" }
 ]
-pull-ruff-crates.script = "tasks:pull_ruff_crates"
+pull-ruff-crates.sequence = [
+    { script = "tasks:pull_ruff_crates" },
+    { cmd = "cargo build" },
+]

@@ -34,6 +34,7 @@ snapshot_kind: text
                                                 debug_text: Some(
                                                     DebugText {
                                                         leading: "",
+                                                        expression: "user",
                                                         trailing: "=",
                                                     },
                                                 ),
