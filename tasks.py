@@ -60,16 +60,25 @@ def _update_cargo_deps() -> tuple[str, str | None]:
     return current_tag, next_tag
 
 
-def pull_ruff_crates():
+def _pull_patches() -> list[Path]:
+    path = Path("parser-patches")
+    patches = list(path.glob("*.patch"))
+    if patches:
+        print("Patches already exists; apply them.")
+        return patches
     run("git fetch ruff-repo --tags", check=False)
     current, to = _update_cargo_deps()
     if to is None:
         print("No new version of ruff_python_parser found")
-        return
+        return []
     run(
         f"git format-patch {current}..{to} --output-directory=parser-patches -- crates/ruff_python_parser"
     )
-    patches = list(Path("parser-patches").glob("*.patch"))
+    return list(path.glob("*.patch"))
+
+
+def pull_ruff_crates():
+    patches = _pull_patches()
     patches.sort()
     if patches:
         print("Patches found:\n", "\n".join(map(str, patches)))
