@@ -1,0 +1,17 @@
+[tasks]
+test.sequence = [
+    { cmd = "cargo clippy" },
+    { cmd = "cargo nextest run --workspace --all-features" },
+    { cmd = "pytest" },
+]
+bench.sequence = [
+    { cmd = "pytest --codspeed --codspeed-warmup-time=5 tests/bench.py" },
+    { cmd = "pytest tests/bench.py::test_parse_file --memray" },
+    { cmd = "pytest tests/bench.py::test_xonsh_ply --memray" },
+    { cmd = "cargo bench" }
+]
+pull-ruff-crates.sequence = [
+    { script = "tasks:pull_ruff_crates" },
+    { cmd = "cargo build" },
+]
+generate-ci = "maturin generate-ci github -o .github/workflows/CI.yml"
