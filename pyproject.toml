@@ -32,6 +32,10 @@ dev = [
 features = ["pyo3/extension-module"]
 profile = "release"
 
+[tool.maturin.generate-ci.github]
+trusted-publishing = true
+zig = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
@@ -59,3 +63,4 @@ pull-ruff-crates.sequence = [
     { script = "tasks:pull_ruff_crates" },
     { cmd = "cargo build" },
 ]
+generate-ci = "maturin generate-ci github -o .github/workflows/CI.yml"
