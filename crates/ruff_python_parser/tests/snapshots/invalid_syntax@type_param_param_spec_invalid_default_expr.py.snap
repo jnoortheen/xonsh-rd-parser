@@ -313,3 +313,12 @@ Module(
 5 | type X[**P = *int] = int
   |              ^^^^ Syntax Error: Starred expression cannot be used here
   |
+
+
+  |
+2 | type X[**P = yield x] = int
+3 | type X[**P = yield from x] = int
+4 | type X[**P = x := int] = int
+  |                   ^^^ Syntax Error: non default type parameter `int` follows default type parameter
+5 | type X[**P = *int] = int
+  |
