@@ -1,7 +1,6 @@
 ---
 source: crates/ruff_python_parser/src/lexer.rs
 expression: lex_jupyter_source(source)
-snapshot_kind: text
 ---
 ## Tokens
 ```
@@ -88,7 +87,49 @@ snapshot_kind: text
     ),
     (
         Newline,
-        85..85,
+        85..86,
+    ),
+    (
+        Name(
+            Name("qux"),
+        ),
+        86..89,
+    ),
+    (
+        Equal,
+        90..91,
+    ),
+    (
+        IpyEscapeCommand {
+            value: "foo?",
+            kind: Magic,
+        },
+        92..97,
+    ),
+    (
+        Newline,
+        97..98,
+    ),
+    (
+        Name(
+            Name("quux"),
+        ),
+        98..102,
+    ),
+    (
+        Equal,
+        103..104,
+    ),
+    (
+        IpyEscapeCommand {
+            value: "pwd?",
+            kind: Shell,
+        },
+        105..110,
+    ),
+    (
+        Newline,
+        110..110,
     ),
 ]
 ```

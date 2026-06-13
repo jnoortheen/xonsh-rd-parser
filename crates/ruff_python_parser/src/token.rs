@@ -316,6 +316,7 @@ pub enum TokenKind {
     While,
     With,
     Yield,
+    Lazy,
 
     // Soft keywords
     Case,
@@ -787,6 +788,7 @@ impl fmt::Display for TokenKind {
             TokenKind::Case => "`case`",
             TokenKind::With => "`with`",
             TokenKind::Yield => "`yield`",
+            TokenKind::Lazy => "`lazy`",
             TokenKind::Dollar => "'$'",
             TokenKind::DoublePipe => "'||'",
             TokenKind::DoubleAmp => "'&&'",

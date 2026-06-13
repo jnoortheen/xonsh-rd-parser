@@ -1,7 +1,6 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/inline/ok/dotted_name_normalized_spaces.py
-snapshot_kind: text
 ---
 ## AST
 
@@ -27,6 +26,7 @@ Module(
                             asname: None,
                         },
                     ],
+                    is_lazy: false,
                 },
             ),
             Import(
@@ -45,6 +45,7 @@ Module(
                             asname: None,
                         },
                     ],
+                    is_lazy: false,
                 },
             ),
         ],

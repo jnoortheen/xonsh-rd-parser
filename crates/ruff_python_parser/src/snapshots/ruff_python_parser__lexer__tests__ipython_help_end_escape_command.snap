@@ -1,7 +1,6 @@
 ---
 source: crates/ruff_python_parser/src/lexer.rs
 expression: lex_jupyter_source(source)
-snapshot_kind: text
 ---
 ## Tokens
 ```
@@ -173,8 +172,8 @@ snapshot_kind: text
     ),
     (
         IpyEscapeCommand {
-            value: "pwd",
-            kind: Help,
+            value: "pwd?",
+            kind: Shell,
         },
         127..132,
     ),
