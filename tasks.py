@@ -83,6 +83,5 @@ def pull_ruff_crates():
     if patches:
         print("Patches found:\n", "\n".join(map(str, patches)))
         for patch in patches:
-            run(f"git apply --reject --ignore-whitespace {patch}")
-            # run(f"git apply --3way --ignore-whitespace {patch}")
+            run(f"git am --3way --ignore-whitespace {patch}")
             run(f"rm {patch}")
