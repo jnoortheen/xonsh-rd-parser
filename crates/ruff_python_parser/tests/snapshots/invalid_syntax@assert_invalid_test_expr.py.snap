@@ -32,31 +32,86 @@ Module(
                     msg: None,
                 },
             ),
-            Assert(
-                StmtAssert {
-                    node_index: NodeIndex(None),
-                    range: 10..23,
-                    test: Name(
-                        ExprName {
-                            node_index: NodeIndex(None),
-                            range: 17..23,
-                            id: Name("assert"),
-                            ctx: Load,
-                        },
-                    ),
-                    msg: None,
-                },
-            ),
             Expr(
                 StmtExpr {
                     node_index: NodeIndex(None),
                     range: 24..25,
-                    value: Name(
-                        ExprName {
+                    value: Call(
+                        ExprCall {
                             node_index: NodeIndex(None),
                             range: 24..25,
-                            id: Name("x"),
-                            ctx: Load,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 24..25,
+                                    value: Call(
+                                        ExprCall {
+                                            node_index: NodeIndex(None),
+                                            range: 24..25,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    node_index: NodeIndex(None),
+                                                    range: 24..25,
+                                                    value: Name(
+                                                        ExprName {
+                                                            node_index: NodeIndex(None),
+                                                            range: 24..25,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 24..25,
+                                                        node_index: NodeIndex(None),
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 24..25,
+                                                node_index: NodeIndex(None),
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            node_index: NodeIndex(None),
+                                                            range: 24..25,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 24..25,
+                                                                        node_index: NodeIndex(None),
+                                                                        value: "x",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                            unclosed: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 24..25,
+                                        node_index: NodeIndex(None),
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 24..25,
+                                node_index: NodeIndex(None),
+                                args: [],
+                                keywords: [],
+                            },
                         },
                     ),
                 },
@@ -132,15 +187,6 @@ Module(
 1 | assert *x
 2 | assert assert x
   |        ^^^^^^ Syntax Error: Expected an identifier, but found a keyword `assert` that cannot be used here
-3 | assert yield x
-4 | assert x := 1
-  |
-
-
-  |
-1 | assert *x
-2 | assert assert x
-  |               ^ Syntax Error: Simple statements must be separated by newlines or semicolons
 3 | assert yield x
 4 | assert x := 1
   |

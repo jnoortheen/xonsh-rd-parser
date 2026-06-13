@@ -1,7 +1,6 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/invalid/expressions/lambda_duplicate_parameters.py
-snapshot_kind: text
 ---
 ## AST
 
@@ -336,54 +335,56 @@ Module(
 ## Errors
 
   |
-1 | lambda a, a: 1
-  |           ^ Syntax Error: Duplicate parameter "a"
-2 | 
-3 | lambda a, *, a: 1
-  |
-
-
-  |
-1 | lambda a, a: 1
-2 | 
-3 | lambda a, *, a: 1
-  |              ^ Syntax Error: Duplicate parameter "a"
-4 | 
-5 | lambda a, a=20: 1
-  |
-
-
-  |
-3 | lambda a, *, a: 1
-4 | 
-5 | lambda a, a=20: 1
-  |           ^ Syntax Error: Duplicate parameter "a"
-6 | 
 7 | lambda a, *a: 1
-  |
-
-
-  |
-5 | lambda a, a=20: 1
-6 | 
-7 | lambda a, *a: 1
-  |            ^ Syntax Error: Duplicate parameter "a"
-8 | 
-9 | lambda a, *, **a: 1
-  |
-
-
-  |
-7 | lambda a, *a: 1
-8 | 
+8 |
 9 | lambda a, *, **a: 1
   |              ^^^ Syntax Error: Expected one or more keyword parameter after `*` separator
   |
 
 
+## Semantic Syntax Errors
+
+  |
+1 | lambda a, a: 1
+  |           ^ Syntax Error: Duplicate parameter "a"
+2 |
+3 | lambda a, *, a: 1
+  |
+
+
+  |
+1 | lambda a, a: 1
+2 |
+3 | lambda a, *, a: 1
+  |              ^ Syntax Error: Duplicate parameter "a"
+4 |
+5 | lambda a, a=20: 1
+  |
+
+
+  |
+3 | lambda a, *, a: 1
+4 |
+5 | lambda a, a=20: 1
+  |           ^ Syntax Error: Duplicate parameter "a"
+6 |
+7 | lambda a, *a: 1
+  |
+
+
+  |
+5 | lambda a, a=20: 1
+6 |
+7 | lambda a, *a: 1
+  |            ^ Syntax Error: Duplicate parameter "a"
+8 |
+9 | lambda a, *, **a: 1
+  |
+
+
   |
 7 | lambda a, *a: 1
-8 | 
+8 |
 9 | lambda a, *, **a: 1
   |                ^ Syntax Error: Duplicate parameter "a"
   |

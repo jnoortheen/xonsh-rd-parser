@@ -1,7 +1,6 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/invalid/expressions/parenthesized/tuple.py
-snapshot_kind: text
 ---
 ## AST
 
@@ -97,29 +96,83 @@ Module(
             Expr(
                 StmtExpr {
                     node_index: NodeIndex(None),
-                    range: 119..121,
-                    value: NumberLiteral(
-                        ExprNumberLiteral {
+                    range: 122..124,
+                    value: Call(
+                        ExprCall {
                             node_index: NodeIndex(None),
-                            range: 120..121,
-                            value: Int(
-                                1,
+                            range: 122..124,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 122..124,
+                                    value: Call(
+                                        ExprCall {
+                                            node_index: NodeIndex(None),
+                                            range: 122..124,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    node_index: NodeIndex(None),
+                                                    range: 122..123,
+                                                    value: Name(
+                                                        ExprName {
+                                                            node_index: NodeIndex(None),
+                                                            range: 122..123,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 122..123,
+                                                        node_index: NodeIndex(None),
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 122..124,
+                                                node_index: NodeIndex(None),
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            node_index: NodeIndex(None),
+                                                            range: 122..124,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 122..124,
+                                                                        node_index: NodeIndex(None),
+                                                                        value: "2)",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                            unclosed: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 122..124,
+                                        node_index: NodeIndex(None),
+                                    },
+                                    ctx: Load,
+                                },
                             ),
-                        },
-                    ),
-                },
-            ),
-            Expr(
-                StmtExpr {
-                    node_index: NodeIndex(None),
-                    range: 122..123,
-                    value: NumberLiteral(
-                        ExprNumberLiteral {
-                            node_index: NodeIndex(None),
-                            range: 122..123,
-                            value: Int(
-                                2,
-                            ),
+                            arguments: Arguments {
+                                range: 122..124,
+                                node_index: NodeIndex(None),
+                                args: [],
+                                keywords: [],
+                            },
                         },
                     ),
                 },
@@ -285,30 +338,30 @@ Module(
 
   |
 1 | # Test cases for tuple expressions where the parser recovers from a syntax error.
-2 | 
+2 |
 3 | (,)
   |  ^ Syntax Error: Expected an expression
-4 | 
+4 |
 5 | (1,,2)
   |
 
 
   |
 3 | (,)
-4 | 
+4 |
 5 | (1,,2)
   |    ^ Syntax Error: Expected an expression or a ')'
-6 | 
+6 |
 7 | (1,,)
   |
 
 
   |
 5 | (1,,2)
-6 | 
+6 |
 7 | (1,,)
   |    ^ Syntax Error: Expected an expression or a ')'
-8 | 
+8 |
 9 | # Missing comma
   |
 
@@ -317,27 +370,8 @@ Module(
  9 | # Missing comma
 10 | (1 2)
    |    ^ Syntax Error: Expected `)`, found int
-11 | 
+11 |
 12 | # Dictionary element in a list
-   |
-
-
-   |
- 9 | # Missing comma
-10 | (1 2)
-   |     ^ Syntax Error: Expected a statement
-11 | 
-12 | # Dictionary element in a list
-   |
-
-
-   |
- 9 | # Missing comma
-10 | (1 2)
-   |      ^ Syntax Error: Expected a statement
-11 | 
-12 | # Dictionary element in a list
-13 | (1: 2)
    |
 
 
@@ -345,7 +379,7 @@ Module(
 12 | # Dictionary element in a list
 13 | (1: 2)
    |   ^ Syntax Error: Expected `)`, found `:`
-14 | 
+14 |
 15 | # Missing expression
    |
 
@@ -354,7 +388,7 @@ Module(
 12 | # Dictionary element in a list
 13 | (1: 2)
    |  ^ Syntax Error: Invalid annotated assignment target
-14 | 
+14 |
 15 | # Missing expression
    |
 
@@ -363,7 +397,7 @@ Module(
 12 | # Dictionary element in a list
 13 | (1: 2)
    |      ^ Syntax Error: Expected a statement
-14 | 
+14 |
 15 | # Missing expression
    |
 
@@ -372,7 +406,7 @@ Module(
 12 | # Dictionary element in a list
 13 | (1: 2)
    |       ^ Syntax Error: Expected a statement
-14 | 
+14 |
 15 | # Missing expression
 16 | (1, x + )
    |
@@ -382,37 +416,37 @@ Module(
 15 | # Missing expression
 16 | (1, x + )
    |         ^ Syntax Error: Expected an expression
-17 | 
+17 |
 18 | (1; 2)
    |
 
 
    |
 16 | (1, x + )
-17 | 
+17 |
 18 | (1; 2)
    |   ^ Syntax Error: Expected `)`, found `;`
-19 | 
+19 |
 20 | # Unparenthesized named expression is not allowed
    |
 
 
    |
 16 | (1, x + )
-17 | 
+17 |
 18 | (1; 2)
    |      ^ Syntax Error: Expected a statement
-19 | 
+19 |
 20 | # Unparenthesized named expression is not allowed
    |
 
 
    |
 16 | (1, x + )
-17 | 
+17 |
 18 | (1; 2)
    |       ^ Syntax Error: Expected a statement
-19 | 
+19 |
 20 | # Unparenthesized named expression is not allowed
 21 | x, y := 2, z
    |

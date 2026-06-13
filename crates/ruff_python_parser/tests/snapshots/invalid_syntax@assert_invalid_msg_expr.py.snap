@@ -40,33 +40,109 @@ Module(
                     ),
                 },
             ),
-            Assert(
-                StmtAssert {
-                    node_index: NodeIndex(None),
-                    range: 17..30,
-                    test: BooleanLiteral(
-                        ExprBooleanLiteral {
-                            node_index: NodeIndex(None),
-                            range: 24..29,
-                            value: false,
-                        },
-                    ),
-                    msg: None,
-                },
-            ),
-            Assert(
-                StmtAssert {
+            Expr(
+                StmtExpr {
                     node_index: NodeIndex(None),
                     range: 31..39,
-                    test: Name(
-                        ExprName {
+                    value: Call(
+                        ExprCall {
                             node_index: NodeIndex(None),
-                            range: 38..39,
-                            id: Name("x"),
-                            ctx: Load,
+                            range: 31..39,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 31..39,
+                                    value: Call(
+                                        ExprCall {
+                                            node_index: NodeIndex(None),
+                                            range: 31..39,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    node_index: NodeIndex(None),
+                                                    range: 31..37,
+                                                    value: Name(
+                                                        ExprName {
+                                                            node_index: NodeIndex(None),
+                                                            range: 31..37,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 31..37,
+                                                        node_index: NodeIndex(None),
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 31..39,
+                                                node_index: NodeIndex(None),
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            node_index: NodeIndex(None),
+                                                            range: 31..37,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 31..37,
+                                                                        node_index: NodeIndex(None),
+                                                                        value: "assert",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                            unclosed: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            node_index: NodeIndex(None),
+                                                            range: 38..39,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 38..39,
+                                                                        node_index: NodeIndex(None),
+                                                                        value: "x",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                            unclosed: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 31..39,
+                                        node_index: NodeIndex(None),
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 31..39,
+                                node_index: NodeIndex(None),
+                                args: [],
+                                keywords: [],
+                            },
                         },
                     ),
-                    msg: None,
                 },
             ),
             Assert(

@@ -1,7 +1,6 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/invalid/expressions/named/missing_expression_2.py
-snapshot_kind: text
 ---
 ## AST
 
@@ -14,65 +13,106 @@ Module(
             Expr(
                 StmtExpr {
                     node_index: NodeIndex(None),
-                    range: 61..71,
-                    value: Named(
-                        ExprNamed {
-                            node_index: NodeIndex(None),
-                            range: 62..71,
-                            target: Name(
-                                ExprName {
-                                    node_index: NodeIndex(None),
-                                    range: 62..63,
-                                    id: Name("x"),
-                                    ctx: Store,
-                                },
-                            ),
-                            value: Name(
-                                ExprName {
-                                    node_index: NodeIndex(None),
-                                    range: 68..71,
-                                    id: Name("def"),
-                                    ctx: Load,
-                                },
-                            ),
-                        },
-                    ),
-                },
-            ),
-            AnnAssign(
-                StmtAnnAssign {
-                    node_index: NodeIndex(None),
                     range: 72..87,
-                    target: Call(
+                    value: Call(
                         ExprCall {
                             node_index: NodeIndex(None),
-                            range: 72..77,
-                            func: Name(
-                                ExprName {
+                            range: 72..87,
+                            func: Attribute(
+                                ExprAttribute {
                                     node_index: NodeIndex(None),
-                                    range: 72..75,
-                                    id: Name("foo"),
+                                    range: 72..87,
+                                    value: Call(
+                                        ExprCall {
+                                            node_index: NodeIndex(None),
+                                            range: 72..87,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    node_index: NodeIndex(None),
+                                                    range: 72..75,
+                                                    value: Name(
+                                                        ExprName {
+                                                            node_index: NodeIndex(None),
+                                                            range: 72..75,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 72..75,
+                                                        node_index: NodeIndex(None),
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 72..87,
+                                                node_index: NodeIndex(None),
+                                                args: [
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            node_index: NodeIndex(None),
+                                                            range: 72..78,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 72..78,
+                                                                        node_index: NodeIndex(None),
+                                                                        value: "foo():",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                            unclosed: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                    StringLiteral(
+                                                        ExprStringLiteral {
+                                                            node_index: NodeIndex(None),
+                                                            range: 83..87,
+                                                            value: StringLiteralValue {
+                                                                inner: Single(
+                                                                    StringLiteral {
+                                                                        range: 83..87,
+                                                                        node_index: NodeIndex(None),
+                                                                        value: "pass",
+                                                                        flags: StringLiteralFlags {
+                                                                            quote_style: Single,
+                                                                            prefix: Empty,
+                                                                            triple_quoted: false,
+                                                                            unclosed: false,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 72..87,
+                                        node_index: NodeIndex(None),
+                                    },
                                     ctx: Load,
                                 },
                             ),
                             arguments: Arguments {
-                                range: 75..77,
+                                range: 72..87,
                                 node_index: NodeIndex(None),
                                 args: [],
                                 keywords: [],
                             },
                         },
                     ),
-                    annotation: Name(
-                        ExprName {
-                            node_index: NodeIndex(None),
-                            range: 83..87,
-                            id: Name("pass"),
-                            ctx: Load,
-                        },
-                    ),
-                    value: None,
-                    simple: false,
                 },
             ),
         ],
@@ -83,7 +123,7 @@ Module(
 
   |
 3 | (x :=
-4 | 
+4 |
 5 | def foo():
   | ^^^ Syntax Error: Expected an identifier, but found a keyword `def` that cannot be used here
 6 |     pass
@@ -92,7 +132,7 @@ Module(
 
   |
 3 | (x :=
-4 | 
+4 |
 5 | def foo():
   |     ^^^ Syntax Error: Expected `)`, found name
 6 |     pass
@@ -102,12 +142,5 @@ Module(
   |
 5 | def foo():
 6 |     pass
-  |     ^^^^ Syntax Error: Expected an identifier, but found a keyword `pass` that cannot be used here
-  |
-
-
-  |
-5 | def foo():
-6 |     pass
-  |          Syntax Error: unexpected EOF while parsing
+  |         ^ Syntax Error: unexpected EOF while parsing
   |

@@ -1,21 +1,23 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/inline/err/try_stmt_missing_except_finally.py
-snapshot_kind: text
 ---
 ## AST
 
 ```
 Module(
     ModModule {
+        node_index: NodeIndex(None),
         range: 0..43,
         body: [
             Try(
                 StmtTry {
+                    node_index: NodeIndex(None),
                     range: 0..13,
                     body: [
                         Pass(
                             StmtPass {
+                                node_index: NodeIndex(None),
                                 range: 9..13,
                             },
                         ),
@@ -28,10 +30,12 @@ Module(
             ),
             Try(
                 StmtTry {
+                    node_index: NodeIndex(None),
                     range: 14..42,
                     body: [
                         Pass(
                             StmtPass {
+                                node_index: NodeIndex(None),
                                 range: 23..27,
                             },
                         ),
@@ -40,6 +44,7 @@ Module(
                     orelse: [
                         Pass(
                             StmtPass {
+                                node_index: NodeIndex(None),
                                 range: 38..42,
                             },
                         ),
@@ -67,4 +72,5 @@ Module(
   |
 5 | else:
 6 |     pass
+  |         ^ Syntax Error: Expected `except` or `finally` after `try` block
   |

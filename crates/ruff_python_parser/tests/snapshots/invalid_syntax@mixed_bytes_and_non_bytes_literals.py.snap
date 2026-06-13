@@ -1,7 +1,6 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/inline/err/mixed_bytes_and_non_bytes_literals.py
-snapshot_kind: text
 ---
 ## AST
 
@@ -68,12 +67,12 @@ Module(
                                         FString(
                                             FString {
                                                 range: 18..26,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 elements: [
                                                     Literal(
-                                                        FStringLiteralElement {
+                                                        InterpolatedStringLiteralElement {
                                                             range: 20..25,
-                                                            node_index: AtomicNodeIndex(..),
+                                                            node_index: NodeIndex(None),
                                                             value: "first",
                                                         },
                                                     ),
@@ -133,12 +132,12 @@ Module(
                                         FString(
                                             FString {
                                                 range: 45..54,
-                                                node_index: AtomicNodeIndex(..),
+                                                node_index: NodeIndex(None),
                                                 elements: [
                                                     Literal(
-                                                        FStringLiteralElement {
+                                                        InterpolatedStringLiteralElement {
                                                             range: 47..53,
-                                                            node_index: AtomicNodeIndex(..),
+                                                            node_index: NodeIndex(None),
                                                             value: "second",
                                                         },
                                                     ),

@@ -143,7 +143,7 @@ foo.bar[0].baz[2].egg??
         ParseOptions::from(Mode::Ipython),
     )
     .unwrap();
-    insta::assert_debug_snapshot!(suite);
+    insta::assert_debug_snapshot!(parsed.syntax());
 }
 
 #[test]

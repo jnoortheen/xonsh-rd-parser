@@ -1,25 +1,28 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/valid/expressions/string.py
-snapshot_kind: text
 ---
 ## AST
 
 ```
 Module(
     ModModule {
+        node_index: NodeIndex(None),
         range: 0..163,
         body: [
             Expr(
                 StmtExpr {
+                    node_index: NodeIndex(None),
                     range: 0..13,
                     value: StringLiteral(
                         ExprStringLiteral {
+                            node_index: NodeIndex(None),
                             range: 0..13,
                             value: StringLiteralValue {
                                 inner: Single(
                                     StringLiteral {
                                         range: 0..13,
+                                        node_index: NodeIndex(None),
                                         value: "Hello World",
                                         flags: StringLiteralFlags {
                                             quote_style: Single,
@@ -36,14 +39,17 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: NodeIndex(None),
                     range: 14..20,
                     value: StringLiteral(
                         ExprStringLiteral {
+                            node_index: NodeIndex(None),
                             range: 14..20,
                             value: StringLiteralValue {
                                 inner: Single(
                                     StringLiteral {
                                         range: 14..20,
+                                        node_index: NodeIndex(None),
                                         value: "😎",
                                         flags: StringLiteralFlags {
                                             quote_style: Double,
@@ -60,9 +66,11 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: NodeIndex(None),
                     range: 21..32,
                     value: StringLiteral(
                         ExprStringLiteral {
+                            node_index: NodeIndex(None),
                             range: 21..32,
                             value: StringLiteralValue {
                                 inner: Concatenated(
@@ -70,6 +78,7 @@ Module(
                                         strings: [
                                             StringLiteral {
                                                 range: 21..26,
+                                                node_index: NodeIndex(None),
                                                 value: "Foo",
                                                 flags: StringLiteralFlags {
                                                     quote_style: Single,
@@ -80,6 +89,7 @@ Module(
                                             },
                                             StringLiteral {
                                                 range: 27..32,
+                                                node_index: NodeIndex(None),
                                                 value: "Bar",
                                                 flags: StringLiteralFlags {
                                                     quote_style: Single,
@@ -99,9 +109,11 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: NodeIndex(None),
                     range: 33..60,
                     value: StringLiteral(
                         ExprStringLiteral {
+                            node_index: NodeIndex(None),
                             range: 39..58,
                             value: StringLiteralValue {
                                 inner: Concatenated(
@@ -109,6 +121,7 @@ Module(
                                         strings: [
                                             StringLiteral {
                                                 range: 39..42,
+                                                node_index: NodeIndex(None),
                                                 value: "A",
                                                 flags: StringLiteralFlags {
                                                     quote_style: Single,
@@ -119,6 +132,7 @@ Module(
                                             },
                                             StringLiteral {
                                                 range: 47..50,
+                                                node_index: NodeIndex(None),
                                                 value: "B",
                                                 flags: StringLiteralFlags {
                                                     quote_style: Single,
@@ -129,6 +143,7 @@ Module(
                                             },
                                             StringLiteral {
                                                 range: 55..58,
+                                                node_index: NodeIndex(None),
                                                 value: "C",
                                                 flags: StringLiteralFlags {
                                                     quote_style: Single,
@@ -148,14 +163,17 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: NodeIndex(None),
                     range: 61..79,
                     value: StringLiteral(
                         ExprStringLiteral {
+                            node_index: NodeIndex(None),
                             range: 61..79,
                             value: StringLiteralValue {
                                 inner: Single(
                                     StringLiteral {
                                         range: 61..79,
+                                        node_index: NodeIndex(None),
                                         value: "Olá, Mundo!",
                                         flags: StringLiteralFlags {
                                             quote_style: Single,
@@ -172,14 +190,17 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: NodeIndex(None),
                     range: 80..91,
                     value: StringLiteral(
                         ExprStringLiteral {
+                            node_index: NodeIndex(None),
                             range: 80..91,
                             value: StringLiteralValue {
                                 inner: Single(
                                     StringLiteral {
                                         range: 80..91,
+                                        node_index: NodeIndex(None),
                                         value: "ABCDE",
                                         flags: StringLiteralFlags {
                                             quote_style: Double,
@@ -196,9 +217,11 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: NodeIndex(None),
                     range: 92..121,
                     value: StringLiteral(
                         ExprStringLiteral {
+                            node_index: NodeIndex(None),
                             range: 98..119,
                             value: StringLiteralValue {
                                 inner: Concatenated(
@@ -206,6 +229,7 @@ Module(
                                         strings: [
                                             StringLiteral {
                                                 range: 98..106,
+                                                node_index: NodeIndex(None),
                                                 value: "aB",
                                                 flags: StringLiteralFlags {
                                                     quote_style: Single,
@@ -216,6 +240,7 @@ Module(
                                             },
                                             StringLiteral {
                                                 range: 111..119,
+                                                node_index: NodeIndex(None),
                                                 value: "cD",
                                                 flags: StringLiteralFlags {
                                                     quote_style: Single,
@@ -235,14 +260,17 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: NodeIndex(None),
                     range: 122..136,
                     value: BytesLiteral(
                         ExprBytesLiteral {
+                            node_index: NodeIndex(None),
                             range: 122..136,
                             value: BytesLiteralValue {
                                 inner: Single(
                                     BytesLiteral {
                                         range: 122..136,
+                                        node_index: NodeIndex(None),
                                         value: [
                                             104,
                                             101,
@@ -271,15 +299,18 @@ Module(
             ),
             Expr(
                 StmtExpr {
+                    node_index: NodeIndex(None),
                     range: 137..161,
                     value: BytesLiteral(
                         ExprBytesLiteral {
+                            node_index: NodeIndex(None),
                             range: 137..161,
                             value: BytesLiteralValue {
                                 inner: Concatenated(
                                     [
                                         BytesLiteral {
                                             range: 137..145,
+                                            node_index: NodeIndex(None),
                                             value: [
                                                 98,
                                                 121,
@@ -296,6 +327,7 @@ Module(
                                         },
                                         BytesLiteral {
                                             range: 146..161,
+                                            node_index: NodeIndex(None),
                                             value: [
                                                 99,
                                                 111,

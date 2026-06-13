@@ -18,7 +18,7 @@ Module(
                         Import(
                             StmtImport {
                                 node_index: NodeIndex(None),
-                                range: 53..67,
+                                range: 58..67,
                                 names: [
                                     Alias {
                                         range: 65..67,
@@ -31,7 +31,7 @@ Module(
                                         asname: None,
                                     },
                                 ],
-                                is_lazy: true,
+                                is_lazy: false,
                             },
                         ),
                     ],
@@ -98,7 +98,7 @@ Module(
                                     Import(
                                         StmtImport {
                                             node_index: NodeIndex(None),
-                                            range: 120..135,
+                                            range: 125..135,
                                             names: [
                                                 Alias {
                                                     range: 132..135,
@@ -111,7 +111,7 @@ Module(
                                                     asname: None,
                                                 },
                                             ],
-                                            is_lazy: true,
+                                            is_lazy: false,
                                         },
                                     ),
                                 ],
@@ -149,7 +149,7 @@ Module(
                         Import(
                             StmtImport {
                                 node_index: NodeIndex(None),
-                                range: 153..169,
+                                range: 158..169,
                                 names: [
                                     Alias {
                                         range: 165..169,
@@ -162,7 +162,7 @@ Module(
                                         asname: None,
                                     },
                                 ],
-                                is_lazy: true,
+                                is_lazy: false,
                             },
                         ),
                     ],
@@ -194,7 +194,7 @@ Module(
                         ImportFrom(
                             StmtImportFrom {
                                 node_index: NodeIndex(None),
-                                range: 199..226,
+                                range: 204..226,
                                 module: Some(
                                     Identifier {
                                         id: Name("json"),
@@ -215,7 +215,7 @@ Module(
                                     },
                                 ],
                                 level: 0,
-                                is_lazy: true,
+                                is_lazy: false,
                             },
                         ),
                     ],
@@ -237,7 +237,7 @@ Module(
                         Import(
                             StmtImport {
                                 node_index: NodeIndex(None),
-                                range: 247..265,
+                                range: 252..265,
                                 names: [
                                     Alias {
                                         range: 259..265,
@@ -250,7 +250,7 @@ Module(
                                         asname: None,
                                     },
                                 ],
-                                is_lazy: true,
+                                is_lazy: false,
                             },
                         ),
                     ],
@@ -295,7 +295,7 @@ Module(
                                     Import(
                                         StmtImport {
                                             node_index: NodeIndex(None),
-                                            range: 305..321,
+                                            range: 310..321,
                                             names: [
                                                 Alias {
                                                     range: 317..321,
@@ -308,7 +308,7 @@ Module(
                                                     asname: None,
                                                 },
                                             ],
-                                            is_lazy: true,
+                                            is_lazy: false,
                                         },
                                     ),
                                 ],
@@ -321,13 +321,13 @@ Module(
     },
 )
 ```
-## Semantic Syntax Errors
+## Errors
 
   |
 1 | # parse_options: {"target-version": "3.15"}
 2 | try:
 3 |     lazy import os
-  |     ^^^^^^^^^^^^^^ Syntax Error: lazy import not allowed inside try/except blocks
+  |     ^^^^ Syntax Error: Expected a statement
 4 | except:
 5 |     pass
   |
@@ -337,7 +337,7 @@ Module(
  8 |     x
  9 | except* Exception:
 10 |     lazy import sys
-   |     ^^^^^^^^^^^^^^^ Syntax Error: lazy import not allowed inside try/except blocks
+   |     ^^^^ Syntax Error: Expected a statement
 11 |
 12 | def func():
    |
@@ -346,7 +346,7 @@ Module(
    |
 12 | def func():
 13 |     lazy import math
-   |     ^^^^^^^^^^^^^^^^ Syntax Error: lazy import not allowed inside functions
+   |     ^^^^ Syntax Error: Expected a statement
 14 |
 15 | async def async_func():
    |
@@ -355,7 +355,7 @@ Module(
    |
 15 | async def async_func():
 16 |     lazy from json import loads
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Syntax Error: lazy from ... import not allowed inside functions
+   |     ^^^^ Syntax Error: Expected a statement
 17 |
 18 | class MyClass:
    |
@@ -364,7 +364,7 @@ Module(
    |
 18 | class MyClass:
 19 |     lazy import typing
-   |     ^^^^^^^^^^^^^^^^^^ Syntax Error: lazy import not allowed inside classes
+   |     ^^^^ Syntax Error: Expected a statement
 20 |
 21 | def outer():
    |
@@ -374,5 +374,5 @@ Module(
 21 | def outer():
 22 |     class Inner:
 23 |         lazy import json
-   |         ^^^^^^^^^^^^^^^^ Syntax Error: lazy import not allowed inside classes
+   |         ^^^^ Syntax Error: Expected a statement
    |

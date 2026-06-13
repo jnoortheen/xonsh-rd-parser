@@ -442,60 +442,541 @@ Module(
                     ),
                 },
             ),
-            IpyEscapeCommand(
-                StmtIpyEscapeCommand {
+            Expr(
+                StmtExpr {
                     node_index: NodeIndex(None),
                     range: 862..866,
-                    kind: Help,
-                    value: "foo",
+                    value: Call(
+                        ExprCall {
+                            node_index: NodeIndex(None),
+                            range: 862..866,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 866..867,
+                                    value: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 866..867,
+                                            id: Name("__xonsh__"),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("help"),
+                                        range: 866..867,
+                                        node_index: NodeIndex(None),
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 862..866,
+                                node_index: NodeIndex(None),
+                                args: [
+                                    Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 862..865,
+                                            id: Name("foo"),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                ],
+                                keywords: [],
+                            },
+                        },
+                    ),
                 },
             ),
-            IpyEscapeCommand(
-                StmtIpyEscapeCommand {
+            Expr(
+                StmtExpr {
                     node_index: NodeIndex(None),
                     range: 867..876,
-                    kind: Help2,
-                    value: "foo.bar",
+                    value: Call(
+                        ExprCall {
+                            node_index: NodeIndex(None),
+                            range: 867..875,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 876..877,
+                                    value: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 876..877,
+                                            id: Name("__xonsh__"),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("superhelp"),
+                                        range: 876..877,
+                                        node_index: NodeIndex(None),
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 867..875,
+                                node_index: NodeIndex(None),
+                                args: [
+                                    Attribute(
+                                        ExprAttribute {
+                                            node_index: NodeIndex(None),
+                                            range: 867..874,
+                                            value: Name(
+                                                ExprName {
+                                                    node_index: NodeIndex(None),
+                                                    range: 867..870,
+                                                    id: Name("foo"),
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            attr: Identifier {
+                                                id: Name("bar"),
+                                                range: 871..874,
+                                                node_index: NodeIndex(None),
+                                            },
+                                            ctx: Load,
+                                        },
+                                    ),
+                                ],
+                                keywords: [],
+                            },
+                        },
+                    ),
                 },
             ),
-            IpyEscapeCommand(
-                StmtIpyEscapeCommand {
+            Expr(
+                StmtExpr {
                     node_index: NodeIndex(None),
                     range: 877..889,
-                    kind: Help,
-                    value: "foo.bar.baz",
+                    value: Call(
+                        ExprCall {
+                            node_index: NodeIndex(None),
+                            range: 877..889,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 889..890,
+                                    value: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 889..890,
+                                            id: Name("__xonsh__"),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("help"),
+                                        range: 889..890,
+                                        node_index: NodeIndex(None),
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 877..889,
+                                node_index: NodeIndex(None),
+                                args: [
+                                    Attribute(
+                                        ExprAttribute {
+                                            node_index: NodeIndex(None),
+                                            range: 877..888,
+                                            value: Attribute(
+                                                ExprAttribute {
+                                                    node_index: NodeIndex(None),
+                                                    range: 877..884,
+                                                    value: Name(
+                                                        ExprName {
+                                                            node_index: NodeIndex(None),
+                                                            range: 877..880,
+                                                            id: Name("foo"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("bar"),
+                                                        range: 881..884,
+                                                        node_index: NodeIndex(None),
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            attr: Identifier {
+                                                id: Name("baz"),
+                                                range: 885..888,
+                                                node_index: NodeIndex(None),
+                                            },
+                                            ctx: Load,
+                                        },
+                                    ),
+                                ],
+                                keywords: [],
+                            },
+                        },
+                    ),
                 },
             ),
-            IpyEscapeCommand(
-                StmtIpyEscapeCommand {
+            Expr(
+                StmtExpr {
                     node_index: NodeIndex(None),
                     range: 890..898,
-                    kind: Help2,
-                    value: "foo[0]",
+                    value: Call(
+                        ExprCall {
+                            node_index: NodeIndex(None),
+                            range: 890..897,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 898..899,
+                                    value: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 898..899,
+                                            id: Name("__xonsh__"),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("superhelp"),
+                                        range: 898..899,
+                                        node_index: NodeIndex(None),
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 890..897,
+                                node_index: NodeIndex(None),
+                                args: [
+                                    Subscript(
+                                        ExprSubscript {
+                                            node_index: NodeIndex(None),
+                                            range: 890..896,
+                                            value: Name(
+                                                ExprName {
+                                                    node_index: NodeIndex(None),
+                                                    range: 890..893,
+                                                    id: Name("foo"),
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            slice: NumberLiteral(
+                                                ExprNumberLiteral {
+                                                    node_index: NodeIndex(None),
+                                                    range: 894..895,
+                                                    value: Int(
+                                                        0,
+                                                    ),
+                                                },
+                                            ),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                ],
+                                keywords: [],
+                            },
+                        },
+                    ),
                 },
             ),
-            IpyEscapeCommand(
-                StmtIpyEscapeCommand {
+            Expr(
+                StmtExpr {
                     node_index: NodeIndex(None),
                     range: 899..909,
-                    kind: Help,
-                    value: "foo[0][1]",
+                    value: Call(
+                        ExprCall {
+                            node_index: NodeIndex(None),
+                            range: 899..909,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 909..910,
+                                    value: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 909..910,
+                                            id: Name("__xonsh__"),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("help"),
+                                        range: 909..910,
+                                        node_index: NodeIndex(None),
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 899..909,
+                                node_index: NodeIndex(None),
+                                args: [
+                                    Subscript(
+                                        ExprSubscript {
+                                            node_index: NodeIndex(None),
+                                            range: 899..908,
+                                            value: Subscript(
+                                                ExprSubscript {
+                                                    node_index: NodeIndex(None),
+                                                    range: 899..905,
+                                                    value: Name(
+                                                        ExprName {
+                                                            node_index: NodeIndex(None),
+                                                            range: 899..902,
+                                                            id: Name("foo"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    slice: NumberLiteral(
+                                                        ExprNumberLiteral {
+                                                            node_index: NodeIndex(None),
+                                                            range: 903..904,
+                                                            value: Int(
+                                                                0,
+                                                            ),
+                                                        },
+                                                    ),
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            slice: NumberLiteral(
+                                                ExprNumberLiteral {
+                                                    node_index: NodeIndex(None),
+                                                    range: 906..907,
+                                                    value: Int(
+                                                        1,
+                                                    ),
+                                                },
+                                            ),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                ],
+                                keywords: [],
+                            },
+                        },
+                    ),
                 },
             ),
-            IpyEscapeCommand(
-                StmtIpyEscapeCommand {
+            Expr(
+                StmtExpr {
                     node_index: NodeIndex(None),
                     range: 910..929,
-                    kind: Help2,
-                    value: "foo.bar[0].baz[1]",
+                    value: Call(
+                        ExprCall {
+                            node_index: NodeIndex(None),
+                            range: 910..928,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 929..930,
+                                    value: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 929..930,
+                                            id: Name("__xonsh__"),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("superhelp"),
+                                        range: 929..930,
+                                        node_index: NodeIndex(None),
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 910..928,
+                                node_index: NodeIndex(None),
+                                args: [
+                                    Subscript(
+                                        ExprSubscript {
+                                            node_index: NodeIndex(None),
+                                            range: 910..927,
+                                            value: Attribute(
+                                                ExprAttribute {
+                                                    node_index: NodeIndex(None),
+                                                    range: 910..924,
+                                                    value: Subscript(
+                                                        ExprSubscript {
+                                                            node_index: NodeIndex(None),
+                                                            range: 910..920,
+                                                            value: Attribute(
+                                                                ExprAttribute {
+                                                                    node_index: NodeIndex(None),
+                                                                    range: 910..917,
+                                                                    value: Name(
+                                                                        ExprName {
+                                                                            node_index: NodeIndex(None),
+                                                                            range: 910..913,
+                                                                            id: Name("foo"),
+                                                                            ctx: Load,
+                                                                        },
+                                                                    ),
+                                                                    attr: Identifier {
+                                                                        id: Name("bar"),
+                                                                        range: 914..917,
+                                                                        node_index: NodeIndex(None),
+                                                                    },
+                                                                    ctx: Load,
+                                                                },
+                                                            ),
+                                                            slice: NumberLiteral(
+                                                                ExprNumberLiteral {
+                                                                    node_index: NodeIndex(None),
+                                                                    range: 918..919,
+                                                                    value: Int(
+                                                                        0,
+                                                                    ),
+                                                                },
+                                                            ),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("baz"),
+                                                        range: 921..924,
+                                                        node_index: NodeIndex(None),
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            slice: NumberLiteral(
+                                                ExprNumberLiteral {
+                                                    node_index: NodeIndex(None),
+                                                    range: 925..926,
+                                                    value: Int(
+                                                        1,
+                                                    ),
+                                                },
+                                            ),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                ],
+                                keywords: [],
+                            },
+                        },
+                    ),
                 },
             ),
-            IpyEscapeCommand(
-                StmtIpyEscapeCommand {
+            Expr(
+                StmtExpr {
                     node_index: NodeIndex(None),
                     range: 930..953,
-                    kind: Help2,
-                    value: "foo.bar[0].baz[2].egg",
+                    value: Call(
+                        ExprCall {
+                            node_index: NodeIndex(None),
+                            range: 930..952,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 953..953,
+                                    value: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 953..953,
+                                            id: Name("__xonsh__"),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("superhelp"),
+                                        range: 953..953,
+                                        node_index: NodeIndex(None),
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 930..952,
+                                node_index: NodeIndex(None),
+                                args: [
+                                    Attribute(
+                                        ExprAttribute {
+                                            node_index: NodeIndex(None),
+                                            range: 930..951,
+                                            value: Subscript(
+                                                ExprSubscript {
+                                                    node_index: NodeIndex(None),
+                                                    range: 930..947,
+                                                    value: Attribute(
+                                                        ExprAttribute {
+                                                            node_index: NodeIndex(None),
+                                                            range: 930..944,
+                                                            value: Subscript(
+                                                                ExprSubscript {
+                                                                    node_index: NodeIndex(None),
+                                                                    range: 930..940,
+                                                                    value: Attribute(
+                                                                        ExprAttribute {
+                                                                            node_index: NodeIndex(None),
+                                                                            range: 930..937,
+                                                                            value: Name(
+                                                                                ExprName {
+                                                                                    node_index: NodeIndex(None),
+                                                                                    range: 930..933,
+                                                                                    id: Name("foo"),
+                                                                                    ctx: Load,
+                                                                                },
+                                                                            ),
+                                                                            attr: Identifier {
+                                                                                id: Name("bar"),
+                                                                                range: 934..937,
+                                                                                node_index: NodeIndex(None),
+                                                                            },
+                                                                            ctx: Load,
+                                                                        },
+                                                                    ),
+                                                                    slice: NumberLiteral(
+                                                                        ExprNumberLiteral {
+                                                                            node_index: NodeIndex(None),
+                                                                            range: 938..939,
+                                                                            value: Int(
+                                                                                0,
+                                                                            ),
+                                                                        },
+                                                                    ),
+                                                                    ctx: Load,
+                                                                },
+                                                            ),
+                                                            attr: Identifier {
+                                                                id: Name("baz"),
+                                                                range: 941..944,
+                                                                node_index: NodeIndex(None),
+                                                            },
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    slice: NumberLiteral(
+                                                        ExprNumberLiteral {
+                                                            node_index: NodeIndex(None),
+                                                            range: 945..946,
+                                                            value: Int(
+                                                                2,
+                                                            ),
+                                                        },
+                                                    ),
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            attr: Identifier {
+                                                id: Name("egg"),
+                                                range: 948..951,
+                                                node_index: NodeIndex(None),
+                                            },
+                                            ctx: Load,
+                                        },
+                                    ),
+                                ],
+                                keywords: [],
+                            },
+                        },
+                    ),
                 },
             ),
         ],

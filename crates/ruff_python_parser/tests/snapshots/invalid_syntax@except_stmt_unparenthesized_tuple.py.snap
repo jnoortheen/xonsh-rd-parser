@@ -1,21 +1,23 @@
 ---
 source: crates/ruff_python_parser/tests/fixtures.rs
 input_file: crates/ruff_python_parser/resources/inline/err/except_stmt_unparenthesized_tuple.py
-snapshot_kind: text
 ---
 ## AST
 
 ```
 Module(
     ModModule {
+        node_index: NodeIndex(None),
         range: 0..131,
         body: [
             Try(
                 StmtTry {
+                    node_index: NodeIndex(None),
                     range: 0..64,
                     body: [
                         Pass(
                             StmtPass {
+                                node_index: NodeIndex(None),
                                 range: 9..13,
                             },
                         ),
@@ -24,13 +26,16 @@ Module(
                         ExceptHandler(
                             ExceptHandlerExceptHandler {
                                 range: 14..35,
+                                node_index: NodeIndex(None),
                                 type_: Some(
                                     Tuple(
                                         ExprTuple {
+                                            node_index: NodeIndex(None),
                                             range: 21..25,
                                             elts: [
                                                 Name(
                                                     ExprName {
+                                                        node_index: NodeIndex(None),
                                                         range: 21..22,
                                                         id: Name("x"),
                                                         ctx: Load,
@@ -38,6 +43,7 @@ Module(
                                                 ),
                                                 Name(
                                                     ExprName {
+                                                        node_index: NodeIndex(None),
                                                         range: 24..25,
                                                         id: Name("y"),
                                                         ctx: Load,
@@ -53,6 +59,7 @@ Module(
                                 body: [
                                     Pass(
                                         StmtPass {
+                                            node_index: NodeIndex(None),
                                             range: 31..35,
                                         },
                                     ),
@@ -62,13 +69,16 @@ Module(
                         ExceptHandler(
                             ExceptHandlerExceptHandler {
                                 range: 36..64,
+                                node_index: NodeIndex(None),
                                 type_: Some(
                                     Tuple(
                                         ExprTuple {
+                                            node_index: NodeIndex(None),
                                             range: 43..47,
                                             elts: [
                                                 Name(
                                                     ExprName {
+                                                        node_index: NodeIndex(None),
                                                         range: 43..44,
                                                         id: Name("x"),
                                                         ctx: Load,
@@ -76,6 +86,7 @@ Module(
                                                 ),
                                                 Name(
                                                     ExprName {
+                                                        node_index: NodeIndex(None),
                                                         range: 46..47,
                                                         id: Name("y"),
                                                         ctx: Load,
@@ -91,11 +102,13 @@ Module(
                                     Identifier {
                                         id: Name("exc"),
                                         range: 51..54,
+                                        node_index: NodeIndex(None),
                                     },
                                 ),
                                 body: [
                                     Pass(
                                         StmtPass {
+                                            node_index: NodeIndex(None),
                                             range: 60..64,
                                         },
                                     ),
@@ -110,10 +123,12 @@ Module(
             ),
             Try(
                 StmtTry {
+                    node_index: NodeIndex(None),
                     range: 65..130,
                     body: [
                         Pass(
                             StmtPass {
+                                node_index: NodeIndex(None),
                                 range: 74..78,
                             },
                         ),
@@ -122,13 +137,16 @@ Module(
                         ExceptHandler(
                             ExceptHandlerExceptHandler {
                                 range: 79..101,
+                                node_index: NodeIndex(None),
                                 type_: Some(
                                     Tuple(
                                         ExprTuple {
+                                            node_index: NodeIndex(None),
                                             range: 87..91,
                                             elts: [
                                                 Name(
                                                     ExprName {
+                                                        node_index: NodeIndex(None),
                                                         range: 87..88,
                                                         id: Name("x"),
                                                         ctx: Load,
@@ -136,6 +154,7 @@ Module(
                                                 ),
                                                 Name(
                                                     ExprName {
+                                                        node_index: NodeIndex(None),
                                                         range: 90..91,
                                                         id: Name("y"),
                                                         ctx: Load,
@@ -151,6 +170,7 @@ Module(
                                 body: [
                                     Pass(
                                         StmtPass {
+                                            node_index: NodeIndex(None),
                                             range: 97..101,
                                         },
                                     ),
@@ -160,13 +180,16 @@ Module(
                         ExceptHandler(
                             ExceptHandlerExceptHandler {
                                 range: 102..130,
+                                node_index: NodeIndex(None),
                                 type_: Some(
                                     Tuple(
                                         ExprTuple {
+                                            node_index: NodeIndex(None),
                                             range: 110..114,
                                             elts: [
                                                 Name(
                                                     ExprName {
+                                                        node_index: NodeIndex(None),
                                                         range: 110..111,
                                                         id: Name("x"),
                                                         ctx: Load,
@@ -174,6 +197,7 @@ Module(
                                                 ),
                                                 Name(
                                                     ExprName {
+                                                        node_index: NodeIndex(None),
                                                         range: 113..114,
                                                         id: Name("y"),
                                                         ctx: Load,
@@ -189,11 +213,13 @@ Module(
                                     Identifier {
                                         id: Name("eg"),
                                         range: 118..120,
+                                        node_index: NodeIndex(None),
                                     },
                                 ),
                                 body: [
                                     Pass(
                                         StmtPass {
+                                            node_index: NodeIndex(None),
                                             range: 126..130,
                                         },
                                     ),
@@ -213,39 +239,19 @@ Module(
 ## Errors
 
   |
-1 | try:
-2 |     pass
-3 | except x, y:
-  |        ^^^^ Syntax Error: Multiple exception types must be parenthesized
-4 |     pass
-5 | except x, y as exc:
-  |
-
-
-  |
 3 | except x, y:
 4 |     pass
 5 | except x, y as exc:
-  |        ^^^^ Syntax Error: Multiple exception types must be parenthesized
+  |        ^^^^ Syntax Error: Multiple exception types must be parenthesized when using `as`
 6 |     pass
 7 | try:
   |
 
 
    |
- 7 | try:
- 8 |     pass
- 9 | except* x, y:
-   |         ^^^^ Syntax Error: Multiple exception types must be parenthesized
-10 |     pass
-11 | except* x, y as eg:
-   |
-
-
-   |
  9 | except* x, y:
 10 |     pass
 11 | except* x, y as eg:
-   |         ^^^^ Syntax Error: Multiple exception types must be parenthesized
+   |         ^^^^ Syntax Error: Multiple exception types must be parenthesized when using `as`
 12 |     pass
    |

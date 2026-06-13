@@ -10,62 +10,162 @@ Module(
         node_index: NodeIndex(None),
         range: 0..25,
         body: [
-            Import(
-                StmtImport {
-                    node_index: NodeIndex(None),
-                    range: 0..6,
-                    names: [],
-                },
-            ),
             Expr(
                 StmtExpr {
                     node_index: NodeIndex(None),
                     range: 7..10,
-                    value: Name(
-                        ExprName {
+                    value: Call(
+                        ExprCall {
                             node_index: NodeIndex(None),
-                            range: 8..9,
-                            id: Name("a"),
-                            ctx: Load,
+                            range: 7..10,
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 7..10,
+                                    value: Call(
+                                        ExprCall {
+                                            node_index: NodeIndex(None),
+                                            range: 7..10,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    node_index: NodeIndex(None),
+                                                    range: 7..8,
+                                                    value: Name(
+                                                        ExprName {
+                                                            node_index: NodeIndex(None),
+                                                            range: 7..8,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 7..8,
+                                                        node_index: NodeIndex(None),
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 7..10,
+                                                node_index: NodeIndex(None),
+                                                args: [
+                                                    Name(
+                                                        ExprName {
+                                                            node_index: NodeIndex(None),
+                                                            range: 8..9,
+                                                            id: Name("a"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 7..10,
+                                        node_index: NodeIndex(None),
+                                    },
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 7..10,
+                                node_index: NodeIndex(None),
+                                args: [],
+                                keywords: [],
+                            },
                         },
                     ),
-                },
-            ),
-            Import(
-                StmtImport {
-                    node_index: NodeIndex(None),
-                    range: 11..17,
-                    names: [],
                 },
             ),
             Expr(
                 StmtExpr {
                     node_index: NodeIndex(None),
                     range: 18..24,
-                    value: Tuple(
-                        ExprTuple {
+                    value: Call(
+                        ExprCall {
                             node_index: NodeIndex(None),
                             range: 18..24,
-                            elts: [
-                                Name(
-                                    ExprName {
+                            func: Attribute(
+                                ExprAttribute {
+                                    node_index: NodeIndex(None),
+                                    range: 18..24,
+                                    value: Call(
+                                        ExprCall {
+                                            node_index: NodeIndex(None),
+                                            range: 18..24,
+                                            func: Attribute(
+                                                ExprAttribute {
+                                                    node_index: NodeIndex(None),
+                                                    range: 18..19,
+                                                    value: Name(
+                                                        ExprName {
+                                                            node_index: NodeIndex(None),
+                                                            range: 18..19,
+                                                            id: Name("__xonsh__"),
+                                                            ctx: Load,
+                                                        },
+                                                    ),
+                                                    attr: Identifier {
+                                                        id: Name("cmd"),
+                                                        range: 18..19,
+                                                        node_index: NodeIndex(None),
+                                                    },
+                                                    ctx: Load,
+                                                },
+                                            ),
+                                            arguments: Arguments {
+                                                range: 18..24,
+                                                node_index: NodeIndex(None),
+                                                args: [
+                                                    Tuple(
+                                                        ExprTuple {
+                                                            node_index: NodeIndex(None),
+                                                            range: 18..24,
+                                                            elts: [
+                                                                Name(
+                                                                    ExprName {
+                                                                        node_index: NodeIndex(None),
+                                                                        range: 19..20,
+                                                                        id: Name("a"),
+                                                                        ctx: Load,
+                                                                    },
+                                                                ),
+                                                                Name(
+                                                                    ExprName {
+                                                                        node_index: NodeIndex(None),
+                                                                        range: 22..23,
+                                                                        id: Name("b"),
+                                                                        ctx: Load,
+                                                                    },
+                                                                ),
+                                                            ],
+                                                            ctx: Load,
+                                                            parenthesized: true,
+                                                        },
+                                                    ),
+                                                ],
+                                                keywords: [],
+                                            },
+                                        },
+                                    ),
+                                    attr: Identifier {
+                                        id: Name("hide"),
+                                        range: 18..24,
                                         node_index: NodeIndex(None),
-                                        range: 19..20,
-                                        id: Name("a"),
-                                        ctx: Load,
                                     },
-                                ),
-                                Name(
-                                    ExprName {
-                                        node_index: NodeIndex(None),
-                                        range: 22..23,
-                                        id: Name("b"),
-                                        ctx: Load,
-                                    },
-                                ),
-                            ],
-                            ctx: Load,
-                            parenthesized: true,
+                                    ctx: Load,
+                                },
+                            ),
+                            arguments: Arguments {
+                                range: 18..24,
+                                node_index: NodeIndex(None),
+                                args: [],
+                                keywords: [],
+                            },
                         },
                     ),
                 },

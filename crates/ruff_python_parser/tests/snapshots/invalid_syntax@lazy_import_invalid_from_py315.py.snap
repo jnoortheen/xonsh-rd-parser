@@ -13,7 +13,7 @@ Module(
             ImportFrom(
                 StmtImportFrom {
                     node_index: NodeIndex(None),
-                    range: 44..65,
+                    range: 49..65,
                     module: Some(
                         Identifier {
                             id: Name("os"),
@@ -34,13 +34,13 @@ Module(
                         },
                     ],
                     level: 0,
-                    is_lazy: true,
+                    is_lazy: false,
                 },
             ),
             ImportFrom(
                 StmtImportFrom {
                     node_index: NodeIndex(None),
-                    range: 66..105,
+                    range: 71..105,
                     module: Some(
                         Identifier {
                             id: Name("__future__"),
@@ -61,7 +61,7 @@ Module(
                         },
                     ],
                     level: 0,
-                    is_lazy: true,
+                    is_lazy: false,
                 },
             ),
             FunctionDef(
@@ -90,7 +90,7 @@ Module(
                         ImportFrom(
                             StmtImportFrom {
                                 node_index: NodeIndex(None),
-                                range: 123..145,
+                                range: 128..145,
                                 module: Some(
                                     Identifier {
                                         id: Name("sys"),
@@ -111,7 +111,7 @@ Module(
                                     },
                                 ],
                                 level: 0,
-                                is_lazy: true,
+                                is_lazy: false,
                             },
                         ),
                     ],
@@ -121,12 +121,12 @@ Module(
     },
 )
 ```
-## Semantic Syntax Errors
+## Errors
 
   |
 1 | # parse_options: {"target-version": "3.15"}
 2 | lazy from os import *
-  | ^^^^^^^^^^^^^^^^^^^^^ Syntax Error: lazy from ... import * is not allowed
+  | ^^^^ Syntax Error: Expected a statement
 3 | lazy from __future__ import annotations
   |
 
@@ -135,7 +135,7 @@ Module(
 1 | # parse_options: {"target-version": "3.15"}
 2 | lazy from os import *
 3 | lazy from __future__ import annotations
-  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Syntax Error: lazy from __future__ import is not allowed
+  | ^^^^ Syntax Error: Expected a statement
 4 |
 5 | def func():
   |
@@ -144,12 +144,24 @@ Module(
   |
 5 | def func():
 6 |     lazy from sys import *
-  |     ^^^^^^^^^^^^^^^^^^^^^^ Syntax Error: lazy from ... import not allowed inside functions
+  |     ^^^^ Syntax Error: Expected a statement
+  |
+
+
+## Semantic Syntax Errors
+
+  |
+1 | # parse_options: {"target-version": "3.15"}
+2 | lazy from os import *
+3 | lazy from __future__ import annotations
+  |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Syntax Error: __future__ imports must be at the top of the file
+4 |
+5 | def func():
   |
 
 
   |
 5 | def func():
 6 |     lazy from sys import *
-  |     ^^^^^^^^^^^^^^^^^^^^^^ Syntax Error: `from sys import *` only allowed at module level
+  |          ^^^^^^^^^^^^^^^^^ Syntax Error: `from sys import *` only allowed at module level
   |
