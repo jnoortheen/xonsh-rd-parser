@@ -10,6 +10,7 @@ use crate::ParseErrorType;
 use crate::builders::ExprWrap;
 use crate::token::TokenFlags;
 
+use crate::parser::expression::ExpressionContext;
 use crate::{
     parser::{Parser, ParserProgress},
     token::TokenKind,
@@ -131,7 +132,7 @@ impl Parser<'_> {
             | TokenKind::Lpar
             | TokenKind::Dollar
             | TokenKind::DollarLParen
-            | TokenKind::AtDollarLParen => self.parse_atom().expr,
+            | TokenKind::AtDollarLParen => self.parse_atom(ExpressionContext::default()).expr,
             tk if tk.is_proc_op() => {
                 let range = self.current_token_range();
                 self.bump_any();
@@ -186,7 +187,7 @@ impl Parser<'_> {
         self.bump_any(); // skip the `@`
         match self.current_token_kind() {
             TokenKind::Lpar => {
-                let expr = self.parse_atom().expr;
+                let expr = self.parse_atom(ExpressionContext::default()).expr;
                 let range = expr.range();
                 self.xonsh_attr("list_of_strs_or_callables")
                     .call0(vec![expr], range)
@@ -194,7 +195,7 @@ impl Parser<'_> {
             }
             TokenKind::Name if self.peek() == TokenKind::String => {
                 let start = self.node_start();
-                let name = Expr::from(self.parse_name());
+                let name = Expr::from(self.parse_name(ExpressionContext::default()));
                 let string = self.parse_strings();
                 let range = self.node_range(start);
                 self.xonsh_attr("Pattern")
@@ -517,7 +518,7 @@ impl Parser<'_> {
         }
         ast::StmtWith {
             items,
-            body,
+            body: body.into(),
             is_async: false,
             range,
             node_index: AtomicNodeIndex::NONE,
