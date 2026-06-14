@@ -12,6 +12,7 @@ classifiers = [
 ]
 dynamic = ["version"]
 description = "A Rust based, recursive descent parser for Xonsh"
+readme = "README.md"
 
 [dependency-groups]
 dev = [
