@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v2.0.0...v2.1.0) (2026-06-14)
+
+
+### Features
+
+* add readme to project meta data ([36868c5](https://github.com/jnoortheen/xonsh-rd-parser/commit/36868c5bbce2fd4cf99430c9de09343f83952ded))
+
 ## [2.0.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v1.7.0...v2.0.0) (2026-06-13)
 
 
