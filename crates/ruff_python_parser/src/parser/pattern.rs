@@ -441,9 +441,7 @@ impl Parser<'_> {
                 })
             }
             TokenKind::Complex => {
-                let TokenValue::Complex { real, imag } = self.bump_value(TokenKind::Complex) else {
-                    unreachable!()
-                };
+                let (real, imag) = self.bump_complex();
                 let range = self.node_range(start);
 
                 Pattern::MatchValue(ast::PatternMatchValue {
@@ -457,9 +455,7 @@ impl Parser<'_> {
                 })
             }
             TokenKind::Int => {
-                let TokenValue::Int(value) = self.bump_value(TokenKind::Int) else {
-                    unreachable!()
-                };
+                let value = self.bump_int();
                 let range = self.node_range(start);
 
                 Pattern::MatchValue(ast::PatternMatchValue {
@@ -473,9 +469,7 @@ impl Parser<'_> {
                 })
             }
             TokenKind::Float => {
-                let TokenValue::Float(value) = self.bump_value(TokenKind::Float) else {
-                    unreachable!()
-                };
+                let value = self.bump_float();
                 let range = self.node_range(start);
 
                 Pattern::MatchValue(ast::PatternMatchValue {

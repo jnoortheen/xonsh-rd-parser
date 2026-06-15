@@ -12,7 +12,8 @@ use crate::error::StarTupleKind;
 use crate::parser::expression::{EXPR_SET, ParsedExpr};
 use crate::parser::progress::ParserProgress;
 use crate::parser::{
-    FunctionKind, Parser, RecoveryContext, RecoveryContextKind, WithItemKind, helpers,
+    FunctionKind, IpyEscapeContext, Parser, RecoveryContext, RecoveryContextKind, WithItemKind,
+    helpers,
 };
 use crate::token::{TokenKind, TokenValue};
 use crate::token_set::TokenSet;
@@ -1091,11 +1092,7 @@ impl<'src> Parser<'src> {
     fn parse_ipython_escape_command_statement(&mut self) -> ast::StmtIpyEscapeCommand {
         let start = self.node_start();
 
-        let TokenValue::IpyEscapeCommand { value, kind } =
-            self.bump_value(TokenKind::IpyEscapeCommand)
-        else {
-            unreachable!()
-        };
+        let (value, kind) = self.bump_ipython_escape_command(IpyEscapeContext::LogicalLineStart);
 
         let range = self.node_range(start);
         if self.options.mode != Mode::Ipython {

@@ -6,24 +6,10 @@ snapshot_kind: text
 ## Tokens
 ```
 [
-    (
-        Int(
-            1,
-        ),
-        0..1,
-    ),
-    (
-        Comma,
-        1..2,
-    ),
-    (
-        Unknown,
-        2..6,
-    ),
-    (
-        Newline,
-        6..6,
-    ),
+    Int 0..1,
+    Comma 1..2,
+    Unknown 2..6,
+    Newline 6..6,
 ]
 ```
 ## Errors
