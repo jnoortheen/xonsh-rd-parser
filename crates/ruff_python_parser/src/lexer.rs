@@ -652,19 +652,24 @@ impl<'src> Lexer<'src> {
     /// Lex an identifier. Also used for keywords and string/bytes literals with a prefix.
     fn lex_identifier(&mut self, first: char) -> TokenKind {
         // Detect potential string like rb'' b'' f'' t'' u'' r''
-        let quote = match (first, self.cursor.first()) {
-            (_, quote @ ('\'' | '"' | '`')) => self.try_single_char_prefix(first).then(|| {
-                self.cursor.bump();
-                quote
-            }),
-            (_, second) if is_quote(self.cursor.second()) => {
-                self.try_double_char_prefix([first, second]).then(|| {
+        let quote = if let Some(prefix) = single_char_prefix(first) {
+             match self.cursor.first() {
+                 quote @ ('\'' | '"' | '`') => {
+                    self.current_flags |= prefix;
                     self.cursor.bump();
-                    // SAFETY: Safe because of the `is_quote` check in this match arm's guard
-                    self.cursor.bump().unwrap()
-                })
+                    Some(quote)
+                }
+                second if is_quote(self.cursor.second()) => {
+                    self.try_double_char_prefix([first, second]).then(|| {
+                        self.cursor.bump();
+                        // SAFETY: Safe because of the `is_quote` check in this match arm's guard
+                        self.cursor.bump().unwrap()
+                    })
+                }
+                _ => None,
             }
-            _ => None,
+        } else {
+            None
         };
 
         if let Some(quote) = quote {
@@ -745,21 +750,19 @@ impl<'src> Lexer<'src> {
         }
     }
 
-    /// Try lexing the single character string prefix, updating the token flags accordingly.
-    /// Returns `true` if it matches.
-    fn try_single_char_prefix(&mut self, first: char) -> bool {
-        match first {
-            'f' | 'F' => self.current_flags |= TokenFlags::F_STRING,
-            't' | 'T' => self.current_flags |= TokenFlags::T_STRING,
-            'u' | 'U' => self.current_flags |= TokenFlags::UNICODE_STRING,
-            'b' | 'B' => self.current_flags |= TokenFlags::BYTE_STRING,
+    
+    fn single_char_prefix(c: char) -> Option<TokenFlags> {
+        Some(match c {
+            'f' | 'F' => TokenFlags::F_STRING,
+            't' | 'T' => TokenFlags::T_STRING,
+            'u' | 'U' => TokenFlags::UNICODE_STRING,
+            'b' | 'B' => TokenFlags::BYTE_STRING,
             'p' | 'P' => self.current_flags |= TokenFlags::PATH_STRING,
             'g' | 'G' => self.current_flags |= TokenFlags::GLOB_STRING,
-            'r' => self.current_flags |= TokenFlags::RAW_STRING_LOWERCASE,
-            'R' => self.current_flags |= TokenFlags::RAW_STRING_UPPERCASE,
-            _ => return false,
-        }
-        true
+            'r' => TokenFlags::RAW_STRING_LOWERCASE,
+            'R' => TokenFlags::RAW_STRING_UPPERCASE,
+            _ => return None,
+        })
     }
 
     /// Try lexing the double character string prefix, updating the token flags accordingly.
@@ -1583,6 +1586,21 @@ struct RadixRun {
 
 const fn is_quote(c: char) -> bool {
     matches!(c, '\'' | '"' | '`')
+}
+
+
+    fn single_char_prefix(c: char) -> Option<TokenFlags> {
+    Some(match c {
+        'f' | 'F' => TokenFlags::F_STRING,
+        't' | 'T' => TokenFlags::T_STRING,
+        'u' | 'U' => TokenFlags::UNICODE_STRING,
+        'b' | 'B' => TokenFlags::BYTE_STRING,
+        'p' | 'P' => self.current_flags |= TokenFlags::PATH_STRING,
+        'g' | 'G' => self.current_flags |= TokenFlags::GLOB_STRING,
+        'r' => TokenFlags::RAW_STRING_LOWERCASE,
+        'R' => TokenFlags::RAW_STRING_UPPERCASE,
+        _ => return None,
+    })
 }
 
 const fn is_ascii_identifier_start(c: char) -> bool {
