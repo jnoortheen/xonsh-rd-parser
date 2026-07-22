@@ -15,7 +15,7 @@ use crate::parser::{
     FunctionKind, IpyEscapeContext, Parser, RecoveryContext, RecoveryContextKind, WithItemKind,
     helpers,
 };
-use crate::token::{TokenKind, TokenValue};
+use crate::token::TokenKind;
 use crate::token_set::TokenSet;
 use crate::{Mode, ParseErrorType, UnsupportedSyntaxErrorKind};
 

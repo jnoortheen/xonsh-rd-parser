@@ -47,7 +47,7 @@ ruff_text_size = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.21
 ruff_annotate_snippets = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.21" }
 
 bon = { version = "*" }
-get-size2 = { version = "*", features = [
+get-size2 = { version = "0.10.0", features = [
     "derive",
     "smallvec",
     "hashbrown",
@@ -58,7 +58,7 @@ annotate-snippets = { version = "*", features = ["color"] }
 anyhow = { version = "1.0.80" }
 bitflags = { version = "2.5.0" }
 bstr = { version = "1.9.1" }
-compact_str = "^0.10.0"
+compact_str = "^0.9.1"
 insta = { version = "1.35.1" }
 itertools = { version = "0.13.0" }
 memchr = { version = "2.7.1" }

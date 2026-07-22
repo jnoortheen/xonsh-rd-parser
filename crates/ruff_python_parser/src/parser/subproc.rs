@@ -113,7 +113,7 @@ impl Parser<'_> {
         ast::Arguments {
             range: self.node_range(start),
             args: cmds.into_boxed_slice(),
-            keywords: keywords.into_boxed_slice(),
+            keywords: keywords.into(),
             node_index: AtomicNodeIndex::NONE,
         }
     }

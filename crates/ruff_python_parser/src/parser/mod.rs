@@ -14,7 +14,7 @@ use crate::error::UnsupportedSyntaxError;
 use crate::parser::expression::ExpressionContext;
 use crate::parser::progress::{ParserProgress, TokenId};
 use crate::string::InterpolatedStringKind;
-use crate::token::{TokenFlags, TokenValue};
+use crate::token::TokenFlags;
 use ruff_python_ast::name::Name;
 use ruff_python_trivia::is_python_whitespace;
 use crate::token_set::TokenSet;

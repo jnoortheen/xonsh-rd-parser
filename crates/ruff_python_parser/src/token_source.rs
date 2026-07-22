@@ -4,7 +4,7 @@ use crate::Mode;
 use crate::error::LexicalError;
 use crate::lexer::{Lexer, LexerCheckpoint};
 use crate::string::InterpolatedStringKind;
-use crate::token::{Token, TokenFlags, TokenKind, TokenValue};
+use crate::token::{Token, TokenFlags, TokenKind};
 
 /// Token source for the parser that skips over any trivia tokens.
 #[derive(Debug)]

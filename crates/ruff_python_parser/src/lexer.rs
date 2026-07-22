@@ -22,7 +22,7 @@ use crate::lexer::interpolated_string::{
     InterpolatedStringContext, InterpolatedStrings, InterpolatedStringsCheckpoint,
 };
 use crate::string::InterpolatedStringKind;
-use crate::token::{TokenFlags, TokenKind, TokenValue};
+use crate::token::{TokenFlags, TokenKind};
 
 mod cursor;
 mod indentation;

@@ -834,6 +834,8 @@ bitflags! {
         const BACKTICK_STRING = 1 << 10;
         /// has g`` prefix
         const GLOB_STRING = 1 << 11;
+        /// The token is a name containing at least one non-ASCII codepoint.
+        const NON_ASCII_NAME = 1 << 12;
 
         /// The token is a raw string i.e., prefixed with `r` or `R`
         const RAW_STRING = Self::RAW_STRING_LOWERCASE.bits() | Self::RAW_STRING_UPPERCASE.bits();
@@ -924,6 +926,12 @@ impl TokenFlags {
     /// Returns `true` if the token is a raw string.
     pub(crate) const fn is_raw_string(self) -> bool {
         self.intersects(TokenFlags::RAW_STRING)
+    }
+
+    /// Returns `true` if the token is a name containing at least one non-ASCII codepoint.
+    #[inline]
+    pub(crate) const fn is_non_ascii_name(self) -> bool {
+        self.intersects(TokenFlags::NON_ASCII_NAME)
     }
 }
 

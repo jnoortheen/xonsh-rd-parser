@@ -86,6 +86,7 @@ pub mod lexer;
 mod parser;
 pub mod semantic_errors;
 mod string;
+pub mod token;
 mod token_set;
 mod token_source;
 pub mod typing;
