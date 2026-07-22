@@ -38,16 +38,16 @@ bon = { workspace = true }
 divan = { package = "codspeed-divan-compat", version = "*" }
 
 [workspace.dependencies]
-ruff_python_ast = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.17" }
+ruff_python_ast = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.20" }
 py_ast = { path = "crates/py_ast" }
 ruff_python_parser = { path = "crates/ruff_python_parser" }
-ruff_python_trivia = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.17" }
-ruff_source_file = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.17" }
-ruff_text_size = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.17" }
-ruff_annotate_snippets = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.17" }
+ruff_python_trivia = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.20" }
+ruff_source_file = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.20" }
+ruff_text_size = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.20" }
+ruff_annotate_snippets = { git = "https://github.com/astral-sh/ruff.git", tag = "0.15.20" }
 
 bon = { version = "*" }
-get-size2 = { version = "0.9.0", features = [
+get-size2 = { version = "*", features = [
     "derive",
     "smallvec",
     "hashbrown",
@@ -58,7 +58,7 @@ annotate-snippets = { version = "*", features = ["color"] }
 anyhow = { version = "1.0.80" }
 bitflags = { version = "2.5.0" }
 bstr = { version = "1.9.1" }
-compact_str = "0.9.0"
+compact_str = "^0.10.0"
 insta = { version = "1.35.1" }
 itertools = { version = "0.13.0" }
 memchr = { version = "2.7.1" }

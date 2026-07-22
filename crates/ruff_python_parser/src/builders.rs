@@ -40,7 +40,7 @@ impl ExprWrap {
         let arguments = ast::Arguments {
             range,
             args: args.into_boxed_slice(),
-            keywords: vec![].into_boxed_slice(),
+            keywords: vec![].into(),
             node_index: AtomicNodeIndex::NONE,
         };
         self.call(arguments, range)
