@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v2.1.0...v2.1.1) (2026-07-22)
+
+
+### Bug Fixes
+
+* build errors and path-prefix changes ([f68a500](https://github.com/jnoortheen/xonsh-rd-parser/commit/f68a5005545f9e457347bad4c6f0d99a460e950c))
+* build errors because of updates ([424bf8c](https://github.com/jnoortheen/xonsh-rd-parser/commit/424bf8cb5b8e5426480e3ba7ee4002c55dcc5fe5))
+
 ## [2.1.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v2.0.0...v2.1.0) (2026-06-14)
 
 

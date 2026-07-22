@@ -1555,7 +1555,7 @@ dependencies = [
 
 [[package]]
 name = "xonsh-rd-parser"
-version = "2.1.0"
+version = "2.1.1"
 dependencies = [
  "annotate-snippets",
  "bon",
