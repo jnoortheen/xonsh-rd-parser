@@ -16,9 +16,9 @@ mod xonsh_rd_parser {
     use parser::PyParser;
 
     #[pyfunction]
-    #[pyo3(signature = (lines=None))]
-    fn get_big_py_file(lines: Option<usize>) -> PyResult<String> {
-        Ok(test_utils::get_big_py_file(lines))
+    #[pyo3(signature = (lines=None, file_name=None))]
+    fn get_big_py_file(lines: Option<usize>, file_name: Option<&str>) -> PyResult<String> {
+        Ok(test_utils::get_big_py_file(lines, file_name))
     }
 
     #[pyfunction]

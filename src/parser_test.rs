@@ -61,7 +61,7 @@ mod py_tests {
     fn test_py_parser() {
         Python::initialize();
         Python::attach(|py| {
-            let file_name = get_big_py_file(None);
+            let file_name = get_big_py_file(None, None);
             PyParser::parse_file(py, file_name.as_str()).unwrap();
         })
     }

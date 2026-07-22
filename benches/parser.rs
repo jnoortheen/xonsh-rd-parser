@@ -11,7 +11,7 @@ fn main() {
 
 #[divan::bench()]
 fn python_parser(bencher: Bencher) {
-    let file_name = get_big_py_file(None);
+    let file_name = get_big_py_file(None, None);
     Python::initialize();
     Python::attach(|py| {
         bencher.bench_local(move || {

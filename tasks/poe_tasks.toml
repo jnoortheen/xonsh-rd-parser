@@ -1,7 +1,7 @@
 [tasks]
 test.sequence = [
     { cmd = "cargo clippy" },
-    { cmd = "cargo nextest run --workspace --all-features" },
+    { shell = "PYTHONHOME=$(python -c 'import sys; print(sys.base_prefix)') cargo nextest run --workspace --all-features -E 'not (package(ruff_python_parser) & (binary(fixtures) | binary(generate_inline_tests)))'" },
     { cmd = "pytest" },
 ]
 bench.sequence = [
@@ -17,5 +17,7 @@ pull-ruff-crates.sequence = [
 generate-ci = "maturin generate-ci github -o .github/workflows/CI.yml"
 hyperfine-bench.sequence = [
     { cmd = "mkdir -p .benchmarks" },
-    { shell = "hyperfine --warmup 1 'uv run python tests/scripts/rd.py' 'uv run python tests/scripts/xply.py' --export-markdown .benchmarks/bench-$(date +%Y%m%d%H%M%S).md" },
+    { cmd = "maturin develop --release" },
+    { script = "tasks.hyper_bench.create_fixture:main" },
+    { shell = "hyperfine --warmup 1 'uv run python tasks/hyper_bench/rd.py' 'uv run python tasks/hyper_bench/xply.py' --export-markdown .benchmarks/bench-$(date +%Y.%m.%d.%H:%M).md" },
 ]
