@@ -11,7 +11,7 @@ bench.sequence = [
     { cmd = "cargo bench" },
 ]
 pull-ruff-crates.sequence = [
-    { script = "tasks:pull_ruff_crates" },
+    { script = "tasks.tasks:pull_ruff_crates" },
     { cmd = "cargo build" },
 ]
 generate-ci = "maturin generate-ci github -o .github/workflows/CI.yml"

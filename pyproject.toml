@@ -49,4 +49,4 @@ ignore = [
 ]
 
 [tool.poe]
-include = "poe_tasks.toml"
+include = "tasks/poe_tasks.toml"
