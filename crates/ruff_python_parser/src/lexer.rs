@@ -10,10 +10,6 @@ use std::cmp::Ordering;
 
 use unicode_ident::{is_xid_continue, is_xid_start};
 
-use ruff_python_ast::StringFlags;
-use ruff_python_ast::str_prefix::{AnyStringPrefix, StringLiteralPrefix};
-use ruff_python_trivia::is_python_whitespace;
-use ruff_text_size::{TextLen, TextRange, TextSize};
 use crate::Mode;
 use crate::error::{InterpolatedStringErrorType, LexicalError, LexicalErrorType};
 use crate::lexer::cursor::{Cursor, EOF_CHAR};
@@ -23,6 +19,10 @@ use crate::lexer::interpolated_string::{
 };
 use crate::string::InterpolatedStringKind;
 use crate::token::{TokenFlags, TokenKind};
+use ruff_python_ast::StringFlags;
+use ruff_python_ast::str_prefix::{AnyStringPrefix, StringLiteralPrefix};
+use ruff_python_trivia::is_python_whitespace;
+use ruff_text_size::{TextLen, TextRange, TextSize};
 
 mod cursor;
 mod indentation;
@@ -669,8 +669,8 @@ impl<'src> Lexer<'src> {
     fn lex_identifier(&mut self, first: char) -> TokenKind {
         // Detect potential string like rb'' b'' f'' t'' u'' r''
         let quote = if let Some(prefix) = single_char_prefix(first) {
-             match self.cursor.first() {
-                 quote @ ('\'' | '"' | '`') => {
+            match self.cursor.first() {
+                quote @ ('\'' | '"' | '`') => {
                     self.current_flags |= prefix;
                     self.cursor.bump();
                     Some(quote)
@@ -766,30 +766,28 @@ impl<'src> Lexer<'src> {
         }
     }
 
-    
-    fn single_char_prefix(c: char) -> Option<TokenFlags> {
-        Some(match c {
-            'f' | 'F' => TokenFlags::F_STRING,
-            't' | 'T' => TokenFlags::T_STRING,
-            'u' | 'U' => TokenFlags::UNICODE_STRING,
-            'b' | 'B' => TokenFlags::BYTE_STRING,
-            'p' | 'P' => self.current_flags |= TokenFlags::PATH_STRING,
-            'g' | 'G' => self.current_flags |= TokenFlags::GLOB_STRING,
-            'r' => TokenFlags::RAW_STRING_LOWERCASE,
-            'R' => TokenFlags::RAW_STRING_UPPERCASE,
-            _ => return None,
-        })
+    /// Try lexing a single character string prefix, updating the token flags accordingly.
+    /// Returns `true` if it matches.
+    fn try_single_char_prefix(&mut self, value: char) -> bool {
+        let Some(prefix) = single_char_prefix(value) else {
+            return false;
+        };
+
+        self.current_flags |= prefix;
+        true
     }
 
     /// Try lexing the double character string prefix, updating the token flags accordingly.
     /// Returns `true` if it matches.
     fn try_double_char_prefix(&mut self, value: [char; 2]) -> bool {
-        // TODO: not all combinations are valid.
-        let result: Vec<bool> = value
-            .iter()
-            .map(|c| self.try_single_char_prefix(*c))
-            .collect();
-        result.iter().any(|&t| t)
+        let checkpoint = self.current_flags;
+
+        if value.into_iter().all(|c| self.try_single_char_prefix(c)) {
+            true
+        } else {
+            self.current_flags = checkpoint;
+            false
+        }
     }
 
     /// Lex a f-string or t-string start token if positioned at the start of an f-string or t-string.
@@ -1604,15 +1602,14 @@ const fn is_quote(c: char) -> bool {
     matches!(c, '\'' | '"' | '`')
 }
 
-
-    fn single_char_prefix(c: char) -> Option<TokenFlags> {
+fn single_char_prefix(c: char) -> Option<TokenFlags> {
     Some(match c {
         'f' | 'F' => TokenFlags::F_STRING,
         't' | 'T' => TokenFlags::T_STRING,
         'u' | 'U' => TokenFlags::UNICODE_STRING,
         'b' | 'B' => TokenFlags::BYTE_STRING,
-        'p' | 'P' => self.current_flags |= TokenFlags::PATH_STRING,
-        'g' | 'G' => self.current_flags |= TokenFlags::GLOB_STRING,
+        'p' | 'P' => TokenFlags::PATH_STRING,
+        'g' | 'G' => TokenFlags::GLOB_STRING,
         'r' => TokenFlags::RAW_STRING_LOWERCASE,
         'R' => TokenFlags::RAW_STRING_UPPERCASE,
         _ => return None,
@@ -1659,10 +1656,10 @@ mod tests {
     use std::fmt::Write;
 
     use insta::assert_snapshot;
-    use ruff_python_ast::token::Token;
     use ruff_text_size::Ranged;
 
     use super::*;
+    use crate::token::Token;
 
     const WINDOWS_EOL: &str = "\r\n";
     const MAC_EOL: &str = "\r";

@@ -70,9 +70,10 @@ pub use crate::error::{
     UnsupportedSyntaxError, UnsupportedSyntaxErrorKind,
 };
 pub use crate::parser::ParseOptions;
-pub use crate::token::{Token, TokenKind, Tokens};
+pub use crate::token::{Token, TokenKind};
 
 use crate::parser::Parser;
+use crate::token::TokenFlags;
 
 use ruff_python_ast::{
     AtomicNodeIndex, Expr, Mod, ModExpression, ModModule, PySourceType, StringFlags, StringLiteral,
@@ -365,7 +366,7 @@ pub fn parse_cells_unchecked(
             .expect("module options should parse into a module");
 
         body.extend(syntax.body);
-        tokens.extend(cell_tokens);
+        tokens.extend(cell_tokens.iter().copied());
         errors.extend(cell_errors);
         unsupported_syntax_errors.extend(cell_unsupported_syntax_errors);
 

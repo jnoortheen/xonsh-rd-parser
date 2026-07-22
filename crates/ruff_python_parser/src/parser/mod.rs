@@ -4,25 +4,25 @@ use std::str::FromStr;
 
 use bitflags::bitflags;
 
-use ruff_python_ast::{
-    Alias, AtomicNodeIndex, ElifElseClause, Expr, Int, IpyEscapeKind, Keyword, Mod, ModExpression,
-    ModModule, ParameterWithDefault, Stmt, StringFlags,
-};
-use ruff_text_size::{Ranged, TextRange, TextSize};
-use thin_vec::ThinVec;
-use unicode_normalization::UnicodeNormalization;
 use crate::error::UnsupportedSyntaxError;
 use crate::parser::expression::ExpressionContext;
 use crate::parser::progress::{ParserProgress, TokenId};
 use crate::parser::scratch_buffer::ScratchBuffer;
 use crate::string::InterpolatedStringKind;
 use crate::token::TokenFlags;
-use ruff_python_ast::name::Name;
-use ruff_python_trivia::is_python_whitespace;
 use crate::token_set::TokenSet;
 use crate::token_source::{TokenSource, TokenSourceCheckpoint};
 use crate::{Mode, ParseError, ParseErrorType, TokenKind, UnsupportedSyntaxErrorKind};
 use crate::{Parsed, Tokens};
+use ruff_python_ast::name::Name;
+use ruff_python_ast::{
+    Alias, AtomicNodeIndex, ElifElseClause, Expr, Int, IpyEscapeKind, Keyword, Mod, ModExpression,
+    ModModule, ParameterWithDefault, Stmt, StringFlags,
+};
+use ruff_python_trivia::is_python_whitespace;
+use ruff_text_size::{Ranged, TextRange, TextSize};
+use thin_vec::ThinVec;
+use unicode_normalization::UnicodeNormalization;
 
 pub use crate::parser::options::ParseOptions;
 
@@ -431,10 +431,10 @@ impl<'src> Parser<'src> {
 
     fn bump_name(&mut self) -> Name {
         let text = self.current_token_text();
-        let name = if !self.tokens.current_flags().is_non_ascii_name() {
-            Name::new(text)
-        } else {
+        let name = if self.tokens.current_flags().is_non_ascii_name() {
             normalize_name(text)
+        } else {
+            Name::new(text)
         };
         self.bump(TokenKind::Name);
         name
@@ -475,7 +475,7 @@ impl<'src> Parser<'src> {
 
     fn bump_string_value(&mut self) -> &'src str {
         let range = self.current_token_range();
-        let flags = self.tokens.current_flags().as_any_string_flags();
+        let flags = self.tokens.current_flags();
         let value_range = TextRange::new(
             range.start() + flags.opener_len(),
             range.end() - flags.closer_len(),

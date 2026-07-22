@@ -76,6 +76,7 @@ unicode_names2 = { version = "1.2.2" }
 unicode-normalization = { version = "0.1.23" }
 walkdir = { version = "2.3.2" }
 datatest-stable = "*"
+drop_bomb = { version = "0.1.5" }
 thin-vec = "*"
 
 [workspace.lints.rust]

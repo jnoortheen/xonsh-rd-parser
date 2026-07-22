@@ -14,7 +14,7 @@ use ruff_python_ast::str_prefix::{
     AnyStringPrefix, ByteStringPrefix, FStringPrefix, StringLiteralPrefix, TStringPrefix,
 };
 use ruff_python_ast::{AnyStringFlags, BoolOp, Operator, StringFlags, UnaryOp};
-use ruff_text_size::{Ranged, TextRange};
+use ruff_text_size::{Ranged, TextRange, TextSize};
 
 #[derive(Clone, Copy, PartialEq, Eq, get_size2::GetSize)]
 pub struct Token {
@@ -898,6 +898,14 @@ impl StringFlags for TokenFlags {
 
     fn is_unclosed(self) -> bool {
         self.intersects(TokenFlags::UNCLOSED_STRING)
+    }
+
+    fn opener_len(self) -> TextSize {
+        self.prefix().text_len()
+            + self.quote_len()
+            + TextSize::from(u32::from(
+                self.intersects(TokenFlags::PATH_STRING | TokenFlags::GLOB_STRING),
+            ))
     }
 }
 
