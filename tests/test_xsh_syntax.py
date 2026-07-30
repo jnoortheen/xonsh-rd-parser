@@ -6,7 +6,7 @@ from yaml_snaps import yaml_line_items
 
 
 @pytest.mark.parametrize(
-    "inp, snapped", yaml_line_items("exprs", "stmts"), indirect=["snapped"]
+    "inp, snapped", list(yaml_line_items("exprs", "stmts")), indirect=["snapped"]
 )
 def test_line_items(inp, unparse, snapped):
     snapped.matches(unparse(inp))

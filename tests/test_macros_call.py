@@ -53,7 +53,9 @@ def test_macro_call_one_arg(run, s):
     assert args == ("f", (s.strip(),))
 
 
-@pytest.mark.parametrize("s,t", itertools.product(MACRO_ARGS[::2], MACRO_ARGS[1::2]))
+@pytest.mark.parametrize(
+    "s,t", list(itertools.product(MACRO_ARGS[::2], MACRO_ARGS[1::2]))
+)
 def test_macro_call_two_args(run, s, t):
     f = f"f!({s}, {t})"
     method = run(f)
@@ -62,7 +64,8 @@ def test_macro_call_two_args(run, s, t):
 
 
 @pytest.mark.parametrize(
-    "s,t,u", itertools.product(MACRO_ARGS[::3], MACRO_ARGS[1::3], MACRO_ARGS[2::3])
+    "s,t,u",
+    list(itertools.product(MACRO_ARGS[::3], MACRO_ARGS[1::3], MACRO_ARGS[2::3])),
 )
 def test_macro_call_three_args(run, s, t, u):
     f = f"f!({s}, {t}, {u})"
