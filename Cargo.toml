@@ -31,10 +31,8 @@ ruff_source_file = { workspace = true }
 py_ast = { workspace = true }
 ruff_text_size = { workspace = true }
 annotate-snippets = { workspace = true }
-bon = { workspace = true }
 
 [dev-dependencies]
-# insta = { workspace = true }
 divan = { package = "codspeed-divan-compat", version = "*" }
 
 [workspace.dependencies]
@@ -46,7 +44,6 @@ ruff_source_file = { git = "https://github.com/astral-sh/ruff.git", tag = "0.16.
 ruff_text_size = { git = "https://github.com/astral-sh/ruff.git", tag = "0.16.0" }
 ruff_annotate_snippets = { git = "https://github.com/astral-sh/ruff.git", tag = "0.16.0" }
 
-bon = { version = "*" }
 get-size2 = { version = "0.10.3", features = [
     "derive",
     "smallvec",
@@ -58,7 +55,6 @@ annotate-snippets = { version = "*", features = ["color"] }
 anyhow = { version = "1.0.80" }
 bitflags = { version = "2.5.0" }
 bstr = { version = "1.9.1" }
-compact_str = "^0.9.1"
 insta = { version = "1.35.1" }
 itertools = { version = "0.13.0" }
 memchr = { version = "2.7.1" }

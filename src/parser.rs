@@ -7,7 +7,6 @@ use pyo3::types::PyString;
 use ruff_python_ast::ModModule;
 use ruff_python_parser::{ParseError, Parsed};
 use ruff_source_file::{LineIndex, SourceCode};
-use ruff_text_size::Ranged;
 
 // type ParseResult = PyResult<Parsed<ModModule>>;
 
@@ -74,14 +73,7 @@ impl PyParser {
 
         let tokens = tokens
             .iter()
-            .map(|t| {
-                Token::builder()
-                    .kind(t.kind())
-                    .range(t.range())
-                    .source(&code)
-                    .maybe_src(Some(self.src.clone_ref(py)))
-                    .build()
-            })
+            .map(|t| Token::new(t, &code, Some(self.src.clone_ref(py))))
             .collect::<Vec<_>>();
         Ok(tokens)
     }

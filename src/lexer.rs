@@ -1,5 +1,4 @@
 use crate::location::{HasKind, HasSrcLocation, PrefixSuffixChecks};
-use bon::bon;
 use pyo3::prelude::*;
 use pyo3::types::PyString;
 use pyo3::{PyResult, pyclass};
@@ -18,15 +17,13 @@ pub(crate) struct Token {
     src: Option<Py<PyString>>,
 }
 
-#[bon]
 impl Token {
-    #[builder]
     pub fn new<'a>(
-        kind: TokenKind,
-        range: TextRange,
+        token: &ruff_python_parser::token::Token,
         source: &SourceCode<'a, 'a>,
         src: Option<Py<PyString>>,
     ) -> Self {
+        let (kind, range) = token.as_tuple();
         let location = {
             let start = source.line_column(range.start());
             let end = source.line_column(range.end());
