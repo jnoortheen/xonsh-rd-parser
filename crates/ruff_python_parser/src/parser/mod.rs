@@ -78,6 +78,9 @@ pub(crate) struct Parser<'src> {
     /// Stores all the syntax errors found during the parsing.
     errors: Vec<ParseError>,
 
+    /// Ranges of subproc commands parsed in subproc mode.
+    subproc_ranges: Vec<TextRange>,
+
     /// Stores non-fatal syntax errors found during parsing, such as version-related errors.
     unsupported_syntax_errors: Vec<UnsupportedSyntaxError>,
 
@@ -142,6 +145,7 @@ impl<'src> Parser<'src> {
             options,
             source,
             errors: Vec::new(),
+            subproc_ranges: Vec::new(),
             unsupported_syntax_errors: Vec::new(),
             tokens,
             name_interner: NameInterner::default(),
@@ -270,6 +274,20 @@ impl<'src> Parser<'src> {
         // TODO consider re-integrating lexical error handling into the parser?
         let parse_errors = self.errors;
         let (tokens, lex_errors) = self.tokens.finish();
+
+        let lex_errors: Vec<_> = lex_errors
+            .into_iter()
+            .filter(|err| {
+                if let crate::LexicalErrorType::OtherError(msg) = err.error() {
+                    if msg.as_ref() == "Invalid decimal integer literal"
+                        && self.subproc_ranges.iter().any(|r| r.contains_range(err.location()))
+                    {
+                        return false;
+                    }
+                }
+                true
+            })
+            .collect();
 
         // Fast path for when there are no lex errors.
         // There's no fast path for when there are no parse errors because a lex error

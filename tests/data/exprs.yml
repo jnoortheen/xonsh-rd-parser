@@ -81,9 +81,10 @@ regex:
     exp: __xonsh__.cmd('ls', __xonsh__.Pattern('#[Ff]+i*LE').regex(), '-l').out()
   - inp: print(`#.*`)
     exp: print(__xonsh__.Pattern('#.*').regex())
-_prefix-regex:
+prefix-regex:
   - inp: $(ls r`[Ff]+i*LE` -l)
     exp: __xonsh__.cmd('ls', __xonsh__.Pattern('[Ff]+i*LE').regex(), '-l').out()
+_prefix-regex:
   - inp: $(ls f`{mypattern[0]}+` -l)
     exp: __xonsh__.cmd('ls', __xonsh__.Pattern('[Ff]+i*LE').regex(), '-l').out()
   - inp: print(@foo`.*`)
@@ -145,9 +146,11 @@ proc-py:
   - inp: "!(ls @(None or x))"
     exp: __xonsh__.cmd('ls', __xonsh__.list_of_strs_or_callables(None or x)).obj()
 
-_expand:
+expand:
   - inp: "![a@$(echo 1 2)b]"
+    exp: "__xonsh__.cmd('a' + __xonsh__.cmd('echo', '1', '2').inject() + 'b').hide()"
   - inp: "![echo $WAKKA/place]"
+    exp: "__xonsh__.cmd('echo', __xonsh__.env['WAKKA'] + '/place').hide()"
 
 redirects:
   - inp: "!(ls >> x.py)"
@@ -203,7 +206,7 @@ proc_macros:
     exp: __xonsh__.cmd('echo', '-n', 'x').hide()
   - inp: "![echo  -n ! x ]"
     exp: __xonsh__.cmd('echo', '-n', 'x').hide()
-_bare_proc:
+bare_proc:
   - inp: "python manage.py migrate app 007"
     exp: __xonsh__.cmd('python', 'manage.py', 'migrate', 'app', '007').hide()
 

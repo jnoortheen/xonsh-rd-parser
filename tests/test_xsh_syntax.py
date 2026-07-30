@@ -61,9 +61,7 @@ def test_statements(exec_code, inp):
         ("$(ls $(ls) -l)", ["ls", ["ls"], "-l"]),
         ("$[ls]", ["ls"]),
         ("![ls]", ["ls"]),
-        pytest.param(
-            "![echo $WAKKA/place]", ["echo", "wak/place"], marks=pytest.mark.xfail
-        ),
+        ("![echo $WAKKA/place]", ["echo", "wak/place"]),
         ("![echo yo==yo]", ["echo", "yo==yo"]),
         ("!(ls | grep wakka)", [["ls"], ("grep", "wakka")]),
         (
@@ -109,8 +107,7 @@ def test_bang_procs(expr, exec_code):
 
 
 @pytest.mark.parametrize("p", ["", "p"])
-@pytest.mark.parametrize("f", ["", "f"])
+@pytest.mark.parametrize("f", ["", pytest.param("f", marks=pytest.mark.xfail)])
 @pytest.mark.parametrize("glob_type", ["", "r", "g"])
-@pytest.mark.xfail
 def test_backtick(p, f, glob_type, exec_code):
     exec_code(f"print({p}{f}{glob_type}`.*`)")

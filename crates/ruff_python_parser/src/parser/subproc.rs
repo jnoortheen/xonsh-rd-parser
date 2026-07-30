@@ -32,6 +32,9 @@ impl Parser<'_> {
                 .attr("pipe", self.node_range(pipe_start))
                 .call(self.parse_cmd_group(closing), self.node_range(pipe_start));
         }
+        let end = self.node_end();
+        self.subproc_ranges.push(TextRange::new(start, end));
+
         cmd.attr(method, self.node_range(start))
             .call_empty(self.node_range(start))
             .into()
@@ -118,8 +121,45 @@ impl Parser<'_> {
         }
     }
 
-    /// Parses arguments in a subprocess expression.
+    /// Parses arguments in a subprocess expression, joining adjacent parts without whitespace.
     fn parse_proc_arg(&mut self, progress: &mut ParserProgress, closing: TokenKind) -> Expr {
+        let mut parts = vec![self.parse_proc_arg_part(progress, closing)];
+
+        while self.node_start() == parts.last().unwrap().range().end()
+            && !matches!(self.current_token_kind(), tk if tk == closing || tk == TokenKind::Vbar || tk.is_any_newline() || tk.is_proc_op() || tk.is_macro())
+        {
+            parts.push(self.parse_proc_arg_part(progress, closing));
+        }
+
+        if parts.len() == 1 {
+            parts.pop().unwrap()
+        } else {
+            let all_strings = parts.iter().all(|p| matches!(p, Expr::StringLiteral(_)));
+            let start = parts.first().unwrap().range().start();
+            let end = parts.last().unwrap().range().end();
+            let range = TextRange::new(start, end);
+
+            if all_strings {
+                self.to_string_literal(range)
+            } else {
+                let mut iter = parts.into_iter();
+                let mut expr = iter.next().unwrap();
+                for next in iter {
+                    let r = TextRange::new(expr.range().start(), next.range().end());
+                    expr = Expr::BinOp(ast::ExprBinOp {
+                        left: Box::new(expr),
+                        op: ast::Operator::Add,
+                        right: Box::new(next),
+                        range: r,
+                        node_index: AtomicNodeIndex::NONE,
+                    });
+                }
+                expr
+            }
+        }
+    }
+
+    fn parse_proc_arg_part(&mut self, progress: &mut ParserProgress, closing: TokenKind) -> Expr {
         progress.assert_progressing(self);
         let kind = self.current_token_kind();
 
@@ -142,7 +182,6 @@ impl Parser<'_> {
         }
     }
     fn parse_proc_single(&mut self, closing: TokenKind) -> Expr {
-        //         dbg!(&self.current_token_kind(), &self.current_token_range());
         let start = self.node_start();
         let mut offset = self.node_end();
         let mut nesting = 0;
@@ -151,7 +190,8 @@ impl Parser<'_> {
         while !matches!(self.current_token_kind(), tk if
             tk.is_proc_op() ||
             offset != self.node_start() ||
-            (tk == closing && nesting == 0)
+            (tk == closing && nesting == 0) ||
+            matches!(tk, TokenKind::At | TokenKind::Dollar | TokenKind::DollarLParen | TokenKind::AtDollarLParen)
         ) {
             if self.current_token_kind() == TokenKind::Lpar {
                 nesting += 1;
