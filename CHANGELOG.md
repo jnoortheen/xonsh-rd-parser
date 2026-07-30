@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/jnoortheen/xonsh-rd-parser/compare/v2.1.1...v2.2.0) (2026-07-30)
+
+
+### Features
+
+* handle more cases in subproc mode ([bcf9ac3](https://github.com/jnoortheen/xonsh-rd-parser/commit/bcf9ac32b68bd076fe9c7f20f391825cd35c9239))
+
 ## [2.1.1](https://github.com/jnoortheen/xonsh-rd-parser/compare/v2.1.0...v2.1.1) (2026-07-22)
 
 
