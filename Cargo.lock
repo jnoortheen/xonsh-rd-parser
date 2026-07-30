@@ -223,6 +223,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f079e83a288787bcd14a6aea84cee5c87a67c5a3e660c30f557a3d24761b3527"
 
 [[package]]
+name = "char_str"
+version = "0.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "576ba56f6ca18ebb069d0d07260407171712aff4dfe15ee3f8982dc16a455bcf"
+dependencies = [
+ "castaway",
+ "get-size2",
+ "itoa",
+ "ryu",
+ "serde_core",
+]
+
+[[package]]
 name = "clap"
 version = "4.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -346,17 +359,16 @@ dependencies = [
 
 [[package]]
 name = "compact_str"
-version = "0.9.1"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9dfdd1c2274d9aa354115b09dc9a901d6c5576818cdf70d14cae2bdb47df00ab"
+checksum = "79fcda08c33bb58b97008b2cdada6622500e949e060f5913361763121abd2416"
 dependencies = [
  "castaway",
  "cfg-if",
  "itoa",
- "rustversion",
- "ryu",
  "serde",
  "static_assertions",
+ "zmij",
 ]
 
 [[package]]
@@ -530,9 +542,9 @@ dependencies = [
 
 [[package]]
 name = "get-size2"
-version = "0.10.0"
+version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c67286119bda8eb8d22059037b8bd59bd59d83bf1a154189b8aa34273e3fa058"
+checksum = "b411f34418305908ab15a82ff78958c2a9aee9a272b2a2e663836b20a4e4b9d3"
 dependencies = [
  "compact_str",
  "get-size-derive2",
@@ -1064,8 +1076,8 @@ checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
 
 [[package]]
 name = "ruff_annotate_snippets"
-version = "0.0.5"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.15.22#0177a7e0d2c4a3805afa1960f106d72878766cbc"
+version = "0.0.6"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.16.0#a2635fd8f39e1d34ce8074cb486809426148f3e9"
 dependencies = [
  "anstyle",
  "memchr",
@@ -1074,9 +1086,10 @@ dependencies = [
 
 [[package]]
 name = "ruff_cache"
-version = "0.0.5"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.15.22#0177a7e0d2c4a3805afa1960f106d72878766cbc"
+version = "0.0.6"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.16.0#a2635fd8f39e1d34ce8074cb486809426148f3e9"
 dependencies = [
+ "char_str",
  "filetime",
  "glob",
  "globset",
@@ -1087,12 +1100,13 @@ dependencies = [
 
 [[package]]
 name = "ruff_python_ast"
-version = "0.0.5"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.15.22#0177a7e0d2c4a3805afa1960f106d72878766cbc"
+version = "0.0.6"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.16.0#a2635fd8f39e1d34ce8074cb486809426148f3e9"
 dependencies = [
  "aho-corasick",
  "arrayvec",
  "bitflags",
+ "char_str",
  "compact_str",
  "get-size2",
  "is-macro",
@@ -1109,12 +1123,11 @@ dependencies = [
 
 [[package]]
 name = "ruff_python_parser"
-version = "0.0.5"
+version = "0.0.6"
 dependencies = [
  "anyhow",
  "bitflags",
  "bstr",
- "compact_str",
  "datatest-stable",
  "drop_bomb",
  "get-size2",
@@ -1139,8 +1152,8 @@ dependencies = [
 
 [[package]]
 name = "ruff_python_trivia"
-version = "0.0.5"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.15.22#0177a7e0d2c4a3805afa1960f106d72878766cbc"
+version = "0.0.6"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.16.0#a2635fd8f39e1d34ce8074cb486809426148f3e9"
 dependencies = [
  "itertools 0.15.0",
  "ruff_source_file",
@@ -1151,8 +1164,8 @@ dependencies = [
 
 [[package]]
 name = "ruff_source_file"
-version = "0.0.5"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.15.22#0177a7e0d2c4a3805afa1960f106d72878766cbc"
+version = "0.0.6"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.16.0#a2635fd8f39e1d34ce8074cb486809426148f3e9"
 dependencies = [
  "memchr",
  "ruff_text_size",
@@ -1160,8 +1173,8 @@ dependencies = [
 
 [[package]]
 name = "ruff_text_size"
-version = "0.0.5"
-source = "git+https://github.com/astral-sh/ruff.git?tag=0.15.22#0177a7e0d2c4a3805afa1960f106d72878766cbc"
+version = "0.0.6"
+source = "git+https://github.com/astral-sh/ruff.git?tag=0.16.0#a2635fd8f39e1d34ce8074cb486809426148f3e9"
 dependencies = [
  "get-size2",
  "serde",
